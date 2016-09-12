@@ -19,7 +19,7 @@ class TestController extends Controller {
     public function actionQueue(){
         $pheanstalk = new Pheanstalk('127.0.0.1');
 
-        $job = $pheanstalk ->watch('tubeName') ->ignore('default') ->reserve();
+        $job = $pheanstalk ->watch('testtube') ->ignore('default') ->reserve();
         $time=$job->getData();
         echo date("Y-m-d H:i:s",$time);
         $pheanstalk->delete($job);
