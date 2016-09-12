@@ -15,7 +15,7 @@ class TestController extends Controller {
         print_r($response);
     }
     public function actionQueueAdd(){
-        $pheanstalk = new Pheanstalk('120.25.240.36');
+        $pheanstalk = new Pheanstalk('127.0.0.1');
         $pheanstalk->useTube('testtube')->put(time());
     }
 }
