@@ -59,6 +59,9 @@ class Store extends \yii\db\ActiveRecord
     public function getCampaigns(){
         return $this->hasMany(Campaign::className(),["nick"=>"nick"])->inverseOf("store");
     }
+    public function getAdgroups(){
+        return $this->hasMany(Adgroup::className(),["nick"=>"nick"])->inverseOf("store");
+    }
 
     //--refresh data
     public function refreshBalance(){
@@ -79,15 +82,17 @@ class Store extends \yii\db\ActiveRecord
         $req->setPageSize($pageSize);
         $req->setPageNo(1);
         $response=TopClient::getInstance()->execute($req, $this->session);
+//        echo "<pre>";print_r($response);exit;
+
         Item::deleteAll(["nick"=>$this->nick]);
 
-        $count+=$this->insertItems($response->item_list);
-        $totalPage=ceil($response->total_item/$pageSize);
+        $count+=$this->insertItems($response->page_item->item_list->subway_item);
+        $totalPage=ceil($response->page_item->total_item/$pageSize);
         if($totalPage>1){
             for($i=2;$i<=$totalPage;$i++){
                 $req->setPageNo($i);
                 $response=TopClient::getInstance()->execute($req, $this->session);
-                $count+=$this->insertItems($response->item_list);
+                $count+=$this->insertItems($response->page_item->item_list->subway_item);
             }
         }
         return $count;
@@ -107,14 +112,16 @@ class Store extends \yii\db\ActiveRecord
         $rows=[];
         if($itemList){
             foreach($itemList as $itemOne){
+                $itemOne=(array)$itemOne;
+                $axtra=(array)$itemOne["extra_attributes"];
                 $rows[]=[
-                    $itemOne->num_id,
+                    $itemOne["num_id"],
                     $this->nick,
-                    $itemOne->price,
-                    $itemOne->title,
-                    $itemOne->extra_attributes->publish_time,
-                    $itemOne->extra_attributes->quantity,
-                    $itemOne->extra_attributes->sales_count,
+                    $itemOne["price"],
+                    $itemOne["title"],
+                    $axtra["publish_time"],
+                    $axtra["quantity"],
+                    $axtra["sales_count"],
                     $now,
                 ];
             }
@@ -125,33 +132,29 @@ class Store extends \yii\db\ActiveRecord
         $req=new \SimbaCampaignsGetRequest;
         $req->setNick($this->nick);
         $response=TopClient::getInstance()->execute($req, $this->session);
+//        echo "<pre>";print_r($response);exit;
         Campaign::deleteAll(["nick"=>$this->nick]);
         $now=date("Y-m-d H:i:s");
-        $columns=[
-            'campaign_id',
-            'nick',
-            'settle_status',
-            'settle_reason',
-            'create_time',
-            'modified_time',
-            'online_status',
-            'api_time',
-        ];
+        $model=new Campaign();
+        $columns=$model->attributes();
         $rows=[];
-        if($response->campaigns){
-            foreach($response->campaigns as $campaignObj){
-                $rows[]=[
-                    $campaignObj->campaign_id,
-                    $this->nick,
-                    $campaignObj->settle_status,
-                    $campaignObj->settle_reason,
-                    $campaignObj->create_time,
-                    $campaignObj->modified_time,
-                    $campaignObj->online_status,
-                    $now,
-                ];
+        if($response->campaigns->campaign){
+            foreach($response->campaigns->campaign as $campaignObj){
+                $campaignObj=(array)$campaignObj;
+                $temp=[];
+                foreach($columns as $column){
+                    if($column=="api_time") {
+                        $temp[] = $now;
+                    }elseif($column=="nick"){
+                        $temp[] = $this->nick;
+                    }else{
+                        $temp[]=(isset($campaignObj[$column])?$campaignObj[$column]:null);
+                    }
+                }
+                $rows[]=$temp;
             }
         }
-        return Yii::$app->db->createCommand()->batchInsert(Item::tableName(),$columns,$rows)->execute();
+//        echo "<pre>";print_r($rows);exit;
+        return Yii::$app->db->createCommand()->batchInsert(Campaign::tableName(),$columns,$rows)->execute();
     }
 }

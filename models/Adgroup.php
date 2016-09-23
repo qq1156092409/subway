@@ -2,16 +2,17 @@
 
 namespace app\models;
 
+use app\extensions\custom\taobao\TopClient;
 use Yii;
 
 /**
  * This is the model class for table "adgroup".
  *
- * @property integer $adgroup_id
+ * @property string $adgroup_id
  * @property string $nick
  * @property integer $campaign_id
  * @property string $category_ids
- * @property integer $num_iid
+ * @property string $num_iid
  * @property integer $default_price
  * @property integer $nosearch_max_price
  * @property string $is_nonsearch_default_price
@@ -21,6 +22,9 @@ use Yii;
  * @property string $create_time
  * @property string $modified_time
  * @property string $nonsearch_status
+ * @property string $img_url
+ * @property integer $mobile_discount
+ * @property string $item_price
  * @property string $api_time
  */
 class Adgroup extends \yii\db\ActiveRecord
@@ -40,11 +44,12 @@ class Adgroup extends \yii\db\ActiveRecord
     {
         return [
             [['adgroup_id'], 'required'],
-            [['adgroup_id', 'campaign_id', 'num_iid', 'default_price', 'nosearch_max_price'], 'integer'],
-            [['is_nonsearch_default_price', 'online_status', 'offline_type'], 'string'],
+            [['adgroup_id', 'campaign_id', 'num_iid', 'default_price', 'nosearch_max_price', 'mobile_discount'], 'integer'],
             [['create_time', 'modified_time', 'api_time'], 'safe'],
+            [['item_price'], 'number'],
             [['nick'], 'string', 'max' => 64],
-            [['category_ids'], 'string', 'max' => 128],
+            [['category_ids', 'img_url'], 'string', 'max' => 128],
+            [['is_nonsearch_default_price', 'online_status', 'offline_type'], 'string', 'max' => 16],
             [['reason', 'nonsearch_status'], 'string', 'max' => 255],
         ];
     }
@@ -69,7 +74,49 @@ class Adgroup extends \yii\db\ActiveRecord
             'create_time' => 'Create Time',
             'modified_time' => 'Modified Time',
             'nonsearch_status' => 'Nonsearch Status',
+            'img_url' => 'Img Url',
+            'mobile_discount' => 'Mobile Discount',
+            'item_price' => 'Item Price',
             'api_time' => 'Api Time',
         ];
+    }
+
+
+    //--relations
+    public function getStore(){
+        return $this->hasOne(Store::className(),["nick"=>"nick"]);
+    }
+
+    //--refresh data
+    public function refreshKeywords(){
+        $req = new \SimbaKeywordsbyadgroupidGetRequest();
+        $req->setNick($this->nick);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $response=TopClient::getInstance()->execute($req, $this->store->session);
+//        echo "<pre>";print_r($response);exit;
+        return $this->insertKeywords($response->keywords->keyword);
+    }
+    protected function insertKeywords($keywordObjs){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new Keyword())->attributes();
+        $rows=[];
+        if($keywordObjs){
+            foreach($keywordObjs as $keywordObj){
+                $keywordObj=(array)$keywordObj;
+                $temp=[];
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }elseif(in_array($column,["is_default_price","is_garbage"])){
+                        $temp[]=($keywordObj[$column]?1:0);
+                    }else{
+                        $temp[]=isset($keywordObj[$column])?$keywordObj[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+        }
+        return Yii::$app->db->createCommand()->batchInsert(Keyword::tableName(),$columns,$rows)->execute();
+
     }
 }

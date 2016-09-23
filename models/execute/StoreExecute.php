@@ -3,6 +3,8 @@
 namespace app\models\execute;
 
 
+use app\models\Adgroup;
+use app\models\Campaign;
 use app\models\Store;
 
 class StoreExecute extends Store{
@@ -15,6 +17,14 @@ class StoreExecute extends Store{
         $store->refreshBalance();
         $store->refreshItems();
         $store->refreshCampaigns();
+        /** @var Campaign $campaign */
+        foreach($store->campaigns as $campaign){
+            $campaign->refreshAdgroups();
+        }
+        /** @var Adgroup $adgroup */
+        foreach($store->adgroups as $adgroup){
+            $adgroup->refreshKeywords();
+        }
     }
     public function changePrice(){
 
