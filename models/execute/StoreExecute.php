@@ -7,7 +7,9 @@ use app\models\Adgroup;
 use app\models\Campaign;
 use app\models\Store;
 
-class StoreExecute extends Store{
+class StoreExecute{
+    public $nick;
+
     public function refreshAll(){
         $this->refreshCommon();
         //refresh others

@@ -7,7 +7,7 @@ use Yii;
 /**
  * This is the model class for table "keyword".
  *
- * @property integer $keyword_id
+ * @property string $keyword_id
  * @property string $nick
  * @property integer $campaign_id
  * @property string $adgroup_id
@@ -16,7 +16,7 @@ use Yii;
  * @property integer $is_default_price
  * @property string $audit_status
  * @property string $audit_desc
- * @property string $is_garbage
+ * @property integer $is_garbage
  * @property string $create_time
  * @property string $modified_time
  * @property integer $qscore
@@ -42,11 +42,11 @@ class Keyword extends \yii\db\ActiveRecord
     {
         return [
             [['keyword_id'], 'required'],
-            [['keyword_id', 'campaign_id', 'adgroup_id', 'max_price', 'is_default_price', 'qscore', 'mobile_is_default_price', 'max_mobile_price'], 'integer'],
+            [['keyword_id', 'campaign_id', 'adgroup_id', 'max_price', 'is_default_price', 'is_garbage', 'qscore', 'mobile_is_default_price', 'max_mobile_price'], 'integer'],
             [['create_time', 'modified_time', 'api_time'], 'safe'],
             [['nick', 'word'], 'string', 'max' => 64],
             [['audit_status'], 'string', 'max' => 16],
-            [['audit_desc', 'is_garbage', 'match_scope'], 'string', 'max' => 255],
+            [['audit_desc', 'match_scope'], 'string', 'max' => 255],
         ];
     }
 
@@ -75,4 +75,16 @@ class Keyword extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
+
+    //--relations
+    public function getAdgroup(){
+        return $this->hasOne(Adgroup::className(),["adgroup_id"=>"adgroup_id"]);
+    }
+    public function getCampaign(){
+        return $this->hasOne(Campaign::className(),["campaign_id"=>"campaign_id"]);
+    }
+    public function getStore(){
+        return $this->hasOne(Store::className(),["nick"=>"nick"]);
+    }
+
 }

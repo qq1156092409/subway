@@ -10,6 +10,7 @@ use Yii;
  *
  * @property integer $campaign_id
  * @property string $nick
+ * @property string $title
  * @property string $settle_status
  * @property string $settle_reason
  * @property string $create_time
@@ -36,7 +37,7 @@ class Campaign extends \yii\db\ActiveRecord
             [['campaign_id'], 'required'],
             [['campaign_id'], 'integer'],
             [['create_time', 'modified_time', 'api_time'], 'safe'],
-            [['nick'], 'string', 'max' => 64],
+            [['nick', 'title'], 'string', 'max' => 64],
             [['settle_status', 'online_status'], 'string', 'max' => 16],
             [['settle_reason'], 'string', 'max' => 32],
         ];
@@ -50,6 +51,7 @@ class Campaign extends \yii\db\ActiveRecord
         return [
             'campaign_id' => 'Campaign ID',
             'nick' => 'Nick',
+            'title' => 'Title',
             'settle_status' => 'Settle Status',
             'settle_reason' => 'Settle Reason',
             'create_time' => 'Create Time',

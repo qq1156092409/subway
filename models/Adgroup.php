@@ -4,6 +4,7 @@ namespace app\models;
 
 use app\extensions\custom\taobao\TopClient;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "adgroup".
@@ -86,6 +87,10 @@ class Adgroup extends \yii\db\ActiveRecord
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
+    public function getKeywords(){
+        return $this->hasMany(Keyword::className(),["adgroup_id"=>"adgroup_id"])->inverseOf("adgroup");
+    }
+
 
     //--refresh data
     public function refreshKeywords(){
@@ -117,6 +122,85 @@ class Adgroup extends \yii\db\ActiveRecord
             }
         }
         return Yii::$app->db->createCommand()->batchInsert(Keyword::tableName(),$columns,$rows)->execute();
+
+    }
+
+    /**
+     * 刷新关键词排名
+     */
+    public function refreshKeywordRankings(){
+        $count=0;
+        $req = new \SimbaKeywordsRealtimeRankingBatchGetRequest;
+        $req->setNick($this->nick);
+        $req->setAdGroupId("".$this->adgroup_id);
+        $keywordIDs=ArrayHelper::getColumn($this->keywords, "keyword_id");
+        $keywordIDs2=array_chunk($keywordIDs,20);
+        foreach($keywordIDs2 as $chunk){
+            $req->setBidwordIds(implode(",",$chunk));
+            $response=TopClient::getInstance()->execute($req, $this->store->session);
+            Ranking::deleteAll(["bidwordid"=>$chunk]);
+            $count+=$this->insertKeywordRankings($response->result->realtime_rank_list->result);
+        }
+        return $count;
+    }
+    protected function insertKeywordRankings($rankings){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new Keyword())->attributes();
+        $rows=[];
+        if($rankings){
+            foreach($rankings as $rankingObj){
+                $rankingObj=(array)$rankingObj;
+                $temp=[];
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($rankingObj[$column])?$rankingObj[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+        }
+        return Yii::$app->db->createCommand()->batchInsert(Ranking::tableName(),$columns,$rows)->execute();
+    }
+
+    /**
+     * 关键词base报表 todo
+     */
+    public function refreshKeywordBases(){
+        $req = new \SimbaRptAdgroupkeywordbaseGetRequest;
+        $req->setNick($this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $req->setStartTime(date("Y-m-d H:i:s",strtotime("-1 day")));
+        $req->setEndTime(date("Y-m-d H:i:s",strtotime("-1 day")));
+        $req->setSource("SUMMARY");
+        $req->setSubwayToken("1102001000-101102001000-1318045030614-ed7cf93b");
+        $req->setPageSize("500");
+        $req->setSearchType("SEARCH");
+        $pageNo=1;
+        $count=0;
+        while(true){
+            $req->setPageNo("" . $pageNo);
+            $response = TopClient::getInstance()->execute($req, $this->store->session);
+            $count+=$this->insertKeywordRankings($response->rpt_adgroupkeyword_base_list);
+            if(count($response->rpt_adgroupkeyword_base_list)<500){
+                break;
+            }
+            $pageNo++;
+        }
+    }
+    protected function insertKeywordBases($keywordBases){
+
+    }
+
+    /**
+     * 推广组报表
+     */
+    public function refreshBases(){
+
+    }
+    public function refreshEffects(){
 
     }
 }
