@@ -98,6 +98,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setNick($this->nick);
         $req->setAdgroupId("".$this->adgroup_id);
         $response=TopClient::getInstance()->execute($req, $this->store->session);
+        Keyword::deleteAll(["adgroup_id"=>$this->adgroup_id]);
 //        echo "<pre>";print_r($response);exit;
         return $this->insertKeywords($response->keywords->keyword);
     }

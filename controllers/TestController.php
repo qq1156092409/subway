@@ -10,7 +10,8 @@ class TestController extends Controller {
     public function actionIndex(){
         $model=new StoreExecute();
 //        $model->nick="zhanglucyy";
-        $model->nick="saxcy09";
+        $model->nick="生态夜郎";
+//        $model->nick="saxcy09";
         $model->refreshCommon();
     }
     public function actionQueueAdd(){
