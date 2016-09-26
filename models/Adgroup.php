@@ -139,6 +139,7 @@ class Adgroup extends \yii\db\ActiveRecord
         foreach($keywordIDs2 as $chunk){
             $req->setBidwordIds(implode(",",$chunk));
             $response=TopClient::getInstance()->execute($req, $this->store->session);
+//            echo "<pre>";print_r($response);exit;
             Ranking::deleteAll(["bidwordid"=>$chunk]);
             $count+=$this->insertKeywordRankings($response->result->realtime_rank_list->result);
         }
@@ -146,7 +147,7 @@ class Adgroup extends \yii\db\ActiveRecord
     }
     protected function insertKeywordRankings($rankings){
         $now=date("Y-m-d H:i:s");
-        $columns=(new Keyword())->attributes();
+        $columns=(new Ranking())->attributes();
         $rows=[];
         if($rankings){
             foreach($rankings as $rankingObj){
@@ -162,29 +163,35 @@ class Adgroup extends \yii\db\ActiveRecord
                 $rows[]=$temp;
             }
         }
+//        echo "<pre>";print_r($rows);exit;
         return Yii::$app->db->createCommand()->batchInsert(Ranking::tableName(),$columns,$rows)->execute();
     }
 
     /**
-     * 关键词base报表 todo
+     * 关键词base报表
      */
     public function refreshKeywordBases(){
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
         $req = new \SimbaRptAdgroupkeywordbaseGetRequest;
         $req->setNick($this->nick);
         $req->setCampaignId("".$this->campaign_id);
         $req->setAdgroupId("".$this->adgroup_id);
-        $req->setStartTime(date("Y-m-d H:i:s",strtotime("-1 day")));
-        $req->setEndTime(date("Y-m-d H:i:s",strtotime("-1 day")));
+        $req->setStartTime($yestoday);
+        $req->setEndTime($yestoday);
         $req->setSource("SUMMARY");
-        $req->setSubwayToken("1102001000-101102001000-1318045030614-ed7cf93b");
+        $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setPageSize("500");
         $req->setSearchType("SEARCH");
         $pageNo=1;
         $count=0;
+        $client= clone TopClient::getInstance();
+        $client->format="json";
+        KeywordBase::deleteAll(["adgroupid"=>$this->adgroup_id,"date"=>$yestoday]);
         while(true){
             $req->setPageNo("" . $pageNo);
-            $response = TopClient::getInstance()->execute($req, $this->store->session);
-            $count+=$this->insertKeywordRankings($response->rpt_adgroupkeyword_base_list);
+            $response = $client->execute($req, $this->store->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+=$this->insertKeywordBases($response->rpt_adgroupkeyword_base_list);
             if(count($response->rpt_adgroupkeyword_base_list)<500){
                 break;
             }
@@ -192,7 +199,78 @@ class Adgroup extends \yii\db\ActiveRecord
         }
     }
     protected function insertKeywordBases($keywordBases){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new KeywordBase())->attributes();
+        $rows=[];
+        if($keywordBases){
+            foreach($keywordBases as $keywordBase){
+                $keywordBase=(array)$keywordBase;
+                $temp=[];
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($keywordBase[$column])?$keywordBase[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+        }
+//        echo "<pre>";print_r($rows);exit;
+        return Yii::$app->db->createCommand()->batchInsert(KeywordBase::tableName(),$columns,$rows)->execute();
+    }
 
+    /**
+     * todo
+     */
+    public function refreshKeywordEffects(){
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $req = new \SimbaRptAdgroupkeywordeffectGetRequest;
+        $req->setNick($this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $req->setStartTime($yestoday);
+        $req->setEndTime($yestoday);
+        $req->setSource("SUMMARY");
+        $req->setSubwayToken($this->store->authSign->subway_token);
+        $req->setPageSize("500");
+        $req->setSearchType("SEARCH");
+        $pageNo=1;
+        $count=0;
+        $client= clone TopClient::getInstance();
+        $client->format="json";
+//        KeywordEffect::deleteAll(["adgroupid"=>$this->adgroup_id,"date"=>$yestoday]);
+        while(true){
+            $req->setPageNo("" . $pageNo);
+            $response = $client->execute($req, $this->store->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+=$this->insertKeywordBases($response->rpt_adgroupkeyword_effect_list);
+            if(count($response->rpt_adgroupkeyword_base_list)<500){
+                break;
+            }
+            $pageNo++;
+        }
+    }
+    protected function insertKeywordEffects($keywordEffects){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new KeywordEffect())->attributes();
+        $rows=[];
+        if($keywordEffects){
+            foreach($keywordEffects as $keywordEffect){
+                $keywordEffect=(array)$keywordEffect;
+                $temp=[];
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($keywordEffect[$column])?$keywordEffect[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+        }
+//        echo "<pre>";print_r($rows);exit;
+        return Yii::$app->db->createCommand()->batchInsert(KeywordEffect::tableName(),$columns,$rows)->execute();
     }
 
     /**

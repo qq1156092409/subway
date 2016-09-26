@@ -53,6 +53,12 @@ class Store extends \yii\db\ActiveRecord
     public function getBalance(){
         return $this->hasOne(Balance::className(),["nick"=>"nick"])->inverseOf("store");
     }
+    public function getSubscribe(){
+        return $this->hasOne(Subscribe::className(),["nick"=>"nick"])->inverseOf("store");
+    }
+    public function getAuthSign(){
+        return $this->hasOne(AuthSign::className(),["nick"=>"nick"])->inverseOf("store");
+    }
     public function getItems(){
         return $this->hasMany(Item::className(),["nick"=>"nick"])->inverseOf("store");
     }
@@ -83,9 +89,7 @@ class Store extends \yii\db\ActiveRecord
         $req->setPageNo(1);
         $response=TopClient::getInstance()->execute($req, $this->session);
 //        echo "<pre>";print_r($response);exit;
-
         Item::deleteAll(["nick"=>$this->nick]);
-
         $count+=$this->insertItems($response->page_item->item_list->subway_item);
         $totalPage=ceil($response->page_item->total_item/$pageSize);
         if($totalPage>1){
@@ -156,5 +160,31 @@ class Store extends \yii\db\ActiveRecord
         }
 //        echo "<pre>";print_r($rows);exit;
         return Yii::$app->db->createCommand()->batchInsert(Campaign::tableName(),$columns,$rows)->execute();
+    }
+    public function refreshSubscribe(){
+        $req=new \VasSubscribeGetRequest;
+        $req->setNick($this->nick);
+        $req->setArticleCode(TopClient::ARTICLE_CODE);
+        $response=TopClient::getInstance()->execute($req, $this->session);
+//        echo "<pre>";print_r($response);exit;
+        Subscribe::deleteAll(["nick"=>$this->nick]);
+        $subscribe=new Subscribe();
+        $subscribe->load((array)$response->article_user_subscribes->article_user_subscribe,"");
+        $subscribe->api_time=date("Y-m-d H:i:s");
+        $subscribe->nick=$this->nick;
+        return $subscribe->save();
+    }
+    public function refreshAuthSign(){
+        $req=new \SimbaLoginAuthsignGetRequest;
+        $req->setNick($this->nick);
+        $response=TopClient::getInstance()->execute($req, $this->session);
+//        echo "<pre>";print_r($response);exit;
+        $responseArr=((array)$response);
+        AuthSign::deleteAll(["nick"=>$this->nick]);
+        $authSign=new AuthSign();
+        $authSign->subway_token=$responseArr["subway_token"];
+        $authSign->api_time=date("Y-m-d H:i:s");
+        $authSign->nick=$this->nick;
+        return $authSign->save();
     }
 }

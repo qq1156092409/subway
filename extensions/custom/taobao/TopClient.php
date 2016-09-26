@@ -11,9 +11,11 @@ namespace app\extensions\custom\taobao;
 class TopClient extends \TopClient{
     const APP_KEY="21115760";
     const SECRET_KEY="f07253aa9f3d494fb7b01c85bec1fc0f";
+    const ARTICLE_CODE="ts-1808369";
 
     public function execute($request, $session = null,$bestUrl = null){
         $response=parent::execute($request, $session,$bestUrl);
+//        print_r($response);exit;
         self::check($response);
         return $response;
     }

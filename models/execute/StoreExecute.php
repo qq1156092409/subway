@@ -16,16 +16,21 @@ class StoreExecute{
     }
     public function refreshCommon(){
         $store=$this->getStore();
-        $store->refreshBalance();
-        $store->refreshItems();
-        $store->refreshCampaigns();
-        /** @var Campaign $campaign */
-        foreach($store->campaigns as $campaign){
-            $campaign->refreshAdgroups();
-        }
+//        $store->refreshAuthSign();
+//        $store->refreshSubscribe();
+//        $store->refreshBalance();
+//        $store->refreshItems();
+//        $store->refreshCampaigns();
+//        /** @var Campaign $campaign */
+//        foreach($store->campaigns as $campaign){
+//            $campaign->refreshAdgroups();
+//        }
         /** @var Adgroup $adgroup */
         foreach($store->adgroups as $adgroup){
-            $adgroup->refreshKeywords();
+//            $adgroup->refreshKeywords();
+//            $adgroup->refreshKeywordBases();
+//            $adgroup->refreshKeywordEffects();
+            $adgroup->refreshKeywordRankings();
         }
     }
     public function changePrice(){

@@ -27,7 +27,7 @@ class SimbaRptAdgroupKeywordBaseGetRequest
 	
 	public function setCampaignId($campaign_id)
 	{
-		$this->campaign_id = $compaign_id;
+		$this->campaign_id = $campaign_id;
 		$this->apiParas["campaign_id"] = $campaign_id;
 	}
 	
