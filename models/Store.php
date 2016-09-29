@@ -187,4 +187,84 @@ class Store extends \yii\db\ActiveRecord
         $authSign->nick=$this->nick;
         return $authSign->save();
     }
+    public function refreshCustBases(){
+        $req = new \SimbaRptCustbaseGetRequest;
+        $req->setSubwayToken($this->authSign->subway_token);
+        $req->setNick($this->nick);
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $req->setStartTime($yestoday);
+        $req->setEndTime($yestoday);
+        $req->setPageNo("1");
+        $req->setPageSize("100");
+        $req->setSource("SUMMARY");
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        $response=$client->execute($req,$this->session);
+//        echo "<pre>";print_r($response);exit;
+        CustBase::deleteAll(["nick"=>$this->nick,"date"=>$yestoday]);
+        return $this->insertCustBases($response->rpt_cust_base_list);
+    }
+    protected function insertCustBases($bases){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new CustBase())->attributes();
+        $count=0;
+        if($bases){
+            $rows=[];
+            foreach($bases as $base){
+                $temp=[];
+                $base=(array)$base;
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($base[$column])?$base[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+//            echo "<pre>";print_r($rows);exit;
+            $count+=Yii::$app->db->createCommand()->batchInsert(CustBase::tableName(),$columns,$rows)->execute();
+        }
+        return $count;
+    }
+    public function refreshCustEffects(){
+        $req = new \SimbaRptCusteffectGetRequest;
+        $req->setSubwayToken($this->authSign->subway_token);
+        $req->setNick($this->nick);
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $req->setStartTime($yestoday);
+        $req->setEndTime($yestoday);
+        $req->setPageNo("1");
+        $req->setPageSize("100");
+        $req->setSource("SUMMARY");
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        $response=$client->execute($req,$this->session);
+//        echo "<pre>";print_r($response);exit;
+        CustEffect::deleteAll(["nick"=>$this->nick,"date"=>$yestoday]);
+        return $this->insertCustEffects($response->rpt_cust_effect_list);
+    }
+    protected function insertCustEffects($effects){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new CustEffect())->attributes();
+        $count=0;
+        if($effects){
+            $rows=[];
+            foreach($effects as $effect){
+                $temp=[];
+                $effect=(array)$effect;
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($effect[$column])?$effect[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+//            echo "<pre>";print_r($rows);exit;
+            $count+=Yii::$app->db->createCommand()->batchInsert(CustEffect::tableName(),$columns,$rows)->execute();
+        }
+        return $count;
+    }
 }

@@ -224,12 +224,15 @@ class Adgroup extends \yii\db\ActiveRecord
      * todo
      */
     public function refreshKeywordEffects(){
+//        throw new \Exception("未实现");
         $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
+        $end=date("Y-m-d",strtotime("-1 day"));
         $req = new \SimbaRptAdgroupkeywordeffectGetRequest;
         $req->setNick($this->nick);
         $req->setCampaignId("".$this->campaign_id);
         $req->setAdgroupId("".$this->adgroup_id);
-        $req->setStartTime($yestoday);
+        $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setSource("SUMMARY");
         $req->setSubwayToken($this->store->authSign->subway_token);
@@ -243,8 +246,8 @@ class Adgroup extends \yii\db\ActiveRecord
         while(true){
             $req->setPageNo("" . $pageNo);
             $response = $client->execute($req, $this->store->session);
-//            echo "<pre>";print_r($response);exit;
-            $count+=$this->insertKeywordBases($response->rpt_adgroupkeyword_effect_list);
+            echo "<pre>";print_r($response);exit;
+            $count+=$this->insertKeywordEffects($response->rpt_adgroupkeyword_effect_list);
             if(count($response->rpt_adgroupkeyword_base_list)<500){
                 break;
             }

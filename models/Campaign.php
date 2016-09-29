@@ -65,6 +65,9 @@ class Campaign extends \yii\db\ActiveRecord
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
+    public function getCampaignSetting(){
+        return $this->hasOne(CampaignSetting::className(),["campaign_id"=>"campaign_id"]);
+    }
 
     //--refresh data
     public function refreshAdgroups(){

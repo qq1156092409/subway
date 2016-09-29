@@ -48,6 +48,14 @@ class Subscribe extends \yii\db\ActiveRecord
         ];
     }
 
+    //--get
+    /**
+     * 是否过期
+     * @return bool
+     */
+    public function getIsPastDue(){
+        return time()>strtotime($this->deadline);
+    }
     //--relations
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
