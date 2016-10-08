@@ -17,6 +17,8 @@ use Yii;
  * @property string $last_sync_time
  * @property integer $parent_cat_id
  * @property string $api_time
+ * @property integer $lft
+ * @property integer $rgt
  */
 class Category extends \yii\db\ActiveRecord
 {
@@ -35,7 +37,7 @@ class Category extends \yii\db\ActiveRecord
     {
         return [
             [['cat_id'], 'required'],
-            [['cat_id', 'cat_level', 'cat_path_id', 'parent_cat_id'], 'integer'],
+            [['cat_id', 'cat_level', 'cat_path_id', 'parent_cat_id', 'lft', 'rgt'], 'integer'],
             [['last_sync_time', 'api_time'], 'safe'],
             [['cat_name'], 'string', 'max' => 64],
             [['cat_path_name'], 'string', 'max' => 255],
@@ -56,12 +58,43 @@ class Category extends \yii\db\ActiveRecord
             'last_sync_time' => 'Last Sync Time',
             'parent_cat_id' => 'Parent Cat ID',
             'api_time' => 'Api Time',
+            'lft' => 'Lft',
+            'rgt' => 'Rgt',
         ];
     }
 
     //--relations
     public function getChildren(){
-        $this->hasMany(Category::className(),["parent_cat_id"=>"cat_id"]);
+        return $this->hasMany(Category::className(),["parent_cat_id"=>"cat_id"]);
+    }
+
+    //--static
+    protected static $buildCount=1;
+    public static function buildTree(){
+        $categories=Category::findAll(["cat_level"=>1]);
+        if($categories){
+            foreach($categories as $k=>&$category){//?
+                self::buildOne($category);
+                unset($categories[$k]);//
+                unset($category);//
+            }
+        }
+    }
+
+    /**
+     * @param $category Category
+     */
+    protected static function buildOne($category){
+        $category->lft=self::$buildCount;
+        self::$buildCount++;
+        if($category->children){
+            foreach($category->children as $one){
+                self::buildOne($one);
+            }
+        }
+        $category->rgt=self::$buildCount;
+        self::$buildCount++;
+        $category->save();
     }
 
     //--refresh data

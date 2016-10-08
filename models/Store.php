@@ -82,11 +82,11 @@ class Store extends \yii\db\ActiveRecord
     }
     public function refreshItems(){
         $count=0;
-        $pageSize=200;
+        $pageSize="200";
         $req=new \SimbaAdgroupOnlineitemsvonGetRequest;
         $req->setNick($this->nick);
         $req->setPageSize($pageSize);
-        $req->setPageNo(1);
+        $req->setPageNo("1");
         $response=TopClient::getInstance()->execute($req, $this->session);
 //        echo "<pre>";print_r($response);exit;
         Item::deleteAll(["nick"=>$this->nick]);
@@ -94,7 +94,7 @@ class Store extends \yii\db\ActiveRecord
         $totalPage=ceil($response->page_item->total_item/$pageSize);
         if($totalPage>1){
             for($i=2;$i<=$totalPage;$i++){
-                $req->setPageNo($i);
+                $req->setPageNo("".$i);
                 $response=TopClient::getInstance()->execute($req, $this->session);
                 $count+=$this->insertItems($response->page_item->item_list->subway_item);
             }
@@ -187,22 +187,44 @@ class Store extends \yii\db\ActiveRecord
         $authSign->nick=$this->nick;
         return $authSign->save();
     }
+
+    /**
+     * 最多刷新30天前的数据
+     * @return int
+     */
     public function refreshCustBases(){
+        $count=0;
         $req = new \SimbaRptCustbaseGetRequest;
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $req->setStartTime($yestoday);
+        $start=date("Y-m-d",strtotime("-30 day"));
+        /** @var CustBase $exist */
+        $exist=CustBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date==$yestoday){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
+        $pageNo=1;
+        $pageSize=100;
+        $req->setStartTime($start);
         $req->setEndTime($yestoday);
-        $req->setPageNo("1");
-        $req->setPageSize("100");
+        $req->setPageSize("".$pageSize);
         $req->setSource("SUMMARY");
         $client=clone TopClient::getInstance();
         $client->format="json";
-        $response=$client->execute($req,$this->session);
-//        echo "<pre>";print_r($response);exit;
-        CustBase::deleteAll(["nick"=>$this->nick,"date"=>$yestoday]);
-        return $this->insertCustBases($response->rpt_cust_base_list);
+        while(true){
+            $req->setPageNo("".$pageNo);
+            $response=$client->execute($req,$this->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+= $this->insertCustBases($response->rpt_cust_base_list);
+            if($count<$pageSize){
+                break;
+            }
+        }
+        return $count;
     }
     protected function insertCustBases($bases){
         $now=date("Y-m-d H:i:s");
@@ -228,21 +250,38 @@ class Store extends \yii\db\ActiveRecord
         return $count;
     }
     public function refreshCustEffects(){
+        $count=0;
         $req = new \SimbaRptCusteffectGetRequest;
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $req->setStartTime($yestoday);
+        $start=date("Y-m-d",strtotime("-30 day"));
+        /** @var CustEffect $exist */
+        $exist=CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date==$yestoday){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
+        $pageNo=1;
+        $pageSize=100;
+        $req->setStartTime($start);
         $req->setEndTime($yestoday);
-        $req->setPageNo("1");
-        $req->setPageSize("100");
+        $req->setPageSize("".$pageSize);
         $req->setSource("SUMMARY");
         $client=clone TopClient::getInstance();
         $client->format="json";
-        $response=$client->execute($req,$this->session);
-//        echo "<pre>";print_r($response);exit;
-        CustEffect::deleteAll(["nick"=>$this->nick,"date"=>$yestoday]);
-        return $this->insertCustEffects($response->rpt_cust_effect_list);
+        while(true){
+            $req->setPageNo("".$pageNo);
+            $response=$client->execute($req,$this->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+= $this->insertCustEffects($response->rpt_cust_effect_list);
+            if($count<$pageSize){
+                break;
+            }
+        }
+        return $count;
     }
     protected function insertCustEffects($effects){
         $now=date("Y-m-d H:i:s");

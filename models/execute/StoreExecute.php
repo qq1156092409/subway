@@ -27,16 +27,21 @@ class StoreExecute{
             throw new \Exception("store session invalid");
         }
     }
+    public function getStore(){
+        return $this->_store;
+    }
     //--validate
     protected function checkSubscribe(){
-        if($this->_store->subscribe->isPastDue!=false){
-            throw new \Exception("store is past due");
+        if($this->_store->subscribe->isPastDue==false){
+            return;
         }
+        throw new \Exception("store is past due");
     }
     protected function checkAuthSign(){
         if($this->_store->authSign->subway_token){
-            throw new \Exception("store subway token invalid");
+            return;
         }
+        throw new \Exception("store subway token invalid");
     }
 
     protected function refreshStatic(){

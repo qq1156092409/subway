@@ -55,14 +55,18 @@ class StoreError extends \yii\db\ActiveRecord
      * @return bool
      */
     public static function log($store,$e){
-        $md5=md5($e->getMessage());
+        $message=substr($e->getMessage(),0,255);
+        $md5=md5($message);
         $error=ExecuteError::findOne(["key"=>$md5]);
         if(!$error){
             $error=new ExecuteError();
             $error->key=$md5;
-            $error->message=$e->getMessage();
+            $error->message=$message;
             $error->create_time=date("Y-m-d H:i:s");
-            $error->save();
+            $flag=$error->save();
+            if(!$flag){
+                print_r($error->errors);exit;
+            }
         }
         $log=self::findOne(["store_id"=>$store->id,"execute_error_id"=>$error->id]);
         if(!$log){
