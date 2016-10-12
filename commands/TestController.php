@@ -24,12 +24,47 @@ class TestController extends Controller {
 
     }
     public function actionQueue(){
-        $pheanstalk = new Pheanstalk('127.0.0.1');
+        $pheanstalk = new Pheanstalk('120.25.240.36');
 
-        $job = $pheanstalk ->watch('testtube') ->ignore('default') ->reserve();
+        $job = $pheanstalk ->watch('subway-test')->reserve();
         $time=$job->getData();
         echo date("Y-m-d H:i:s",$time);
         $pheanstalk->delete($job);
+    }
+    public function actionLoop(){
+        echo "start \r\n";
+        $i=1;
+        while(true){
+            sleep(10);
+            if($i==10){
+                break;
+            }
+            $i++;
+        }
+        echo "success \r\n";
+    }
+    public function actionExec(){
+        $command=dirname(__DIR__).'\yii store/refresh-one 1';
+        echo exec($command);
+    }
+
+    /**
+     * 火影分身
+     */
+    public function actionNaruto(){
+        $parentPid=getmypid();
+        for($i=0;$i<5;$i++){
+            $pid=pcntl_fork();
+            if ($pid == -1) {
+                die('fork failed');
+            } else if ($pid == 0) {
+                $mypid = getmypid(); // 用getmypid()函数获取当前进程的PID
+                echo 'I am child process. My PID is ' . $mypid . ' and my father\'s PID is ' . $parentPid . PHP_EOL;
+                exit;
+            } else {
+                echo 'Oh my god! I am a father now! My child\'s PID is ' . $pid . ' and mine is ' . $parentPid . PHP_EOL;
+            }
+        }
     }
 
 }

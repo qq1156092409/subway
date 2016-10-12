@@ -101,7 +101,13 @@ class StoreExecute{
         $this->refreshStatic();
         //validate
         $this->checkAuthSign();
-        $this->checkSubscribe();
+//        $this->checkSubscribe();
+
+        $this->refreshCommon();
+    }
+
+    public function refresh(){
+        $this->checkAuthSign();
 
         $this->refreshCommon();
     }

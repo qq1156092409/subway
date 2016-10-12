@@ -12,7 +12,7 @@ class TestController extends Controller {
         echo $store->refreshCustEffects();
     }
     public function actionQueueAdd(){
-        $pheanstalk = new Pheanstalk('127.0.0.1');
-        $pheanstalk->useTube('testtube')->put(time());
+        $pheanstalk = new Pheanstalk('120.25.240.36');
+        echo $pheanstalk->useTube('subway-store-refresh')->put(time());
     }
 }
