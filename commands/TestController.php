@@ -61,7 +61,7 @@ class TestController extends Controller {
                 $mypid = getmypid(); // 用getmypid()函数获取当前进程的PID
                 $rand=rand(10,30);
                 while(1){
-                    echo $mypid." say ".date("Y-m-d H:i:s").PHP_EOL;
+                    echo $mypid." ".$rand." say ".date("Y-m-d H:i:s").PHP_EOL;
                     $rand--;
                     if($rand<=0){
                         break;
