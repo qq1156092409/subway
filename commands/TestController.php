@@ -59,12 +59,18 @@ class TestController extends Controller {
                 die('fork failed');
             } else if ($pid == 0) {
                 $mypid = getmypid(); // 用getmypid()函数获取当前进程的PID
-                echo 'I am child process. My PID is ' . $mypid . ' and my father\'s PID is ' . $parentPid . PHP_EOL;
+                $rand=rand(10,30);
+                while(1){
+                    echo $mypid." say ".date("Y-m-d").PHP_EOL;
+                    $rand--;
+                    if($rand<=0){
+                        break;
+                    }
+                }
                 exit;
-            } else {
-                echo 'Oh my god! I am a father now! My child\'s PID is ' . $pid . ' and mine is ' . $parentPid . PHP_EOL;
             }
         }
+        sleep(60);
     }
 
 }
