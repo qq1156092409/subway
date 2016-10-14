@@ -5,30 +5,32 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "cust_effect".
+ * This is the model class for table "campaign_effect".
  *
- * @property string $nick
+ * @property string $campaignid
  * @property string $date
+ * @property string $nick
+ * @property integer $source
  * @property integer $indirectpay
- * @property integer $favshopcount
- * @property integer $favitemcount
+ * @property integer $favItemCount
+ * @property integer $searchtype
  * @property integer $indirectpaycount
  * @property integer $indirectcarttotal
- * @property string $source
+ * @property integer $favShopCount
  * @property integer $carttotal
  * @property integer $directcarttotal
  * @property integer $directpay
  * @property integer $directpaycount
  * @property string $api_time
  */
-class CustEffect extends \yii\db\ActiveRecord
+class CampaignEffect extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'cust_effect';
+        return 'campaign_effect';
     }
 
     /**
@@ -37,11 +39,10 @@ class CustEffect extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nick', 'date'], 'required'],
+            [['campaignid', 'date', 'source'], 'required'],
+            [['campaignid', 'source', 'indirectpay', 'favItemCount', 'searchtype', 'indirectpaycount', 'indirectcarttotal', 'favShopCount', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
             [['date', 'api_time'], 'safe'],
-            [['indirectpay', 'favshopcount', 'favitemcount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
             [['nick'], 'string', 'max' => 64],
-            [['source'], 'string', 'max' => 16],
         ];
     }
 
@@ -51,14 +52,16 @@ class CustEffect extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'nick' => 'Nick',
+            'campaignid' => 'Campaignid',
             'date' => 'Date',
+            'nick' => 'Nick',
+            'source' => 'Source',
             'indirectpay' => 'Indirectpay',
-            'favshopcount' => 'Favshopcount',
-            'favitemcount' => 'Favitemcount',
+            'favItemCount' => 'Fav Item Count',
+            'searchtype' => 'Searchtype',
             'indirectpaycount' => 'Indirectpaycount',
             'indirectcarttotal' => 'Indirectcarttotal',
-            'source' => 'Source',
+            'favShopCount' => 'Fav Shop Count',
             'carttotal' => 'Carttotal',
             'directcarttotal' => 'Directcarttotal',
             'directpay' => 'Directpay',

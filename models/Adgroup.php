@@ -285,4 +285,15 @@ class Adgroup extends \yii\db\ActiveRecord
     public function refreshEffects(){
 
     }
+    public function getRecommendKeywords(){
+        $req = new \SimbaKeywordsRecommendGetRequest;
+        $req->setNick($this->nick);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $req->setSearch("200");
+        $req->setPageSize("200");
+        $req->setPageNo("1");
+        $req->setOrderBy("relevance");
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+        echo "<pre>";print_r($response);
+    }
 }

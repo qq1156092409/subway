@@ -115,4 +115,127 @@ class Campaign extends \yii\db\ActiveRecord
         }
         return Yii::$app->db->createCommand()->batchInsert(Adgroup::tableName(),$columns,$rows)->execute();
     }
+
+    /**
+     * 最多刷新30天前的数据
+     * @return int
+     */
+    public function refreshBaseReports(){
+        $count=0;
+        $req = new \SimbaRptCampaignBaseGetRequest;
+        $req->setSubwayToken($this->store->authSign->subway_token);
+        $req->setNick($this->nick);
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $start=date("Y-m-d",strtotime("-30 day"));
+        /** @var CampaignBase $exist */
+        $exist=CampaignBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date==$yestoday){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
+        $pageNo=1;
+        $pageSize=100;
+        $req->setStartTime($start);
+        $req->setEndTime($yestoday);
+        $req->setPageSize("".$pageSize);
+        $req->setSource("1,2");
+        $req->setSearchType("SEARCH");
+        $req->setCampaignId("" . $this->campaign_id);
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        while(true){
+            $req->setPageNo("".$pageNo);
+            $response=$client->execute($req,$this->store->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+= $this->insertBaseReports($response->rpt_campaign_base_list);
+            if($count<$pageSize){
+                break;
+            }
+        }
+        return $count;
+    }
+    protected function insertBaseReports($bases){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new CampaignBase())->attributes();
+        $count=0;
+        if($bases){
+            $rows=[];
+            foreach($bases as $base){
+                $temp=[];
+                $base=(array)$base;
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($base[$column])?$base[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+//            echo "<pre>";print_r($rows);exit;
+            $count+=Yii::$app->db->createCommand()->batchInsert(CampaignBase::tableName(),$columns,$rows)->execute();
+        }
+        return $count;
+    }
+    public function refreshEffectReports(){
+        $count=0;
+        $req = new \SimbaRptCampaignEffectGetRequest;
+        $req->setSubwayToken($this->store->authSign->subway_token);
+        $req->setNick($this->nick);
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $start=date("Y-m-d",strtotime("-30 day"));
+        /** @var CampaignEffect $exist */
+//        $exist=CampaignEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+//        if($exist){
+//            if($exist->date==$yestoday){
+//                return $count;
+//            }
+//            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+//        }
+        $pageNo=1;
+        $pageSize=100;
+        $req->setStartTime($start);
+        $req->setEndTime($yestoday);
+        $req->setPageSize("".$pageSize);
+        $req->setSource("1,2");
+        $req->setSearchType("SEARCH");
+        $req->setCampaignId("" . $this->campaign_id);
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        while(true){
+            $req->setPageNo("".$pageNo);
+            $response=$client->execute($req,$this->store->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+= $this->insertEffectReports($response->rpt_campaign_effect_list);
+            if($count<$pageSize){
+                break;
+            }
+        }
+        return $count;
+    }
+    protected function insertEffectReports($effects){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new CampaignEffect())->attributes();
+        $count=0;
+        if($effects){
+            $rows=[];
+            foreach($effects as $effect){
+                $temp=[];
+                $effect=(array)$effect;
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($effect[$column])?$effect[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+//            echo "<pre>";print_r($rows);exit;
+            $count+=Yii::$app->db->createCommand()->batchInsert(CampaignEffect::tableName(),$columns,$rows)->execute();
+        }
+        return $count;
+    }
 }

@@ -59,6 +59,8 @@ class StoreExecute{
         /** @var Campaign $campaign */
         foreach($store->campaigns as $campaign){
             $campaign->refreshAdgroups();
+            $campaign->refreshBaseReports();
+            $campaign->refreshEffectReports();
         }
         /** @var Adgroup $adgroup */
         foreach($store->adgroups as $adgroup){

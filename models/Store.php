@@ -306,4 +306,33 @@ class Store extends \yii\db\ActiveRecord
         }
         return $count;
     }
+
+    /**
+     * 实时报表
+     */
+    public function refreshRealTimeReport(){
+        $req = new \SimbaRtrptCustGetRequest;
+        $req->setNick($this->nick);
+        $date=date("Y-m-d");
+        $req->setTheDate($date);
+        $response=TopClient::getInstance()->execute($req,$this->session);
+//        echo "<pre>";print_r($response);exit;
+        CustRealTimeReport::deleteAll(["nick"=>$this->nick,"thedate"=>$date]);
+        $report=new CustRealTimeReport();
+        $datas=$response->results->rt_rpt_result_entity_d_t_o;
+        if($datas){
+            foreach($datas as $data){
+                $data=(array)$data;
+                foreach($data as $k=>$v){
+                    if(in_array($k,["nick","thedate"]))continue;
+                    $report->$k+=$v;
+                }
+            }
+        }
+        $report->thedate=$date;
+        $report->nick=$this->nick;
+        $report->api_time=date("Y-m-d H:i:s");
+        $report->calculate();
+        return $report->save();
+    }
 }

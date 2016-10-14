@@ -1,15 +1,21 @@
 <?php
 
 namespace app\controllers;
+use app\models\Adgroup;
+use app\models\Campaign;
 use app\models\Store;
 use Pheanstalk\Pheanstalk;
 use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
-        /** @var Store $store */
-        $store=Store::findOne(["nick"=>"saxcy09"]);
-        echo $store->refreshCustEffects();
+        /** @var Campaign $campaign */
+        $campaign = Campaign::findOne(4202895);
+        $campaign->refreshEffectReports();
+
+        /** @var Adgroup $adgroup */
+//        $adgroup = Adgroup::findOne(610043905);
+//        $adgroup->getRecommendKeywords();
     }
     public function actionQueueAdd(){
         $pheanstalk = new Pheanstalk('120.25.240.36');

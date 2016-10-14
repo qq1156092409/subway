@@ -16,7 +16,17 @@ class TopClient extends \TopClient{
     public function execute($request, $session = null,$bestUrl = null){
         $response=parent::execute($request, $session,$bestUrl);
 //        print_r($response);exit;
-        self::check($response);
+        try{
+            self::check($response);
+        }catch (TopException $e){
+            if($e->getMessage()=="App Call Limited"){
+                sleep(2);
+                $response=parent::execute($request, $session,$bestUrl);
+                self::check($response);
+            }else{
+                throw $e;
+            }
+        }
         return $response;
     }
     public function curl($url, $postFields = null){
