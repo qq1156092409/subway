@@ -4,23 +4,17 @@ namespace app\commands;
 
 
 use app\helpers\ConsoleHelper;
+use app\models\Adgroup;
+use app\models\execute\AdgroupExecute;
 use app\models\Store;
 use Pheanstalk\Pheanstalk;
 use yii\console\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
-        $stores=Store::find()->all();
-        foreach($stores as $store){
-            /** @var Store $store */
-            try{
-                $store->refreshCustEffects();
-            }catch (\Exception $e){
-//                echo $e->getMessage();
-                ConsoleHelper::t($store->id);
-                ConsoleHelper::t(substr($e->getMessage(),0,64));
-            }
-        }
+        $adgroup=Adgroup::find()->limit(1)->one();
+        $execute = new AdgroupExecute($adgroup);
+        echo $execute->createKeywordPools();
 
     }
     public function actionQueue(){

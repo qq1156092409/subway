@@ -187,13 +187,13 @@ class Campaign extends \yii\db\ActiveRecord
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CampaignEffect $exist */
-//        $exist=CampaignEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
-//        if($exist){
-//            if($exist->date==$yestoday){
-//                return $count;
-//            }
-//            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
-//        }
+        $exist=CampaignEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date==$yestoday){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
         $pageNo=1;
         $pageSize=100;
         $req->setStartTime($start);
@@ -237,5 +237,36 @@ class Campaign extends \yii\db\ActiveRecord
             $count+=Yii::$app->db->createCommand()->batchInsert(CampaignEffect::tableName(),$columns,$rows)->execute();
         }
         return $count;
+    }
+
+    /**
+     * 实时报表
+     */
+    public function refreshRealTimeReport(){
+        $req = new \SimbaRtrptAdgroupGetRequest;
+        $req->setNick($this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+        $date=date("Y-m-d");
+        $req->setTheDate($date);
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+//        echo "<pre>";print_r($response);exit;
+        CampaignRealTimeReport::deleteAll(["nick"=>$this->nick,"thedate"=>$date]);
+        $report=new CampaignRealTimeReport();
+        $datas=$response->results->rt_rpt_result_entity_d_t_o;
+        if($datas){
+            foreach($datas as $data){
+                $data=(array)$data;
+                foreach($data as $k=>$v){
+                    if(in_array($k,["nick","thedate","campaignid","adgroupid"]))continue;
+                    $report->$k+=$v;
+                }
+            }
+        }
+        $report->thedate=$date;
+        $report->nick=$this->nick;
+        $report->campaignid=$this->campaign_id;
+        $report->api_time=date("Y-m-d H:i:s");
+//        $report->calculate();
+        return $report->save();
     }
 }

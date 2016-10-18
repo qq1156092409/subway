@@ -90,6 +90,9 @@ class Adgroup extends \yii\db\ActiveRecord
     public function getKeywords(){
         return $this->hasMany(Keyword::className(),["adgroup_id"=>"adgroup_id"])->inverseOf("adgroup");
     }
+    public function getKeywordPools(){
+        return $this->hasMany(KeywordPool::className(),["adgroup_id"=>"adgroup_id"])->inverseOf("adgroup");
+    }
 
 
     //--refresh data
@@ -294,6 +297,12 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setPageNo("1");
         $req->setOrderBy("relevance");
         $response=TopClient::getInstance()->execute($req,$this->store->session);
-        echo "<pre>";print_r($response);
+        $ret=[];
+        if($response->recommend_words->recommend_word_list->recommend_word){
+            foreach($response->recommend_words->recommend_word_list->recommend_word as $one){
+                $ret[]=(array)$one;
+            }
+        }
+        return $ret;
     }
 }

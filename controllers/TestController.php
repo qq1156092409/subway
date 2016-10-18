@@ -11,7 +11,7 @@ class TestController extends Controller {
     public function actionIndex(){
         /** @var Campaign $campaign */
         $campaign = Campaign::findOne(4202895);
-        $campaign->refreshEffectReports();
+        $campaign->refreshRealTimeReport();
 
         /** @var Adgroup $adgroup */
 //        $adgroup = Adgroup::findOne(610043905);
