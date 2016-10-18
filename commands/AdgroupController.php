@@ -49,4 +49,49 @@ class AdgroupController extends Controller
         $end=time();
         ConsoleHelper::t("time: ".($end-$start));
     }
+
+    public function actionOptimizeOne($id){
+        $this->doOptimize($this->getAdgroup($id));
+    }
+    protected function doOptimize($adgroup){
+        $flag=false;
+        ConsoleHelper::t("adgroup optimize one:".$adgroup->adgroup_id);
+        $start=time();
+        try{
+            $execute=new AdgroupExecute($adgroup);
+            $execute->optimize();
+            $flag=true;
+            ConsoleHelper::t("success");
+        }catch (\Exception $e){
+            ConsoleHelper::t("error:".$e->getMessage());
+        }
+        ConsoleHelper::t("time: ".(time()-$start));
+        return $flag;
+    }
+    public function actionAddKeywordsOne($id){
+        $this->doAddKeywords($this->getAdgroup($id));
+    }
+    protected function doAddKeywords($adgroup){
+        $flag=false;
+        ConsoleHelper::t("adgroup add keywords one:".$adgroup->adgroup_id);
+        $start=time();
+        try{
+            $execute=new AdgroupExecute($adgroup);
+            $execute->addKeywords();
+            $flag=true;
+            ConsoleHelper::t("success");
+        }catch (\Exception $e){
+            ConsoleHelper::t("error:".$e->getMessage());
+        }
+        ConsoleHelper::t("time: ".(time()-$start));
+        return $flag;
+    }
+
+    protected function getAdgroup($id){
+        $adgroup = Adgroup::findOne($id);
+        if(!$adgroup){
+            throw new \Exception("adgroup not found");
+        }
+        return $adgroup;
+    }
 }

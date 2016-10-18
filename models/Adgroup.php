@@ -87,6 +87,12 @@ class Adgroup extends \yii\db\ActiveRecord
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
+    public function getCampaign(){
+        return $this->hasOne(Campaign::className(),["campaign_id"=>"campaign_id"]);
+    }
+    public function getCampaignSetting(){
+        return $this->hasOne(CampaignSetting::className(),["campaign_id"=>"campaign_id"]);
+    }
     public function getKeywords(){
         return $this->hasMany(Keyword::className(),["adgroup_id"=>"adgroup_id"])->inverseOf("adgroup");
     }

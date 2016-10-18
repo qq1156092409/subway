@@ -1,15 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 2016/10/18
- * Time: 19:25
- */
 
 namespace app\models\execute;
 
-
+use app\helpers\ConsoleHelper;
 use app\models\Adgroup;
+use app\models\CampaignSetting;
 use app\models\KeywordPool;
 
 class AdgroupExecute{
@@ -54,4 +49,51 @@ class AdgroupExecute{
         }
         return $count;
     }
+    public function addKeywords(){
+        $this->checkCampaign();
+        $this->checkStore();
+
+        $this->createKeywordPools();//先添加到pool中
+        $this->doAddKeywords();
+    }
+    public function optimize(){
+        $this->checkCampaign();
+        $this->checkStore();
+
+        $this->deleteKeywords();
+        $this->changePrices();
+        $this->doAddKeywords();
+    }
+
+    protected function checkCampaign(){
+        $adgroup=$this->_adgroup;
+        if(!$adgroup->campaignSetting){
+            throw new \Exception("campaign setting not found");
+        }
+        if($adgroup->campaignSetting->status==CampaignSetting::STOP){
+            throw new \Exception("campaign setting is stop");
+        }
+    }
+    protected function checkStore(){
+        $adgroup=$this->_adgroup;
+        if(!$adgroup->store){
+            throw new \Exception("store not found");
+        }
+        if(!$adgroup->store->subscribe){
+            throw new \Exception("store subscribe not found");
+        }
+        if($adgroup->store->subscribe->getIsPastDue()){
+            throw new \Exception("store is past due");
+        }
+    }
+    protected function deleteKeywords(){
+        ConsoleHelper::t("delete keywords");
+    }
+    protected function changePrices(){
+        ConsoleHelper::t("change price");
+    }
+    protected function doAddKeywords(){
+        ConsoleHelper::t("add keywords");
+    }
+
 }

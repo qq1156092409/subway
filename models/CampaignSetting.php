@@ -45,4 +45,7 @@ class CampaignSetting extends \yii\db\ActiveRecord
             'create_time' => 'Create Time',
         ];
     }
+
+    const STOP=0;
+    const START=1;
 }
