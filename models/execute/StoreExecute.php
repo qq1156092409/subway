@@ -15,13 +15,8 @@ class StoreExecute{
     public function __construct($store){
         if($store instanceof Store){
             $this->_store=$store;
-        }elseif(is_numeric($store)){
-            $this->_store = Store::findOne($store);
-        }elseif(is_string($store)){
-            $this->_store = Store::findOne(["nick"=>$store]);
-        }
-        if(!$this->_store){
-            throw new \Exception("store not found");
+        }else{
+            throw new \Exception("store invalid");
         }
         if(!$this->_store->session){
             throw new \Exception("store session invalid");

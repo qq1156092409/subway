@@ -12,7 +12,9 @@ use Yii;
  * @property integer $click
  * @property integer $cost
  * @property string $cpc
+ * @property string $cpm
  * @property string $ctr
+ * @property string $coverage
  * @property integer $directcarttotal
  * @property string $directtransaction
  * @property integer $directtransactionshipping
@@ -23,7 +25,7 @@ use Yii;
  * @property integer $indirectcarttotal
  * @property string $indirecttransaction
  * @property string $indirecttransactionshipping
- * @property integer $roi
+ * @property string $roi
  * @property string $thedate
  * @property integer $transactionshippingtotal
  * @property string $transactiontotal
@@ -46,8 +48,8 @@ class CustRealTimeReport extends \yii\db\ActiveRecord
     {
         return [
             [['nick', 'thedate'], 'required'],
-            [['carttotal', 'click', 'cost', 'directcarttotal', 'directtransactionshipping', 'favitemtotal', 'favshoptotal', 'favtotal', 'impression', 'indirectcarttotal', 'roi', 'transactionshippingtotal'], 'integer'],
-            [['cpc', 'ctr', 'directtransaction', 'indirecttransaction', 'indirecttransactionshipping', 'transactiontotal'], 'number'],
+            [['carttotal', 'click', 'cost', 'directcarttotal', 'directtransactionshipping', 'favitemtotal', 'favshoptotal', 'favtotal', 'impression', 'indirectcarttotal', 'transactionshippingtotal'], 'integer'],
+            [['cpc', 'cpm', 'ctr', 'coverage', 'directtransaction', 'indirecttransaction', 'indirecttransactionshipping', 'roi', 'transactiontotal'], 'number'],
             [['thedate', 'api_time'], 'safe'],
             [['nick'], 'string', 'max' => 64],
         ];
@@ -64,7 +66,9 @@ class CustRealTimeReport extends \yii\db\ActiveRecord
             'click' => 'Click',
             'cost' => 'Cost',
             'cpc' => 'Cpc',
+            'cpm' => 'Cpm',
             'ctr' => 'Ctr',
+            'coverage' => 'Coverage',
             'directcarttotal' => 'Directcarttotal',
             'directtransaction' => 'Directtransaction',
             'directtransactionshipping' => 'Directtransactionshipping',

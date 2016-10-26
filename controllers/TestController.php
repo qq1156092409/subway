@@ -10,12 +10,16 @@ use yii\web\Controller;
 class TestController extends Controller {
     public function actionIndex(){
         /** @var Campaign $campaign */
-        $campaign = Campaign::findOne(4202895);
-        $campaign->refreshRealTimeReport();
+//        $campaign = Campaign::findOne(4202895);
+//        $campaign->refreshRealTimeReport();
 
         /** @var Adgroup $adgroup */
 //        $adgroup = Adgroup::findOne(610043905);
 //        $adgroup->getRecommendKeywords();
+
+        /** @var Store $store */
+        $store = Store::findOne(20);
+        $store->refreshRealTimeReport();
     }
     public function actionQueueAdd(){
         $pheanstalk = new Pheanstalk('120.25.240.36');

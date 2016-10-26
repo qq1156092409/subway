@@ -2,10 +2,13 @@
 
 namespace app\models\execute;
 
+use app\extensions\custom\taobao\TopClient;
 use app\helpers\ConsoleHelper;
 use app\models\Adgroup;
 use app\models\CampaignSetting;
 use app\models\KeywordPool;
+use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 
 class AdgroupExecute{
     /**
@@ -93,7 +96,37 @@ class AdgroupExecute{
         ConsoleHelper::t("change price");
     }
     protected function doAddKeywords(){
-        ConsoleHelper::t("add keywords");
+        $adgroup=$this->_adgroup;
+        $keywordCount=$adgroup->getKeywords()->count();
+        if($keywordCount==200){
+            ConsoleHelper::t("add keywords:full keywords");return;
+        }
+        $req = new \SimbaKeywordsvonAddRequest;
+        $req->setNick($adgroup->nick);
+        $req->setAdgroupId("".$adgroup->adgroup_id);
+        $keywordPrices=[];
+        /** @var KeywordPool[] $pools */
+        $pools=KeywordPool::find()->where([
+            "adgroup_id"=>$adgroup->adgroup_id,
+        ])->limit(200-$keywordCount)->all();
+        if(!$pools){
+            ConsoleHelper::t("add keywords:alternative keyword not found");
+            //todo 加入淘词队列
+            return;
+        }
+        foreach($pools as $pool){
+            $keywordPrices[]=[
+                "word"=>$pool->word,
+                "maxPrice"=>0,
+                "matchScope"=>4,
+                "isDefaultPrice"=>1,
+            ];
+        }
+        KeywordPool::deleteAll(["id"=>ArrayHelper::getColumn($pools,"id")]);//先删除，避免多次Remote service error
+        $req->setKeywordPrices(Json::encode($keywordPrices));
+        $response=TopClient::getInstance()->execute($req,$adgroup->store->session);
+        $count=Adgroup::insertKeywords($response->keywords->keyword);
+        ConsoleHelper::t("add keywords:".$count);
     }
 
 }

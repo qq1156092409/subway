@@ -2,6 +2,7 @@
 
 namespace app\commands;
 
+use app\helpers\ConsoleHelper;
 use app\models\Category;
 use app\models\execute\CategoryExecute;
 use yii\console\Controller;
@@ -9,25 +10,25 @@ use yii\console\Controller;
 class CategoryController extends Controller
 {
     public function actionRefresh(){
+        ConsoleHelper::t("category refresh");
         $start=time();
-        echo "category refresh"."\r\n";
         try{
-            $count=CategoryExecute::refreshCategories();
-            echo "success:".$count."\r\n";
+            $count=CategoryExecute::refresh();
+            ConsoleHelper::t("success:".$count);
         }catch (\Exception $e){
-            echo "error:".$e->getMessage()."\r\n";
+            ConsoleHelper::t("error:".$e->getMessage());
         }
-        echo "time:".(time()-$start)."\r\n";
+        ConsoleHelper::t("time:".(time()-$start));
     }
     public function actionBuildTree(){
+        ConsoleHelper::t("category build tree");
         $start=time();
-        echo "category build tree"."\r\n";
         try{
             Category::buildTree();
-            echo "success"."\r\n";
+            ConsoleHelper::t("success");
         }catch (\Exception $e){
-            echo "error:".$e->getMessage()."\r\n";
+            ConsoleHelper::t("error:".$e->getMessage());
         }
-        echo "time:".(time()-$start)."\r\n";
+        ConsoleHelper::t("time:".(time()-$start));
     }
 }

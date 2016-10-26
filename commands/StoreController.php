@@ -14,6 +14,7 @@ use app\models\execute\StoreExecute;
 use app\models\Store;
 use app\models\StoreError;
 use Pheanstalk\Pheanstalk;
+use yii\base\Exception;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -23,27 +24,19 @@ class StoreController extends Controller{
      * 日常优化
      */
     public function actionOptimize(){
-        $count=$error=$total=0;
+        $success=$total=0;
         /** @var Store[] $stores */
         $stores = Store::find()->all();
         $total=count($stores);
         if($stores){
-            foreach($stores as $k=>$store){
-                if($k!=0){
-                    sleep(1);
-                }
-                $flag=$this->doOptimize($store);
-                if($flag){
-                    $count++;
-                }else{
-                    $error++;
-                }
+            foreach($stores as $k=>&$store){
+                $this->doOptimize($store) and $success++;
             }
         }
         echo json_encode([
             "total"=>$total,
-            "error"=>$error,
-            "count"=>$count,
+            "error"=>($total-$success),
+            "success"=>$success,
         ]);
     }
 
@@ -52,25 +45,23 @@ class StoreController extends Controller{
      * @param $id
      */
     public function actionOptimizeOne($id){
-        $this->doOptimize($id);
+        $this->doOptimize($this->getStore($id));
     }
 
     protected function doOptimize($store){
         $flag=false;
         $start=time();
-        echo "store-optimize-".$store->nick."\r\n";
+        ConsoleHelper::t("store-optimize-".$store->id);
         try{
             $execute=new StoreExecute($store);
             $execute->optimize();
             $flag=true;
-            echo "success"."\r\n";
+            ConsoleHelper::t("success");
         }catch (\Exception $e){
             StoreError::log($store,$e);
-            echo "error:".$e->getMessage()."\r\n";
+            ConsoleHelper::t("error:".$e->getMessage());
         }
-        unset($store);
-        unset($execute);
-        echo "time:".(time()-$start)."\r\n";
+        ConsoleHelper::t("time:".(time()-$start));
         return $flag;
     }
 
@@ -79,26 +70,25 @@ class StoreController extends Controller{
      * yii store/download
      */
     public function actionDownload(){
-        $count=$error=$total=0;
-        /** @var Store[] $stores */
-        $stores = Store::find()->all();
-        $total=count($stores);
-        if($stores){
+        $success=$total=0;
+        while(1){
+            /** @var Store[] $stores */
+            $stores = Store::find()->joinWith("campaigns")->where("campaign.campaign_id is null")->limit(100)->all();
+            if(!$stores){
+                break;
+            }
+            $total+=count($stores);
             foreach($stores as $k=>&$store){
-                $flag=$this->doDownload($store);
-                if($flag){
-                    $count++;
-                }else{
-                    $error++;
-                }
+                unset($store->campaigns);
+                $flag=$this->doDownload($store) and $success++;
                 unset($store);
                 unset($stores[$k]);
             }
         }
         ConsoleHelper::t(json_encode([
             "total"=>$total,
-            "error"=>$error,
-            "count"=>$count,
+            "error"=>($total-$success),
+            "success"=>$success,
         ]));
     }
 
@@ -108,46 +98,40 @@ class StoreController extends Controller{
      * @param $id
      */
     public function actionDownloadOne($id){
-        $this->doDownload($id);
+        $this->doDownload($this->getStore($id));
     }
     protected function doDownload($store){
         $flag=false;
         $start=time();
         try{
             $execute=new StoreExecute($store);
-            $store2=$execute->getStore();
-            echo "store-download-".$store2->id."\r\n";
+            ConsoleHelper::t("store-download-".$store->id);
             $execute->download();
             $flag=true;
-            echo "success"."\r\n";
+            ConsoleHelper::t("success");
         }catch (\Exception $e){
-            isset($store2) and StoreError::log($store2,$e);
-            echo "error:".$e->getMessage()."\r\n";
+            StoreError::log($store,$e);
+            ConsoleHelper::t("error:".$e->getMessage());
         }
-        echo "time:".(time()-$start)."\r\n";
+        ConsoleHelper::t("time:".(time()-$start));
         return $flag;
     }
     public function actionRefresh(){
-        $count=$error=$total=0;
+        $success=$total=0;
         /** @var Store[] $stores */
         $stores = Store::find()->all();
         $total=count($stores);
         if($stores){
             foreach($stores as $k=>&$store){
-                $flag=$this->doRefresh($store);
-                if($flag){
-                    $count++;
-                }else{
-                    $error++;
-                }
+                $this->doRefresh($store) and $success++;
                 unset($store);
                 unset($stores[$k]);
             }
         }
         ConsoleHelper::t(json_encode([
             "total"=>$total,
-            "error"=>$error,
-            "count"=>$count,
+            "error"=>($total-$success),
+            "success"=>$success,
         ]));
     }
 
@@ -156,23 +140,22 @@ class StoreController extends Controller{
      * @param $id
      */
     public function actionRefreshOne($id){
-        $this->doRefresh($id);
+        $this->doRefresh($this->getStore($id));
     }
     protected function doRefresh($store){
         $flag=false;
         $start=time();
         try{
             $execute=new StoreExecute($store);
-            $store2=$execute->getStore();
-            echo "store-refresh-".$store2->id."\r\n";
+            ConsoleHelper::t("store-refresh-".$store->id);
             $execute->refresh();
             $flag=true;
-            echo "success"."\r\n";
+            ConsoleHelper::t("success");
         }catch (\Exception $e){
-            isset($store2) and StoreError::log($store2,$e);
-            echo "error:".$e->getMessage()."\r\n";
+            StoreError::log($store,$e);
+            ConsoleHelper::t("error:".$e->getMessage());
         }
-        echo "time:".(time()-$start)."\r\n";
+        ConsoleHelper::t("time:".(time()-$start));
         return $flag;
     }
 
@@ -194,5 +177,13 @@ class StoreController extends Controller{
             "total"=>$total,
             "success"=>$success,
         ]));
+    }
+
+    protected function getStore($id){
+        $store = Store::findOne($id);
+        if(!$store){
+            throw new Exception("store not found");
+        }
+        return $store;
     }
 }

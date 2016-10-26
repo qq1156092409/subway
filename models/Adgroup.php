@@ -109,9 +109,9 @@ class Adgroup extends \yii\db\ActiveRecord
         $response=TopClient::getInstance()->execute($req, $this->store->session);
         Keyword::deleteAll(["adgroup_id"=>$this->adgroup_id]);
 //        echo "<pre>";print_r($response);exit;
-        return $this->insertKeywords($response->keywords->keyword);
+        return self::insertKeywords($response->keywords->keyword);
     }
-    protected function insertKeywords($keywordObjs){
+    public static function insertKeywords($keywordObjs){
         $now=date("Y-m-d H:i:s");
         $columns=(new Keyword())->attributes();
         $rows=[];

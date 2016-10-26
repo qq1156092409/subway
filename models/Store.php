@@ -333,6 +333,9 @@ class Store extends \yii\db\ActiveRecord
         $report->nick=$this->nick;
         $report->api_time=date("Y-m-d H:i:s");
         $report->calculate();
-        return $report->save();
+        if(!$flag=$report->save()){
+            print_r($report->errors);exit;
+        }
+        return $flag;
     }
 }
