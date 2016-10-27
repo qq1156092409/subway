@@ -25,4 +25,7 @@ class TestController extends Controller {
         $pheanstalk = new Pheanstalk('120.25.240.36');
         echo $pheanstalk->useTube('subway-store-refresh')->put(time());
     }
+    public function actionLizd(){
+        echo "lizd";
+    }
 }
