@@ -289,10 +289,123 @@ class Adgroup extends \yii\db\ActiveRecord
      * 推广组报表
      */
     public function refreshBases(){
-
+        $count=0;
+        $req = new \SimbaRptAdgroupbaseGetRequest;
+        $req->setSubwayToken($this->store->authSign->subway_token);
+        $req->setNick($this->nick);
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $start=date("Y-m-d",strtotime("-30 day"));
+        /** @var AdgroupBase $exist */
+        $exist=AdgroupBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date==$yestoday){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
+        $pageNo=1;
+        $pageSize=100;
+        $req->setStartTime($start);
+        $req->setEndTime($yestoday);
+        $req->setPageSize("".$pageSize);
+//        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
+        $req->setAdgroupId("" . $this->adgroup_id);
+        $req->setCampaignId("" . $this->campaign_id);
+        $req->setSearchType("SEARCH");
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        while(true){
+            $req->setPageNo("".$pageNo);
+            $response=$client->execute($req,$this->store->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+= $this->insertAdgroupBases($response->rpt_adgroup_base_list);
+            if($count<$pageSize){
+                break;
+            }
+            $pageNo++;
+        }
+        return $count;
     }
-    public function refreshEffects(){
-
+    protected function insertAdgroupBases($bases){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new AdgroupBase())->attributes();
+        $count=0;
+        if($bases){
+            $rows=[];
+            foreach($bases as $base){
+                $temp=[];
+                $base=(array)$base;
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($base[$column])?$base[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+//            echo "<pre>";print_r($rows);exit;
+            $count+=Yii::$app->db->createCommand()->batchInsert(AdgroupBase::tableName(),$columns,$rows)->execute();
+        }
+        return $count;
+    }
+    public function refreshAdgroupEffects(){
+        $count=0;
+        $req = new \SimbaRptAdgroupeffectGetRequest;
+        $req->setSubwayToken($this->authSign->subway_token);
+        $req->setNick($this->nick);
+        $yestoday=date("Y-m-d",strtotime("-1 day"));
+        $start=date("Y-m-d",strtotime("-30 day"));
+        /** @var AdgroupEffect $exist */
+        $exist=AdgroupEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date==$yestoday){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
+        $pageNo=1;
+        $pageSize=100;
+        $req->setStartTime($start);
+        $req->setEndTime($yestoday);
+        $req->setPageSize("".$pageSize);
+        $req->setSource("SUMMARY");
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        while(true){
+            $req->setPageNo("".$pageNo);
+            $response=$client->execute($req,$this->session);
+//            echo "<pre>";print_r($response);exit;
+            $count+= $this->insertAdgroupEffects($response->rpt_adgroup_effect_list);
+            if($count<$pageSize){
+                break;
+            }
+        }
+        return $count;
+    }
+    protected function insertAdgroupEffects($effects){
+        $now=date("Y-m-d H:i:s");
+        $columns=(new AdgroupEffect())->attributes();
+        $count=0;
+        if($effects){
+            $rows=[];
+            foreach($effects as $effect){
+                $temp=[];
+                $effect=(array)$effect;
+                foreach($columns as $column){
+                    if($column=="api_time"){
+                        $temp[]=$now;
+                    }else{
+                        $temp[]=isset($effect[$column])?$effect[$column]:null;
+                    }
+                }
+                $rows[]=$temp;
+            }
+//            echo "<pre>";print_r($rows);exit;
+            $count+=Yii::$app->db->createCommand()->batchInsert(AdgroupEffect::tableName(),$columns,$rows)->execute();
+        }
+        return $count;
     }
     public function getRecommendKeywords(){
         $req = new \SimbaKeywordsRecommendGetRequest;

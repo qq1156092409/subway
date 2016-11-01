@@ -223,6 +223,7 @@ class Store extends \yii\db\ActiveRecord
             if($count<$pageSize){
                 break;
             }
+            $pageNo++;
         }
         return $count;
     }
