@@ -28,6 +28,7 @@ class StoreController extends Controller
                 $totalBase->cost+=$base->cost;
             }
         }
+        $totalBase->finishAttributes();
 
         return $this->renderPartial("store",[
             "store"=>$store,
