@@ -62,4 +62,13 @@ class CustBase extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
+
+    public function finishAttributes(){
+        $this->cpm=($this->impressions?$this->cost*1000/$this->impressions:0);
+        $this->cpc=($this->click?$this->cost/$this->click:0);
+        $this->ctr=($this->impressions?100*$this->click/$this->impressions:0);
+    }
+    public function getCostYuan(){
+        return $this->cost/100;
+    }
 }
