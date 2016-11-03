@@ -63,12 +63,31 @@ class CustBase extends \yii\db\ActiveRecord
         ];
     }
 
+    //--method
     public function finishAttributes(){
         $this->cpm=($this->impressions?$this->cost*1000/$this->impressions:0);
         $this->cpc=($this->click?$this->cost/$this->click:0);
-        $this->ctr=($this->impressions?100*$this->click/$this->impressions:0);
+        $this->ctr=round($this->impressions?100*$this->click/$this->impressions:0,2);
+        return $this;
     }
     public function getCostYuan(){
-        return $this->cost/100;
+        return round($this->cost/100,2);
+    }
+
+    public function getCpcYuan(){
+        return round($this->cpc/100,2);
+    }
+    //--static
+    public static function merge($bases){
+        $totalBase=new CustBase();
+        if($bases){
+            foreach($bases as $base){
+                $totalBase->impressions+=$base->impressions;
+                $totalBase->click+=$base->click;
+                $totalBase->aclick+=$base->aclick;
+                $totalBase->cost+=$base->cost;
+            }
+        }
+        return $totalBase->finishAttributes();
     }
 }

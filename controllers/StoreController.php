@@ -2,7 +2,6 @@
 
 namespace app\controllers;
 
-
 use app\models\CustBase;
 use app\models\CustEffect;
 use app\models\Store;
@@ -20,21 +19,15 @@ class StoreController extends Controller
         $effects=CustEffect::find()->where([
             "nick"=>$store->nick,
         ])->andWhere("date>='{$start}'")->all();
-        $totalBase=new CustBase();
-        if($bases){
-            foreach($bases as $base){
-                $totalBase->impressions+=$base->impressions;
-                $totalBase->click+=$base->click;
-                $totalBase->cost+=$base->cost;
-            }
-        }
-        $totalBase->finishAttributes();
+        $totalBase = CustBase::merge($bases);
+        $totalEffect = CustEffect::merge($effects);
 
         return $this->renderPartial("store",[
             "store"=>$store,
             "bases"=>$bases,
             "effects"=>$effects,
             "totalBase"=>$totalBase,
+            "totalEffect"=>$totalEffect,
         ]);
     }
     protected function getStore($id,$nick){

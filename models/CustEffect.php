@@ -66,4 +66,33 @@ class CustEffect extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
+
+    //--method
+    public function getPayTotalYuan(){
+        return round(($this->directpay + $this->indirectpay)/100, 2);
+    }
+    public function getFavTotal(){
+        return $this->favitemcount+$this->favshopcount;
+    }
+    public function getPayCountTotal(){
+        return $this->indirectpaycount+$this->directpaycount;
+    }
+    //--static
+    public static function merge($effects){
+        $total=new self();
+        if($effects){
+            foreach($effects as $effect){
+                $total->indirectpay+=$effect->indirectpay;
+                $total->favshopcount+=$effect->favshopcount;
+                $total->favitemcount+=$effect->favitemcount;
+                $total->indirectpaycount+=$effect->indirectpaycount;
+                $total->indirectcarttotal+=$effect->indirectcarttotal;
+                $total->carttotal+=$effect->carttotal;
+                $total->directcarttotal+=$effect->directcarttotal;
+                $total->directpay+=$effect->directpay;
+                $total->directpaycount+=$effect->directpaycount;
+            }
+        }
+        return $total;
+    }
 }

@@ -47,6 +47,9 @@ $config = [
             ],
         ],
         */
+        'jsManager'=>[
+            "class"=>'\app\extensions\custom\yii\JsManager',
+        ],
     ],
     'params' => $params,
 ];

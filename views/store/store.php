@@ -1,10 +1,15 @@
 <?php
 use \yii\helpers\Url;
 use yii\web\View;
+use \app\extensions\custom\yii\JsManager;
+use yii\helpers\Json;
 
 /**
  * @var $this View
  */
+JsManager::instance()->register("js/yii.store.js");
+
+$this->beginPage();
 ?>
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -17,21 +22,18 @@ use yii\web\View;
     <link rel="stylesheet" href="<?= Url::to("origin/css/theme.css") ?>">
     <link rel="stylesheet" href="<?= Url::to("origin/css/font.css") ?>">
     <link id="systheme" rel="stylesheet" href="<?= Url::to("origin/css/quickLayout.css") ?>">
+    <?php $this->head()?>
 </head>
 
 <body id="web_home" class="">
-
-<input id="systhemes" type="hidden" value="dark_blue">
-<input id="shop_id" type="hidden" value="128357319">
-<input id="nick" type="hidden" value="789linjie">
+<?php $this->beginBody();?>
+<input id="nick" type="hidden" value="<?=$store->nick?>">
 <section id="main_content">
 
     <header>
 
         <div class="bg_layer"></div>
         <!--顶部横条 start-->
-
-
         <div class="auto tc hide" id="top_user_info">
             <div class="r" id="hide_user_info">
                 <!--<a href="javascript:;" id="close_user_info" >下次再填<strong><i class="icon iconfont">&#xe614;</i></strong></a>-->
@@ -96,7 +98,7 @@ use yii\web\View;
                 </li>
                 <li class="poptip">
                     <a href="javascript:;">
-                        <i class="iconfont"></i><span id="a_nick">789linjie</span><i class="iconfont animaite"></i>
+                        <i class="iconfont"></i><span id="a_nick"><?=$store->nick?></span><i class="iconfont animaite"></i>
                     </a>
                     <ul class="popcontent animate ">
                         <li><a href="http://w01.ztcjl.com/web/user_config" target="_blank">设置代理</a></li>
@@ -310,18 +312,18 @@ use yii\web\View;
                             <td>展现量　</td>
                             <td>点击量　</td>
                             <td>点击率　</td>
-                            <td>PPC&nbsp;<i class="iconfont f14" data-toggle="tooltip" data-placement="top"
+                            <td>PPC <i class="iconfont f14" data-toggle="tooltip" data-placement="top"
                                             data-trigger="hover" title="" data-original-title="平均点击花费"></i>　
                             </td>
                             <td>购物车总数</td>
                         </tr>
                         <tr class="data">
-                            <td class="b">￥<?=$totalBase->cost/100?></td>
+                            <td class="b">￥<?=$totalBase->costYuan?></td>
                             <td><?=$totalBase->impressions?></td>
                             <td><?=$totalBase->click?></td>
-                            <td>5.45%</td>
-                            <td>0.52</td>
-                            <td>1652</td>
+                            <td><?=$totalBase->ctr?>%</td>
+                            <td><?=$totalBase->cpcYuan?></td>
+                            <td><?=$totalEffect->carttotal?></td>
                         </tr>
                         <tr>
                             <td>成交额</td>
@@ -335,481 +337,45 @@ use yii\web\View;
                             </td>
                         </tr>
                         <tr class="data">
-                            <td class="b"><span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""
-                                                data-original-title="直接成交金额: 12634.42&lt;br&gt;&lt;/span&gt;间接成交金额: 4411.39">￥<span
-                                        class="pay">17045.81</span></span></td>
-                            <td><span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""
-                                      data-original-title="店铺收藏数: 194&lt;br&gt;&lt;/span&gt;宝贝收藏数: 1950">
-      2144
-      </span></td>
-                            <td><span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""
-                                      data-original-title="直接成交笔数: 210&lt;br&gt;&lt;/span&gt;间接成交笔数: 83">293</span></td>
-                            <td>1.17%</td>
-                            <td>1.31</td>
-                            <td>58.18</td>
+                            <td class="b">
+                                <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title="">
+                                    ￥<span class="pay"><?=$totalEffect->payTotalYuan?></span>
+                                </span>
+                            </td>
+                            <td>
+                                <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->favTotal?></span>
+                            </td>
+                            <td>
+                                <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->payCountTotal?></span>
+                            </td>
+                            <td><?=round($totalEffect->payCountTotal*100/$totalBase->click,2)?>%</td>
+                            <td><?=round($totalEffect->payTotalYuan/$totalBase->costYuan,2)?></td>
+                            <td><?=round($totalEffect->payTotalYuan/$totalEffect->payCountTotal,2)?></td>
                         </tr>
                         </tbody>
                     </table>
 
                     <div id="account_char" class="pct100" data-highcharts-chart="0">
-                        <div class="highcharts-container" id="highcharts-0"
-                             style="position: relative; overflow: hidden; width: 1551px; height: 277px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
-                            <svg version="1.1"
-                                 style="font-family:&quot;Lucida Grande&quot;, &quot;Lucida Sans Unicode&quot;, Arial, Helvetica, sans-serif;font-size:12px;"
-                                 xmlns="http://www.w3.org/2000/svg" width="1551" height="277">
-                                <desc>Created with Highcharts 4.1.8</desc>
-                                <defs>
-                                    <clippath id="highcharts-1">
-                                        <rect x="0" y="0" width="1474" height="143"></rect>
-                                    </clippath>
-                                </defs>
-                                <rect x="0" y="0" width="1551" height="277" strokeWidth="0" fill="#FFFFFF"
-                                      class=" highcharts-background"></rect>
-                                <g class="highcharts-grid" zIndex="1">
-                                    <path fill="none" d="M 101.5 10 L 101.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 285.5 10 L 285.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 470.5 10 L 470.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 654.5 10 L 654.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 838.5 10 L 838.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 1022.5 10 L 1022.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 1207.5 10 L 1207.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 1391.5 10 L 1391.5 153" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                </g>
-                                <g class="highcharts-grid" zIndex="1"></g>
-                                <g class="highcharts-grid" zIndex="1"></g>
-                                <g class="highcharts-grid" zIndex="1"></g>
-                                <g class="highcharts-grid" zIndex="1">
-                                    <path fill="none" d="M 10 153.5 L 1484 153.5" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 10 82.5 L 1484 82.5" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                    <path fill="none" d="M 10 9.5 L 1484 9.5" stroke="#ddd" stroke-width="1"
-                                          stroke-dasharray="4,3" zIndex="1" opacity="1"></path>
-                                </g>
-                                <g class="highcharts-grid" zIndex="1"></g>
-                                <g class="highcharts-grid" zIndex="1"></g>
-                                <g class="highcharts-axis" zIndex="2">
-                                    <path fill="none" d="M 101.5 173 L 101.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 285.5 173 L 285.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 470.5 173 L 470.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 654.5 173 L 654.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 838.5 173 L 838.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 1022.5 173 L 1022.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 1207.5 173 L 1207.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 1391.5 173 L 1391.5 163" stroke="#C0D0E0" stroke-width="1"
-                                          opacity="1"></path>
-                                    <path fill="none" d="M 10 173.5 L 1484 173.5" stroke="#C0D0E0" stroke-width="1"
-                                          zIndex="7" visibility="visible"></path>
-                                </g>
-                                <g class="highcharts-axis" zIndex="2"></g>
-                                <g class="highcharts-axis" zIndex="2"></g>
-                                <g class="highcharts-axis" zIndex="2"></g>
-                                <g class="highcharts-axis" zIndex="2"></g>
-                                <g class="highcharts-axis" zIndex="2"></g>
-                                <g class="highcharts-axis" zIndex="2"></g>
-                                <g class="highcharts-series-group" zIndex="3">
-                                    <path fill="rgba(253,91,120,0.25)"
-                                          d="M 470.625 59.434375 C 483.945 59.434375 483.945 79.434375 470.625 79.434375 C 457.305 79.434375 457.305 59.434375 470.625 59.434375 Z"></path>
-                                    <path fill="rgba(30,144,255,0.25)" d="M 0 0"></path>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#426ab3" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#87CEFA" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#06B9D1" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#005687" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="visible" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none"
-                                              d="M 92.125 84.733935 C 92.125 84.733935 202.675 84.73179 276.375 84.73179 C 350.075 84.73179 386.925 84.73214750000001 460.625 84.73214750000001 C 534.325 84.73214750000001 571.175 79.29779 644.875 78.8069425 C 718.575 78.316095 755.425 78.8069425 829.125 78.316095 C 902.825 77.8252475 939.675 78.316095 1013.375 73.76512 C 1087.075 69.21414499999999 1123.925 49.67391000000001 1197.625 49.67391000000001 C 1271.325 49.67391000000001 1381.875 77.7980775 1381.875 77.7980775"
-                                              stroke="#1E90FF" stroke-width="2" zIndex="1" stroke-linejoin="round"
-                                              stroke-linecap="round"></path>
-                                        <path fill="none"
-                                              d="M 82.125 84.733935 L 92.125 84.733935 C 92.125 84.733935 202.675 84.73179 276.375 84.73179 C 350.075 84.73179 386.925 84.73214750000001 460.625 84.73214750000001 C 534.325 84.73214750000001 571.175 79.29779 644.875 78.8069425 C 718.575 78.316095 755.425 78.8069425 829.125 78.316095 C 902.825 77.8252475 939.675 78.316095 1013.375 73.76512 C 1087.075 69.21414499999999 1123.925 49.67391000000001 1197.625 49.67391000000001 C 1271.325 49.67391000000001 1381.875 77.7980775 1381.875 77.7980775 L 1391.875 77.7980775"
-                                              stroke-linejoin="round" visibility="visible"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)" style="">
-                                        <path fill="#1E90FF"
-                                              d="M 1378 74.7980775 L 1384 74.7980775 1381 80.7980775 Z"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 1194 46.67391000000001 L 1200 46.67391000000001 1197 52.67391000000001 Z"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 1010.375 70.76512 L 1016.375 70.76512 1013.375 76.76512 Z"
-                                              stroke-width="1"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 826.125 75.316095 L 832.125 75.316095 829.125 81.316095 Z"
-                                              stroke-width="1"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 641 75.8069425 L 647 75.8069425 644 81.8069425 Z"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 457 81.73214750000001 L 463 81.73214750000001 460 87.73214750000001 Z"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 273.375 81.73179 L 279.375 81.73179 276.375 87.73179 Z"
-                                              stroke-width="1"></path>
-                                        <path fill="#1E90FF"
-                                              d="M 89.125 81.733935 L 95.125 81.733935 92.125 87.733935 Z"
-                                              stroke-width="1"></path>
-                                    </g>
-                                    <g class="highcharts-series" visibility="visible" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none"
-                                              d="M 92.125 47.704085000000006 C 92.125 47.704085000000006 202.675 80.6377 276.375 80.6377 C 350.075 80.6377 386.925 59.434375 460.625 59.434375 C 534.325 59.434375 571.175 62.40663 644.875 63.5492 C 718.575 64.69177 755.425 65.147225 829.125 65.147225 C 902.825 65.147225 939.675 10.167657500000018 1013.375 10.167657500000018 C 1087.075 10.167657500000018 1123.925 56.17826500000001 1197.625 64.97205000000001 C 1271.325 73.76583500000001 1381.875 73.76583500000001 1381.875 73.76583500000001"
-                                              stroke="#FD5B78" stroke-width="3" zIndex="1" stroke-linejoin="round"
-                                              stroke-linecap="round"></path>
-                                        <path fill="none"
-                                              d="M 82.125 47.704085000000006 L 92.125 47.704085000000006 C 92.125 47.704085000000006 202.675 80.6377 276.375 80.6377 C 350.075 80.6377 386.925 59.434375 460.625 59.434375 C 534.325 59.434375 571.175 62.40663 644.875 63.5492 C 718.575 64.69177 755.425 65.147225 829.125 65.147225 C 902.825 65.147225 939.675 10.167657500000018 1013.375 10.167657500000018 C 1087.075 10.167657500000018 1123.925 56.17826500000001 1197.625 64.97205000000001 C 1271.325 73.76583500000001 1381.875 73.76583500000001 1381.875 73.76583500000001 L 1391.875 73.76583500000001"
-                                              stroke-linejoin="round" visibility="visible"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="visible" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)" style="">
-                                        <path fill="#FD5B78"
-                                              d="M 1381 70.76583500000001 C 1384.996 70.76583500000001 1384.996 76.76583500000001 1381 76.76583500000001 C 1377.004 76.76583500000001 1377.004 70.76583500000001 1381 70.76583500000001 Z"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 1197 61.97205000000001 C 1200.996 61.97205000000001 1200.996 67.97205000000001 1197 67.97205000000001 C 1193.004 67.97205000000001 1193.004 61.97205000000001 1197 61.97205000000001 Z"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 1013 7.1676575000000184 C 1016.996 7.1676575000000184 1016.996 13.167657500000018 1013 13.167657500000018 C 1009.004 13.167657500000018 1009.004 7.1676575000000184 1013 7.1676575000000184 Z"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 829.125 62.147225000000006 C 833.121 62.147225000000006 833.121 68.147225 829.125 68.147225 C 825.129 68.147225 825.129 62.147225000000006 829.125 62.147225000000006 Z"
-                                              stroke-width="1"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 644.875 60.5492 C 648.871 60.5492 648.871 66.5492 644.875 66.5492 C 640.879 66.5492 640.879 60.5492 644.875 60.5492 Z"
-                                              stroke-width="1"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 460.625 54.434375 C 467.285 54.434375 467.285 64.434375 460.625 64.434375 C 453.965 64.434375 453.965 54.434375 460.625 54.434375 Z"
-                                              stroke="#FFFFFF" stroke-width="1"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 276 77.6377 C 279.996 77.6377 279.996 83.6377 276 83.6377 C 272.004 83.6377 272.004 77.6377 276 77.6377 Z"></path>
-                                        <path fill="#FD5B78"
-                                              d="M 92 44.704085000000006 C 95.996 44.704085000000006 95.996 50.704085000000006 92 50.704085000000006 C 88.004 50.704085000000006 88.004 44.704085000000006 92 44.704085000000006 Z"></path>
-                                    </g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#FF84BA" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#f3715c" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#FF0090" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#BF0A10" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                    <g class="highcharts-series" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-1)">
-                                        <path fill="none" d="M 0 0" stroke="#663399" stroke-width="2" zIndex="1"
-                                              stroke-linejoin="round" stroke-linecap="round"></path>
-                                        <path fill="none" d="M 0 0" stroke-linejoin="round" visibility="hidden"
-                                              stroke="rgba(192,192,192,0.0001)" stroke-width="22" zIndex="2"
-                                              class=" highcharts-tracker" style=""></path>
-                                    </g>
-                                    <g class="highcharts-markers highcharts-tracker" visibility="hidden" zIndex="0.1"
-                                       transform="translate(10,10) scale(1 1)" clip-path="url(#highcharts-2)"
-                                       style=""></g>
-                                </g>
-                                <g class="highcharts-legend" zIndex="7" transform="translate(429,233)">
-                                    <rect x="0" y="0" width="693" height="29" strokeWidth="0" fill="#FFFFFF"
-                                          visibility="visible"></rect>
-                                    <g zIndex="1">
-                                        <g>
-                                            <g class="highcharts-legend-item" zIndex="1" transform="translate(8,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC"
-                                                      d="M 1.5 8 C 5.496 8 5.496 14 1.5 14 C -2.496 14 -2.496 8 1.5 8 Z"></path>
-                                                <text x="8"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2" y="15">展现量
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1" transform="translate(72,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M 1.5 8 L 4.5 11 1.5 14 -1.5 11 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">点击量
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1" transform="translate(136,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M -1.5 8 L 4.5 8 4.5 14 -1.5 14 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">PPC
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(185.5625,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M 1.5 8 L 4.5 14 -1.5 14 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">点击率
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(249.5625,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#1E90FF"
-                                                      stroke-width="2"></path>
-                                                <path fill="#1E90FF" d="M -1.5 8 L 4.5 8 1.5 14 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#333333;font-size:12px;font-weight:normal;cursor:pointer;fill:#333333;"
-                                                      text-anchor="start" zIndex="2">总花费
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(313.5625,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#FD5B78"
-                                                      stroke-width="2"></path>
-                                                <path fill="#FD5B78"
-                                                      d="M 1.5 8 C 5.496 8 5.496 14 1.5 14 C -2.496 14 -2.496 8 1.5 8 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#333333;font-size:12px;font-weight:normal;cursor:pointer;fill:#333333;"
-                                                      text-anchor="start" zIndex="2">成交额
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(377.5625,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M 1.5 8 L 4.5 11 1.5 14 -1.5 11 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">成交量
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(441.5625,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M -1.5 8 L 4.5 8 4.5 14 -1.5 14 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">收藏量
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(505.5625,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M 1.5 8 L 4.5 14 -1.5 14 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">ROI
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(553.921875,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC" d="M -1.5 8 L 4.5 8 1.5 14 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">转化率
-                                                </text>
-                                            </g>
-                                            <g class="highcharts-legend-item" zIndex="1"
-                                               transform="translate(617.921875,3)">
-                                                <path fill="none" d="M 0 11 L 3 11" stroke="#CCC"
-                                                      stroke-width="2"></path>
-                                                <path fill="#CCC"
-                                                      d="M 1.5 8 C 5.496 8 5.496 14 1.5 14 C -2.496 14 -2.496 8 1.5 8 Z"></path>
-                                                <text x="8" y="15"
-                                                      style="color:#CCC;font-size:12px;font-weight:normal;cursor:pointer;fill:#CCC;"
-                                                      text-anchor="start" zIndex="2">购物车总数
-                                                </text>
-                                            </g>
-                                        </g>
-                                    </g>
-                                </g>
-                                <g class="highcharts-axis-labels highcharts-xaxis-labels" zIndex="7">
-                                    <text x="100.125"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 100.125 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-05</tspan>
-                                    </text>
-                                    <text x="284.375"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 284.375 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-06</tspan>
-                                    </text>
-                                    <text x="468.625"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 468.625 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-07</tspan>
-                                    </text>
-                                    <text x="652.875"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 652.875 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-08</tspan>
-                                    </text>
-                                    <text x="837.125"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 837.125 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-09</tspan>
-                                    </text>
-                                    <text x="1021.375"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 1021.375 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-10</tspan>
-                                    </text>
-                                    <text x="1205.625"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 1205.625 191)" y="191"
-                                          opacity="1">
-                                        <tspan>10-11</tspan>
-                                    </text>
-                                    <text x="1389.875"
-                                          style="color:#606060;cursor:default;font-size:11px;fill:#606060;width:277px;text-overflow:ellipsis;"
-                                          text-anchor="start" transform="translate(0,0) rotate(30 1389.875 191)" y="191"
-                                          opacity="1">
-                                        <tspan>实时数据</tspan>
-                                    </text>
-                                </g>
-                                <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g>
-                                <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g>
-                                <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g>
-                                <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7">
-                                    <text x="1499"
-                                          style="color:#1E90FF;cursor:default;font-size:11px;fill:#1E90FF;width:502px;text-overflow:clip;"
-                                          text-anchor="start" transform="translate(0,0)" y="156" opacity="1">0元
-                                    </text>
-                                    <text x="1499"
-                                          style="color:#1E90FF;cursor:default;font-size:11px;fill:#1E90FF;width:502px;text-overflow:clip;"
-                                          text-anchor="start" transform="translate(0,0)" y="85" opacity="1">2000元
-                                    </text>
-                                    <text x="1499"
-                                          style="color:#1E90FF;cursor:default;font-size:11px;fill:#1E90FF;width:502px;text-overflow:clip;"
-                                          text-anchor="start" transform="translate(0,0)" y="13" opacity="1">4000元
-                                    </text>
-                                </g>
-                                <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g>
-                                <g class="highcharts-axis-labels highcharts-yaxis-labels" zIndex="7"></g>
-                                <g class="highcharts-tooltip" zIndex="8"
-                                   style="cursor:default;padding:0;white-space:nowrap;" transform="translate(412,85)"
-                                   opacity="1" visibility="visible">
-                                    <path fill="none"
-                                          d="M 3.5 0.5 L 52.5 0.5 58.5 -5.5 64.5 0.5 114 0.5 C 117.5 0.5 117.5 0.5 117.5 3.5 L 117.5 61.5 C 117.5 64.5 117.5 64.5 114.5 64.5 L 3.5 64.5 C 0.5 64.5 0.5 64.5 0.5 61.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                          isShadow="true" stroke="black" stroke-opacity="0.049999999999999996"
-                                          stroke-width="5" transform="translate(1, 1)" width="117" height="64"></path>
-                                    <path fill="none"
-                                          d="M 3.5 0.5 L 52.5 0.5 58.5 -5.5 64.5 0.5 114 0.5 C 117.5 0.5 117.5 0.5 117.5 3.5 L 117.5 61.5 C 117.5 64.5 117.5 64.5 114.5 64.5 L 3.5 64.5 C 0.5 64.5 0.5 64.5 0.5 61.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                          isShadow="true" stroke="black" stroke-opacity="0.09999999999999999"
-                                          stroke-width="3" transform="translate(1, 1)" width="117" height="64"></path>
-                                    <path fill="none"
-                                          d="M 3.5 0.5 L 52.5 0.5 58.5 -5.5 64.5 0.5 114 0.5 C 117.5 0.5 117.5 0.5 117.5 3.5 L 117.5 61.5 C 117.5 64.5 117.5 64.5 114.5 64.5 L 3.5 64.5 C 0.5 64.5 0.5 64.5 0.5 61.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                          isShadow="true" stroke="black" stroke-opacity="0.15" stroke-width="1"
-                                          transform="translate(1, 1)" width="117" height="64"></path>
-                                    <path fill="rgba(249, 249, 249, .85)"
-                                          d="M 3.5 0.5 L 52.5 0.5 58.5 -5.5 64.5 0.5 114 0.5 C 117.5 0.5 117.5 0.5 117.5 3.5 L 117.5 61.5 C 117.5 64.5 117.5 64.5 114.5 64.5 L 3.5 64.5 C 0.5 64.5 0.5 64.5 0.5 61.5 L 0.5 3.5 C 0.5 0.5 0.5 0.5 3.5 0.5"
-                                          stroke="#FD5B78" stroke-width="1"></path>
-                                    <text x="8" zIndex="1" style="font-size:12px;color:#333333;fill:#333333;" y="20">
-                                        <tspan>10-07日</tspan>
-                                        <tspan x="8" dy="15">总花费 1629.87元</tspan>
-                                        <tspan x="8" dy="15">成交额 2337.5元</tspan>
-                                    </text>
-                                </g>
-                                <text x="1541" text-anchor="end" zIndex="8"
-                                      style="cursor:pointer;color:#909090;font-size:9px;fill:#909090;" y="272"></text>
-                            </svg>
-                        </div>
+                        <script>
+                            var option={
+                                title: {
+                                    text: 'ECharts 入门示例'
+                                },
+                                tooltip: {},
+                                legend: {
+                                    data:['销量']
+                                },
+                                xAxis: {
+                                    data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                                },
+                                yAxis: {},
+                                series: [{
+                                    name: '销量',
+                                    type: 'bar',
+                                    data: [5, 20, 36, 10, 10, 20]
+                                }]
+                            };
+                        </script>
                     </div>
                 </div>
             </article>
@@ -2618,5 +2184,7 @@ use yii\web\View;
         </div>
     </div>
 </div>
+<?php $this->endBody()?>
 </body>
 </html>
+<?php $this->endPage()?>
