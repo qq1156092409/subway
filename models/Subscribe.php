@@ -49,6 +49,17 @@ class Subscribe extends \yii\db\ActiveRecord
     }
 
     //--get
+    public function getDeadlineLeft(){
+        $end=strtotime($this->deadline);
+        $left=($end-time())/(24*3600);
+        if($left>=1){
+            return (int)$left;
+        }elseif($left<0){
+            return 0;
+        }else{
+            return round($left,2);
+        }
+    }
     /**
      * 是否过期
      * @return bool

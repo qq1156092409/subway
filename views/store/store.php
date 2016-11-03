@@ -348,9 +348,9 @@ $this->beginPage();
                             <td>
                                 <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->payCountTotal?></span>
                             </td>
-                            <td><?=round($totalEffect->payCountTotal*100/$totalBase->click,2)?>%</td>
-                            <td><?=round($totalEffect->payTotalYuan/$totalBase->costYuan,2)?></td>
-                            <td><?=round($totalEffect->payTotalYuan/$totalEffect->payCountTotal,2)?></td>
+                            <td><?=round($totalBase->click?$totalEffect->payCountTotal*100/$totalBase->click:0,2)?>%</td>
+                            <td><?=round($totalBase->costYuan?$totalEffect->payTotalYuan/$totalBase->costYuan:0,2)?></td>
+                            <td><?=round($totalEffect->payCountTotal?$totalEffect->payTotalYuan/$totalEffect->payCountTotal:0,2)?></td>
                         </tr>
                         </tbody>
                     </table>
@@ -394,14 +394,14 @@ $this->beginPage();
                                 <span class="msg"><?=$store->subscribe->item_code?></span>
                             </li>
                             <li>
-                                <span class="title">剩余时间</span> 
-                                <span class="msg">14天</span>
+                                <span class="title">剩余时间</span>
+                                <span class="msg"><?=$store->subscribe->deadlineLeft?>天</span>
                                 <a class="btn btn-sm btn-primary r" href="http://w01.ztcjl.com/web/upgrade_suggest/"
                                    target="_blank">续订优惠</a>
                             </li>
                             <li>
                                 <span class="title">账户余额</span> 
-                                <span class="msg">995.77元</span>
+                                <span class="msg"><?=$store->balance->balanceYuan?>元</span>
                                 <button class="btn btn-primary btn-sm" id="btn_recharge">立即充值</button>
                             </li>
                             <li>
@@ -410,8 +410,6 @@ $this->beginPage();
 
                                 <button class="btn btn-sm btn-primary" id="sign_point"><i class="iconfont mr5"></i>签 &nbsp; 到
                                 </button>
-
-
                             </li>
                         </ul>
                     </div>

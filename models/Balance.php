@@ -52,4 +52,9 @@ class Balance extends \yii\db\ActiveRecord
     }
 
     //--refresh data
+
+    //--get
+    public function getBalanceYuan(){
+        return $this->balance/100;
+    }
 }
