@@ -5,33 +5,34 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "adgroup_effect".
+ * This is the model class for table "creative_effect".
  *
- * @property string $adgroupId
+ * @property string $creativeId
  * @property string $date
- * @property string $source
+ * @property integer $source
  * @property integer $indirectpay
- * @property integer $favItemCount
- * @property integer $campaignId
+ * @property integer $favShopCount
+ * @property string $adgroupId
  * @property integer $searchtype
+ * @property integer $favItemCount
  * @property integer $indirectpaycount
  * @property integer $indirectcarttotal
  * @property string $nick
- * @property integer $favShopCount
  * @property integer $carttotal
  * @property integer $directcarttotal
  * @property integer $directpay
+ * @property integer $campaignId
  * @property integer $directpaycount
  * @property string $api_time
  */
-class AdgroupEffect extends \yii\db\ActiveRecord
+class CreativeEffect extends \yii\db\ActiveRecord
 {
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
-        return 'adgroup_effect';
+        return 'creative_effect';
     }
 
     /**
@@ -40,10 +41,9 @@ class AdgroupEffect extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['adgroupId', 'date', 'source'], 'required'],
-            [['adgroupId', 'indirectpay', 'favItemCount', 'campaignId', 'searchtype', 'indirectpaycount', 'indirectcarttotal', 'favShopCount', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
+            [['creativeId', 'date', 'source'], 'required'],
+            [['creativeId', 'source', 'indirectpay', 'favShopCount', 'adgroupId', 'searchtype', 'favItemCount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'campaignId', 'directpaycount'], 'integer'],
             [['date', 'api_time'], 'safe'],
-            [['source'], 'string', 'max' => 16],
             [['nick'], 'string', 'max' => 64],
         ];
     }
@@ -54,20 +54,21 @@ class AdgroupEffect extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'adgroupId' => 'Adgroup ID',
+            'creativeId' => 'Creative ID',
             'date' => 'Date',
             'source' => 'Source',
             'indirectpay' => 'Indirectpay',
-            'favItemCount' => 'Fav Item Count',
-            'campaignId' => 'Campaign ID',
+            'favShopCount' => 'Fav Shop Count',
+            'adgroupId' => 'Adgroup ID',
             'searchtype' => 'Searchtype',
+            'favItemCount' => 'Fav Item Count',
             'indirectpaycount' => 'Indirectpaycount',
             'indirectcarttotal' => 'Indirectcarttotal',
             'nick' => 'Nick',
-            'favShopCount' => 'Fav Shop Count',
             'carttotal' => 'Carttotal',
             'directcarttotal' => 'Directcarttotal',
             'directpay' => 'Directpay',
+            'campaignId' => 'Campaign ID',
             'directpaycount' => 'Directpaycount',
             'api_time' => 'Api Time',
         ];

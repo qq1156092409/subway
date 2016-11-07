@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\extensions\custom\taobao\TopClient;
+use app\models\multiple\GlobalModel;
 use Yii;
 use yii\helpers\ArrayHelper;
 
@@ -233,7 +234,6 @@ class Adgroup extends \yii\db\ActiveRecord
      * todo
      */
     public function refreshKeywordEffects(){
-//        throw new \Exception("未实现");
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-7 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
@@ -243,7 +243,8 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setAdgroupId("".$this->adgroup_id);
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
-        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
+//        $req->setSource("SUMMARY");
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setPageSize("500");
         $req->setSearchType("SEARCH");
@@ -251,17 +252,18 @@ class Adgroup extends \yii\db\ActiveRecord
         $count=0;
         $client= clone TopClient::getInstance();
         $client->format="json";
-//        KeywordEffect::deleteAll(["adgroupid"=>$this->adgroup_id,"date"=>$yestoday]);
+        KeywordEffect::deleteAll(["adgroupid"=>$this->adgroup_id]);
         while(true){
             $req->setPageNo("" . $pageNo);
             $response = $client->execute($req, $this->store->session);
-            echo "<pre>";print_r($response);exit;
+//            echo "<pre>";print_r($response);exit;
             $count+=$this->insertKeywordEffects($response->rpt_adgroupkeyword_effect_list);
-            if(count($response->rpt_adgroupkeyword_base_list)<500){
+            if(count($response->rpt_adgroupkeyword_effect_list)<500){
                 break;
             }
             $pageNo++;
         }
+        return $count;
     }
     protected function insertKeywordEffects($keywordEffects){
         $now=date("Y-m-d H:i:s");
@@ -288,7 +290,7 @@ class Adgroup extends \yii\db\ActiveRecord
     /**
      * 推广组报表
      */
-    public function refreshBases(){
+    public function refreshAdgroupBases(){
         $count=0;
         $req = new \SimbaRptAdgroupbaseGetRequest;
         $req->setSubwayToken($this->store->authSign->subway_token);
@@ -296,7 +298,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
         /** @var AdgroupBase $exist */
-        $exist=AdgroupBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=AdgroupBase::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
@@ -352,35 +354,43 @@ class Adgroup extends \yii\db\ActiveRecord
     }
     public function refreshAdgroupEffects(){
         $count=0;
-        $req = new \SimbaRptAdgroupeffectGetRequest;
-        $req->setSubwayToken($this->authSign->subway_token);
+        $req = new \SimbaRptAdgroupEffectGetRequest();
+        $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
-        /** @var AdgroupEffect $exist */
-        $exist=AdgroupEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        /** @var AdgroupBase $exist */
+        $exist=AdgroupEffect::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
             }
             $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+            if($start>$yestoday){
+                return $count;
+            }
         }
         $pageNo=1;
         $pageSize=100;
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-        $req->setSource("SUMMARY");
+//        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
+        $req->setAdgroupId("" . $this->adgroup_id);
+        $req->setCampaignId("" . $this->campaign_id);
+        $req->setSearchType("SEARCH");
         $client=clone TopClient::getInstance();
         $client->format="json";
         while(true){
             $req->setPageNo("".$pageNo);
-            $response=$client->execute($req,$this->session);
+            $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
             $count+= $this->insertAdgroupEffects($response->rpt_adgroup_effect_list);
             if($count<$pageSize){
                 break;
             }
+            $pageNo++;
         }
         return $count;
     }
@@ -423,5 +433,82 @@ class Adgroup extends \yii\db\ActiveRecord
             }
         }
         return $ret;
+    }
+    public function refreshCreativeBase(){
+        $count=0;
+        $pageNo=1;
+        $pageSize=500;
+        $start=date("Y-m-d",strtotime("-30 day"));
+        $end=date("Y-m-d",strtotime("-1 day"));
+        /** @var CreativeBase $exist */
+        $exist=CreativeBase::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            $start = date("Y-m-d", strtotime("+1 day", strtotime($exist->date)));
+            if($start>$end){
+                return $count;
+            }
+        }
+        $req = new \SimbaRptAdgroupcreativebaseGetRequest;
+        $req->setSubwayToken($this->store->authSign->subway_token);
+        $req->setNick($this->nick);
+        $req->setStartTime($start);
+        $req->setEndTime($end);
+        $req->setCampaignId("".$this->campaign_id);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $req->setSource("1,2,4,5");
+//        $req->setSource("SUMMARY");
+        $req->setPageSize("".$pageSize);
+        $req->setSearchType("SEARCH");
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        while(1){
+            $req->setPageNo("".$pageNo);
+            $resp = $client->execute($req, $this->store->session);
+            $count+=GlobalModel::batchInsert(CreativeBase::className(),$resp->rpt_adgroupcreative_base_list);
+            if(count($resp->rpt_adgroupcreative_base_list)<$pageSize){
+                break;
+            }
+            $pageNo++;
+        }
+        return $count;
+    }
+    public function refreshCreativeEffect(){
+        $count=0;
+        $pageNo=1;
+        $pageSize=500;
+        $start=date("Y-m-d",strtotime("-30 day"));
+        $end=date("Y-m-d",strtotime("-1 day"));
+        /** @var CreativeEffect $exist */
+        $exist=CreativeEffect::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            $start = date("Y-m-d", strtotime("+1 day", strtotime($exist->date)));
+            if($start>$end){
+                return $count;
+            }
+        }
+        $req = new \SimbaRptAdgroupcreativeeffectGetRequest;
+        $req->setSubwayToken($this->store->authSign->subway_token);
+        $req->setNick($this->nick);
+        $req->setStartTime($start);
+        $req->setEndTime($end);
+        $req->setCampaignId("".$this->campaign_id);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $req->setSource("1,2,4,5");
+//        $req->setSource("SUMMARY");
+        $req->setPageSize("".$pageSize);
+        $req->setSearchType("SEARCH");
+        $client=clone TopClient::getInstance();
+        $client->format="json";
+        while(1){
+            $req->setPageNo("".$pageNo);
+            $resp = $client->execute($req, $this->store->session);
+//            echo "<pre>";print_r($resp);exit;
+            $count+=GlobalModel::batchInsert(CreativeEffect::className(),$resp->rpt_adgroupcreative_effect_list);
+            if(count($resp->rpt_adgroupcreative_effect_list)<$pageSize){
+                break;
+            }
+            $pageNo++;
+        }
+        return $count;
     }
 }
