@@ -11,7 +11,12 @@ use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
-
+        /** @var Campaign $campaign */
+//        $campaign = Campaign::findOne(2709348);
+//        echo $campaign->refreshEffectReports();
+        /** @var Adgroup $adgroup */
+        $adgroup = Adgroup::findOne(718026362);
+        echo $adgroup->refreshCreativeEffect();
     }
     public function actionQueueAdd(){
         $pheanstalk = new Pheanstalk('120.25.240.36');

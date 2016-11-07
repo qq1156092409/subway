@@ -131,7 +131,7 @@ class Campaign extends \yii\db\ActiveRecord
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CampaignBase $exist */
-        $exist=CampaignBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
@@ -143,7 +143,8 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-        $req->setSource("1,2");
+//        $req->setSource("1,2,4,5");
+        $req->setSource("SUMMARY");
         $req->setSearchType("SEARCH");
         $req->setCampaignId("" . $this->campaign_id);
         $client=clone TopClient::getInstance();
@@ -190,7 +191,7 @@ class Campaign extends \yii\db\ActiveRecord
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CampaignEffect $exist */
-        $exist=CampaignEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
@@ -202,7 +203,8 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-        $req->setSource("1,2");
+//        $req->setSource("1,2,4,5");
+        $req->setSource("SUMMARY");
         $req->setSearchType("SEARCH");
         $req->setCampaignId("" . $this->campaign_id);
         $client=clone TopClient::getInstance();
