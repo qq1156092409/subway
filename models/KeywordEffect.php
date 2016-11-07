@@ -7,9 +7,23 @@ use Yii;
 /**
  * This is the model class for table "keyword_effect".
  *
- * @property integer $keyword_id
+ * @property string $keywordid
  * @property string $date
+ * @property integer $source
+ * @property integer $indirectpay
+ * @property integer $favshopcount
+ * @property string $adgroupid
+ * @property integer $searchtype
+ * @property integer $favitemcount
+ * @property integer $indirectpaycount
+ * @property integer $indirectcarttotal
+ * @property string $nick
+ * @property integer $carttotal
+ * @property string $keywordstr
+ * @property integer $directcarttotal
  * @property integer $directpay
+ * @property integer $campaignid
+ * @property integer $directpaycount
  * @property string $api_time
  */
 class KeywordEffect extends \yii\db\ActiveRecord
@@ -28,9 +42,10 @@ class KeywordEffect extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['keyword_id', 'date'], 'required'],
-            [['keyword_id', 'directpay'], 'integer'],
+            [['keywordid', 'date', 'source'], 'required'],
+            [['keywordid', 'source', 'indirectpay', 'favshopcount', 'adgroupid', 'searchtype', 'favitemcount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'campaignid', 'directpaycount'], 'integer'],
             [['date', 'api_time'], 'safe'],
+            [['nick', 'keywordstr'], 'string', 'max' => 64],
         ];
     }
 
@@ -40,9 +55,23 @@ class KeywordEffect extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'keyword_id' => 'Keyword ID',
+            'keywordid' => 'Keywordid',
             'date' => 'Date',
+            'source' => 'Source',
+            'indirectpay' => 'Indirectpay',
+            'favshopcount' => 'Favshopcount',
+            'adgroupid' => 'Adgroupid',
+            'searchtype' => 'Searchtype',
+            'favitemcount' => 'Favitemcount',
+            'indirectpaycount' => 'Indirectpaycount',
+            'indirectcarttotal' => 'Indirectcarttotal',
+            'nick' => 'Nick',
+            'carttotal' => 'Carttotal',
+            'keywordstr' => 'Keywordstr',
+            'directcarttotal' => 'Directcarttotal',
             'directpay' => 'Directpay',
+            'campaignid' => 'Campaignid',
+            'directpaycount' => 'Directpaycount',
             'api_time' => 'Api Time',
         ];
     }

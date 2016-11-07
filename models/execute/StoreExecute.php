@@ -61,7 +61,9 @@ class StoreExecute{
         foreach($store->adgroups as $adgroup){
             $adgroup->refreshKeywords();
             $adgroup->refreshKeywordBases();
-//            $adgroup->refreshKeywordEffects();
+            $adgroup->refreshKeywordEffects();
+            $adgroup->refreshCreativeBases();
+            $adgroup->refreshCreativeEffects();
 //            $adgroup->refreshKeywordRankings();//实时排名 很耗时
         }
     }
