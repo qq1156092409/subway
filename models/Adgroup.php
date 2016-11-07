@@ -234,31 +234,37 @@ class Adgroup extends \yii\db\ActiveRecord
      * todo
      */
     public function refreshKeywordEffects(){
-        $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-7 day"));
+        $pageNo=1;
+        $pageSize=500;
+        $count=0;
+        $start=date("Y-m-d",strtotime("-30 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
+        $exist=KeywordEffect::find()->where(["adgroupid"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
+        if($exist){
+            if($exist->date>=$end){
+                return $count;
+            }
+            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+        }
         $req = new \SimbaRptAdgroupkeywordeffectGetRequest;
         $req->setNick($this->nick);
         $req->setCampaignId("".$this->campaign_id);
         $req->setAdgroupId("".$this->adgroup_id);
         $req->setStartTime($start);
-        $req->setEndTime($yestoday);
+        $req->setEndTime($end);
         $req->setSource("1,2,4,5");
 //        $req->setSource("SUMMARY");
         $req->setSubwayToken($this->store->authSign->subway_token);
-        $req->setPageSize("500");
+        $req->setPageSize("".$pageSize);
         $req->setSearchType("SEARCH");
-        $pageNo=1;
-        $count=0;
         $client= clone TopClient::getInstance();
         $client->format="json";
-        KeywordEffect::deleteAll(["adgroupid"=>$this->adgroup_id]);
         while(true){
             $req->setPageNo("" . $pageNo);
             $response = $client->execute($req, $this->store->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=$this->insertKeywordEffects($response->rpt_adgroupkeyword_effect_list);
-            if(count($response->rpt_adgroupkeyword_effect_list)<500){
+            if(count($response->rpt_adgroupkeyword_effect_list)<$pageSize){
                 break;
             }
             $pageNo++;
@@ -300,7 +306,7 @@ class Adgroup extends \yii\db\ActiveRecord
         /** @var AdgroupBase $exist */
         $exist=AdgroupBase::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
-            if($exist->date==$yestoday){
+            if($exist->date>=$yestoday){
                 return $count;
             }
             $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
@@ -434,7 +440,7 @@ class Adgroup extends \yii\db\ActiveRecord
         }
         return $ret;
     }
-    public function refreshCreativeBase(){
+    public function refreshCreativeBases(){
         $count=0;
         $pageNo=1;
         $pageSize=500;
@@ -472,7 +478,7 @@ class Adgroup extends \yii\db\ActiveRecord
         }
         return $count;
     }
-    public function refreshCreativeEffect(){
+    public function refreshCreativeEffects(){
         $count=0;
         $pageNo=1;
         $pageSize=500;
