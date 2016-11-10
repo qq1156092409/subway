@@ -517,4 +517,22 @@ class Adgroup extends \yii\db\ActiveRecord
         }
         return $count;
     }
+    public function refreshCreatives(){
+        $req = new \SimbaCreativesGetRequest;
+        $req->setNick($this->nick);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+//        echo "<pre>";print_r($response);exit;
+        $creatives=$response->creatives->creative;
+        is_array($creatives) or $creatives=[$creatives];
+        Creative::deleteAll(["adgroup_id"=>$this->adgroup_id]);
+        return GlobalModel::batchInsert(Creative::className(),$response->creatives->creative);
+    }
+    public function refreshAdgroupCatmatch(){
+        $req = new \SimbaAdgroupCatmatchGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+        echo "<pre>";print_r($response);exit;
+    }
 }

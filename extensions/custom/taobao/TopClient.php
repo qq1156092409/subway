@@ -109,7 +109,9 @@ class TopClient extends \TopClient{
 
     public static function check($response){
         if(property_exists($response,"code")){
-            throw new TopException($response->msg);
+            $error=$response->msg;
+            property_exists($response,"sub_msg") and $error.=(";".$response->sub_msg);
+            throw new TopException($error);
         }
     }
     protected static $instance;
