@@ -213,7 +213,8 @@ class Store extends \yii\db\ActiveRecord
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
+//        $req->setSource("SUMMARY");
         $client=clone TopClient::getInstance();
         $client->format="json";
         while(true){
@@ -248,7 +249,8 @@ class Store extends \yii\db\ActiveRecord
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
+//        $req->setSource("SUMMARY");
         $client=clone TopClient::getInstance();
         $client->format="json";
         while(true){

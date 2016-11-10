@@ -144,8 +144,8 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-//        $req->setSource("1,2,4,5");
-        $req->setSource("SUMMARY");
+//        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
         $req->setSearchType("SEARCH");
         $req->setCampaignId("" . $this->campaign_id);
         $client=clone TopClient::getInstance();
@@ -181,8 +181,8 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setStartTime($start);
         $req->setEndTime($yestoday);
         $req->setPageSize("".$pageSize);
-//        $req->setSource("1,2,4,5");
-        $req->setSource("SUMMARY");
+//        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
         $req->setSearchType("SEARCH");
         $req->setCampaignId("" . $this->campaign_id);
         $client=clone TopClient::getInstance();

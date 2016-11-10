@@ -167,7 +167,8 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setAdgroupId("".$this->adgroup_id);
         $req->setStartTime($yestoday);
         $req->setEndTime($yestoday);
-        $req->setSource("SUMMARY");
+//        $req->setSource("SUMMARY");
+        $req->setSource("1,2,4,5");
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setPageSize("500");
         $req->setSearchType("SEARCH");
