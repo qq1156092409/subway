@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\extensions\custom\taobao\TopClient;
+use app\models\multiple\GlobalModel;
 use Yii;
 
 /**
@@ -219,34 +220,11 @@ class Store extends \yii\db\ActiveRecord
             $req->setPageNo("".$pageNo);
             $response=$client->execute($req,$this->session);
 //            echo "<pre>";print_r($response);exit;
-            $count+= $this->insertCustBases($response->rpt_cust_base_list);
+            $count+=GlobalModel::batchInsert(CustBase::className(),$response->rpt_cust_base_list);
             if($count<$pageSize){
                 break;
             }
             $pageNo++;
-        }
-        return $count;
-    }
-    protected function insertCustBases($bases){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new CustBase())->attributes();
-        $count=0;
-        if($bases){
-            $rows=[];
-            foreach($bases as $base){
-                $temp=[];
-                $base=(array)$base;
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($base[$column])?$base[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-//            echo "<pre>";print_r($rows);exit;
-            $count+=Yii::$app->db->createCommand()->batchInsert(CustBase::tableName(),$columns,$rows)->execute();
         }
         return $count;
     }
@@ -277,33 +255,10 @@ class Store extends \yii\db\ActiveRecord
             $req->setPageNo("".$pageNo);
             $response=$client->execute($req,$this->session);
 //            echo "<pre>";print_r($response);exit;
-            $count+= $this->insertCustEffects($response->rpt_cust_effect_list);
+            $count+=GlobalModel::batchInsert(CustEffect::className(),$response->rpt_cust_effect_list);
             if($count<$pageSize){
                 break;
             }
-        }
-        return $count;
-    }
-    protected function insertCustEffects($effects){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new CustEffect())->attributes();
-        $count=0;
-        if($effects){
-            $rows=[];
-            foreach($effects as $effect){
-                $temp=[];
-                $effect=(array)$effect;
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($effect[$column])?$effect[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-//            echo "<pre>";print_r($rows);exit;
-            $count+=Yii::$app->db->createCommand()->batchInsert(CustEffect::tableName(),$columns,$rows)->execute();
         }
         return $count;
     }

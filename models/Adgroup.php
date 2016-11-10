@@ -151,30 +151,9 @@ class Adgroup extends \yii\db\ActiveRecord
             $response=TopClient::getInstance()->execute($req, $this->store->session);
 //            echo "<pre>";print_r($response);exit;
             Ranking::deleteAll(["bidwordid"=>$chunk]);
-            $count+=$this->insertKeywordRankings($response->result->realtime_rank_list->result);
+            $count+=GlobalModel::batchInsert(Ranking::className(),$response->result->realtime_rank_list->result);
         }
         return $count;
-    }
-    protected function insertKeywordRankings($rankings){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new Ranking())->attributes();
-        $rows=[];
-        if($rankings){
-            foreach($rankings as $rankingObj){
-                $rankingObj=(array)$rankingObj;
-                $temp=[];
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($rankingObj[$column])?$rankingObj[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-        }
-//        echo "<pre>";print_r($rows);exit;
-        return Yii::$app->db->createCommand()->batchInsert(Ranking::tableName(),$columns,$rows)->execute();
     }
 
     /**
@@ -201,33 +180,12 @@ class Adgroup extends \yii\db\ActiveRecord
             $req->setPageNo("" . $pageNo);
             $response = $client->execute($req, $this->store->session);
 //            echo "<pre>";print_r($response);exit;
-            $count+=$this->insertKeywordBases($response->rpt_adgroupkeyword_base_list);
+            $count+=GlobalModel::batchInsert(KeywordBase::className(),$response->rpt_adgroupkeyword_base_list);
             if(count($response->rpt_adgroupkeyword_base_list)<500){
                 break;
             }
             $pageNo++;
         }
-    }
-    protected function insertKeywordBases($keywordBases){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new KeywordBase())->attributes();
-        $rows=[];
-        if($keywordBases){
-            foreach($keywordBases as $keywordBase){
-                $keywordBase=(array)$keywordBase;
-                $temp=[];
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($keywordBase[$column])?$keywordBase[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-        }
-//        echo "<pre>";print_r($rows);exit;
-        return Yii::$app->db->createCommand()->batchInsert(KeywordBase::tableName(),$columns,$rows)->execute();
     }
 
     /**
@@ -263,34 +221,13 @@ class Adgroup extends \yii\db\ActiveRecord
             $req->setPageNo("" . $pageNo);
             $response = $client->execute($req, $this->store->session);
 //            echo "<pre>";print_r($response);exit;
-            $count+=$this->insertKeywordEffects($response->rpt_adgroupkeyword_effect_list);
+            $count+=GlobalModel::batchInsert(KeywordEffect::className(),$response->rpt_adgroupkeyword_effect_list);
             if(count($response->rpt_adgroupkeyword_effect_list)<$pageSize){
                 break;
             }
             $pageNo++;
         }
         return $count;
-    }
-    protected function insertKeywordEffects($keywordEffects){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new KeywordEffect())->attributes();
-        $rows=[];
-        if($keywordEffects){
-            foreach($keywordEffects as $keywordEffect){
-                $keywordEffect=(array)$keywordEffect;
-                $temp=[];
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($keywordEffect[$column])?$keywordEffect[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-        }
-//        echo "<pre>";print_r($rows);exit;
-        return Yii::$app->db->createCommand()->batchInsert(KeywordEffect::tableName(),$columns,$rows)->execute();
     }
 
     /**
@@ -327,34 +264,11 @@ class Adgroup extends \yii\db\ActiveRecord
             $req->setPageNo("".$pageNo);
             $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
-            $count+= $this->insertAdgroupBases($response->rpt_adgroup_base_list);
+            $count+=GlobalModel::batchInsert(AdgroupBase::className(),$response->rpt_adgroup_base_list);
             if($count<$pageSize){
                 break;
             }
             $pageNo++;
-        }
-        return $count;
-    }
-    protected function insertAdgroupBases($bases){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new AdgroupBase())->attributes();
-        $count=0;
-        if($bases){
-            $rows=[];
-            foreach($bases as $base){
-                $temp=[];
-                $base=(array)$base;
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($base[$column])?$base[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-//            echo "<pre>";print_r($rows);exit;
-            $count+=Yii::$app->db->createCommand()->batchInsert(AdgroupBase::tableName(),$columns,$rows)->execute();
         }
         return $count;
     }
@@ -392,34 +306,11 @@ class Adgroup extends \yii\db\ActiveRecord
             $req->setPageNo("".$pageNo);
             $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
-            $count+= $this->insertAdgroupEffects($response->rpt_adgroup_effect_list);
+            $count+=GlobalModel::batchInsert(AdgroupEffect::className(),$response->rpt_adgroup_effect_list);
             if($count<$pageSize){
                 break;
             }
             $pageNo++;
-        }
-        return $count;
-    }
-    protected function insertAdgroupEffects($effects){
-        $now=date("Y-m-d H:i:s");
-        $columns=(new AdgroupEffect())->attributes();
-        $count=0;
-        if($effects){
-            $rows=[];
-            foreach($effects as $effect){
-                $temp=[];
-                $effect=(array)$effect;
-                foreach($columns as $column){
-                    if($column=="api_time"){
-                        $temp[]=$now;
-                    }else{
-                        $temp[]=isset($effect[$column])?$effect[$column]:null;
-                    }
-                }
-                $rows[]=$temp;
-            }
-//            echo "<pre>";print_r($rows);exit;
-            $count+=Yii::$app->db->createCommand()->batchInsert(AdgroupEffect::tableName(),$columns,$rows)->execute();
         }
         return $count;
     }
@@ -526,7 +417,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $creatives=$response->creatives->creative;
         is_array($creatives) or $creatives=[$creatives];
         Creative::deleteAll(["adgroup_id"=>$this->adgroup_id]);
-        return GlobalModel::batchInsert(Creative::className(),$response->creatives->creative);
+        return GlobalModel::batchInsert(Creative::className(),$creatives);
     }
     public function refreshAdgroupCatmatch(){
         $req = new \SimbaAdgroupCatmatchGetRequest;
