@@ -88,7 +88,7 @@ class VasOrder extends \yii\db\ActiveRecord
         $req = new \VasOrderSearchRequest();
         $req->setArticleCode(TopClient::ARTICLE_CODE);
         $req->setPageSize("" . $pageSize);
-        $req->setStartCreated(date("Y-m-d",strtotime("-30 day")));
+        $req->setStartCreated(date("Y-m-d H:i:s",strtotime("-30 day")));
         while(1){
             $req->setPageNo("".$pageNo);
             $response=TopClient::getInstance()->execute($req);

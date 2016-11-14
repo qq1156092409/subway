@@ -13,9 +13,6 @@ use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
-        $str="毛騡«";
-        echo mb_check_encoding($str,"UTF-8")?1:0;
-        echo json_encode(array($str));exit;
 
 //        VasOrder::refreshData();
 
