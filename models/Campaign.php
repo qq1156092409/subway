@@ -130,7 +130,7 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         /** @var CampaignBase $exist */
         $exist=CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -167,7 +167,7 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         /** @var CampaignEffect $exist */
         $exist=CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){

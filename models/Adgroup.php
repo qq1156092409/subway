@@ -196,7 +196,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $pageNo=1;
         $pageSize=500;
         $count=0;
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
         $exist=KeywordEffect::find()->where(["adgroupid"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -240,7 +240,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         /** @var AdgroupBase $exist */
         $exist=AdgroupBase::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -279,7 +279,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         /** @var AdgroupBase $exist */
         $exist=AdgroupEffect::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -336,7 +336,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $count=0;
         $pageNo=1;
         $pageSize=500;
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
         /** @var CreativeBase $exist */
         $exist=CreativeBase::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
@@ -374,7 +374,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $count=0;
         $pageNo=1;
         $pageSize=500;
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
         /** @var CreativeEffect $exist */
         $exist=CreativeEffect::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();

@@ -199,7 +199,7 @@ class Store extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         /** @var CustBase $exist */
         $exist=CustBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -235,7 +235,7 @@ class Store extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
+        $start=date("Y-m-d",strtotime("-7 day"));
         /** @var CustEffect $exist */
         $exist=CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){

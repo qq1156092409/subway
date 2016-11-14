@@ -7,20 +7,27 @@ use app\models\Campaign;
 use app\models\Channel;
 use app\models\Keyword;
 use app\models\Store;
+use app\models\VasOrder;
 use Pheanstalk\Pheanstalk;
 use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
+        $str="毛騡«";
+        echo mb_check_encoding($str,"UTF-8")?1:0;
+        echo json_encode(array($str));exit;
+
+//        VasOrder::refreshData();
+
         /** @var Campaign $campaign */
 //        $campaign = Campaign::findOne(2709348);
-//        echo $campaign->refreshEffectReports();
+//        echo $campaign->refreshBaseReports();
 
         /** @var Adgroup $adgroup */
 //        $adgroup = Adgroup::findOne(432098541);
 //        echo $adgroup->refreshAdgroupCatmatch();
 //        echo "<pre>"; print_r($response);
-        Channel::refreshData();
+//        Channel::refreshData();
     }
     public function actionQueueAdd(){
         $pheanstalk = new Pheanstalk('120.25.240.36');
