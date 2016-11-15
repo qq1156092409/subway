@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\models\multiple\EffectReportTrait;
+use app\models\multiple\ReportInterface;
 use Yii;
 
 /**
@@ -23,8 +25,9 @@ use Yii;
  * @property integer $directpaycount
  * @property string $api_time
  */
-class CampaignEffect extends \yii\db\ActiveRecord
+class CampaignEffect extends \yii\db\ActiveRecord implements ReportInterface
 {
+    use EffectReportTrait;
     /**
      * @inheritdoc
      */
@@ -68,5 +71,16 @@ class CampaignEffect extends \yii\db\ActiveRecord
             'directpaycount' => 'Directpaycount',
             'api_time' => 'Api Time',
         ];
+    }
+
+    //--method
+    public function payTotal(){
+        return $this->directpay+$this->indirectpay;
+    }
+    public function payCountTotal(){
+        return $this->directpaycount+$this->indirectpaycount;
+    }
+    public function favTotal(){
+        return $this->favItemCount+$this->favShopCount;
     }
 }

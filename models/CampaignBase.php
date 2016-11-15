@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\models\multiple\BaseReportTrait;
+use app\models\multiple\ReportInterface;
 use Yii;
 
 /**
@@ -22,8 +24,9 @@ use Yii;
  * @property string $cpc
  * @property string $api_time
  */
-class CampaignBase extends \yii\db\ActiveRecord
+class CampaignBase extends \yii\db\ActiveRecord implements ReportInterface
 {
+    use BaseReportTrait;
     /**
      * @inheritdoc
      */
@@ -67,5 +70,9 @@ class CampaignBase extends \yii\db\ActiveRecord
             'cpc' => 'Cpc',
             'api_time' => 'Api Time',
         ];
+    }
+
+    public function costYuan(){
+        return ($this->cost/100);
     }
 }

@@ -16,15 +16,15 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
 
-        $campaigns=Campaign::find()->all();
-        foreach($campaigns as $campaign){
-            $campaign->refreshBudget();
-        }
+//        $campaigns=Campaign::find()->all();
+//        foreach($campaigns as $campaign){
+//            $campaign->refreshBudget();
+//        }
 
 //        VasOrder::refreshData();
 
-//        $campaign = Campaign::findOne(2709348);
-//        echo $campaign->refreshBaseReports();
+        $campaign = Campaign::findOne(2709348);
+        echo $campaign->refreshSchedule();
 
 //        $adgroup = Adgroup::findOne(432098541);
 //        echo $adgroup->refreshAdgroupCatmatch();

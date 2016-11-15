@@ -75,6 +75,22 @@ class Campaign extends \yii\db\ActiveRecord
     public function getCampaignBudget(){
         return $this->hasOne(CampaignBudget::className(),["campaign_id"=>"campaign_id"]);
     }
+    //--get
+    public function getBases($day){
+        $start=date("Y-m-d",strtotime("- $day days"));
+        return CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date >='$start'")->all();
+    }
+    public function getEffects($day){
+        $start=date("Y-m-d",strtotime("- $day days"));
+        return CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date >='$start'")->all();
+    }
+    public function settleReasonZh(){
+        $map=[
+            1=>"余额不足",
+            2=>"超过日限额",
+        ];
+        return strtr($this->settle_reason,$map);
+    }
 
     //--refresh data
     public function refreshAdgroups(){
@@ -243,5 +259,17 @@ class Campaign extends \yii\db\ActiveRecord
         $budget->attributes=(array)$response->campaign_budget;
         $budget->api_time=date("Y-m-d H:i:s");
         return $budget->save();
+    }
+
+    public function refreshSchedule(){
+        $req = new \SimbaCampaignScheduleGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+        $response = TopClient::getInstance()->execute($req, $this->store->session);
+        CampaignSchedule::deleteAll(["campaign_id"=>$this->campaign_id]);
+        $schedule=new CampaignSchedule();
+        $schedule->attributes=(array)$response->campaign_schedule;
+        $schedule->api_time=date("Y-m-d H:i:s");
+        return $schedule->save();
     }
 }

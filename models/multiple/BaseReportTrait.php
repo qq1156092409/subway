@@ -19,6 +19,7 @@ trait BaseReportTrait{
      */
     public static function merge($bases){
         $totalBase=new self();
+        $totalBase->impressions=$totalBase->click=$totalBase->aclick=$totalBase->cost=0;
         if($bases){
             foreach($bases as $base){
                 $totalBase->impressions+=$base->impressions;
@@ -30,8 +31,8 @@ trait BaseReportTrait{
         return $totalBase->finishAttributes();
     }
     public function finishAttributes(){
-        $this->cpm=($this->impressions?$this->cost*1000/$this->impressions:0);
-        $this->cpc=($this->click?$this->cost/$this->click:0);
+        $this->cpm=round($this->impressions?$this->cost*1000/$this->impressions:0,2);
+        $this->cpc=round($this->click?$this->cost/$this->click:0,2);
         $this->ctr=round($this->impressions?100*$this->click/$this->impressions:0,2);
         return $this;
     }

@@ -355,8 +355,10 @@ $this->params["store"]=$store;
 
                 <tbody role="alert" aria-live="polite" aria-relevant="all">
                 <?php
-                foreach($store->campaigns as $campaign){
-                    echo $this->render("/campaign/_campaign",["campaign"=>$campaign]);
+                if($store->campaigns){
+                    foreach($store->campaigns as $campaign){
+                        echo $this->render("/campaign/_campaign",["campaign"=>$campaign]);
+                    }
                 }
                 ?>
                 </tbody>
