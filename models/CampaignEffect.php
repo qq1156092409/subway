@@ -74,13 +74,4 @@ class CampaignEffect extends \yii\db\ActiveRecord implements ReportInterface
     }
 
     //--method
-    public function payTotal(){
-        return $this->directpay+$this->indirectpay;
-    }
-    public function payCountTotal(){
-        return $this->directpaycount+$this->indirectpaycount;
-    }
-    public function favTotal(){
-        return $this->favItemCount+$this->favShopCount;
-    }
 }

@@ -12,8 +12,8 @@ use Yii;
  * @property string $nick
  * @property string $date
  * @property integer $indirectpay
- * @property integer $favshopcount
- * @property integer $favitemcount
+ * @property integer $favShopCount
+ * @property integer $favItemCount
  * @property integer $indirectpaycount
  * @property integer $indirectcarttotal
  * @property string $source
@@ -42,7 +42,7 @@ class CustEffect extends \yii\db\ActiveRecord implements ReportInterface
         return [
             [['nick', 'date'], 'required'],
             [['date', 'api_time'], 'safe'],
-            [['indirectpay', 'favshopcount', 'favitemcount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
+            [['indirectpay', 'favShopCount', 'favItemCount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
             [['nick'], 'string', 'max' => 64],
             [['source'], 'string', 'max' => 16],
         ];
@@ -57,8 +57,8 @@ class CustEffect extends \yii\db\ActiveRecord implements ReportInterface
             'nick' => 'Nick',
             'date' => 'Date',
             'indirectpay' => 'Indirectpay',
-            'favshopcount' => 'Favshopcount',
-            'favitemcount' => 'Favitemcount',
+            'favShopCount' => 'Favshopcount',
+            'favItemCount' => 'Favitemcount',
             'indirectpaycount' => 'Indirectpaycount',
             'indirectcarttotal' => 'Indirectcarttotal',
             'source' => 'Source',
@@ -71,14 +71,8 @@ class CustEffect extends \yii\db\ActiveRecord implements ReportInterface
     }
 
     //--method
-    public function getPayTotalYuan(){
-        return round(($this->directpay + $this->indirectpay)/100, 2);
-    }
-    public function getFavTotal(){
-        return $this->favitemcount+$this->favshopcount;
-    }
-    public function getPayCountTotal(){
-        return $this->indirectpaycount+$this->directpaycount;
+    public function payTotalYuan(){
+        return round($this->payTotal()/100, 2);
     }
     //--static
 }

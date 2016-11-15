@@ -71,8 +71,4 @@ class CampaignBase extends \yii\db\ActiveRecord implements ReportInterface
             'api_time' => 'Api Time',
         ];
     }
-
-    public function costYuan(){
-        return ($this->cost/100);
-    }
 }

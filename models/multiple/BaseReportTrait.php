@@ -33,7 +33,15 @@ trait BaseReportTrait{
     public function finishAttributes(){
         $this->cpm=round($this->impressions?$this->cost*1000/$this->impressions:0,2);
         $this->cpc=round($this->click?$this->cost/$this->click:0,2);
-        $this->ctr=round($this->impressions?100*$this->click/$this->impressions:0,2);
+        $this->ctr=round($this->impressions?$this->click/$this->impressions:0,4);
         return $this;
+    }
+
+    public function costYuan(){
+        return round($this->cost/100,2);
+    }
+
+    public function cpcYuan(){
+        return round($this->cpc/100,2);
     }
 }

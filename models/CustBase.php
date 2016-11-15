@@ -67,12 +67,5 @@ class CustBase extends \yii\db\ActiveRecord implements ReportInterface
     }
 
     //--method
-    public function getCostYuan(){
-        return round($this->cost/100,2);
-    }
-
-    public function getCpcYuan(){
-        return round($this->cpc/100,2);
-    }
     //--static
 }

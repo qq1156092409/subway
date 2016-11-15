@@ -3,6 +3,7 @@ use \app\models\Campaign;
 use yii\helpers\Url;
 use app\models\CampaignBase;
 use app\models\CampaignEffect;
+use app\models\multiple\DataReport;
 /**
  * @var $campaign Campaign
  * @var $baseTotal CampaignBase
@@ -12,6 +13,7 @@ $bases = $campaign->getBases(7);
 $effects = $campaign->getEffects(7);
 $baseTotal=CampaignBase::merge($bases);
 $effectTotal=CampaignEffect::merge($effects);
+$totalReport=new DataReport($baseTotal,$effectTotal);
 ?>
 <tr id="campaign-<?=$campaign->campaign_id?>" data-id="<?=$campaign->campaign_id?>" class="<?=$campaign->online_status=="offline"?"gray_light":""?>">
     <td class="check_column  sorting_1"><input type="checkbox" value="<?=$campaign->campaign_id?>"></td>
@@ -52,15 +54,15 @@ $effectTotal=CampaignEffect::merge($effects);
     </td>
     <td class=" "><?=$baseTotal->impressions?></td>
     <td class=" "><?=$baseTotal->click?></td>
-    <td class=" "><?=$baseTotal->cpc?>%</td>
+    <td class=" "><?=100*$baseTotal->ctr?>%</td>
     <td class=" "><?=$baseTotal->costYuan()?></td>
-    <td class=" "><?=$baseTotal->cpc?></td>
+    <td class=" "><?=$baseTotal->cpcYuan()?></td>
     <td class=" "><?=$effectTotal->favTotal()?></td>
     <td class=" "><?=$effectTotal->carttotal?></td>
     <td class=" "><?=$effectTotal->payCountTotal()?></td>
-    <td class=" "><?=$baseTotal->click?round($effectTotal->payCountTotal()*100/$baseTotal->click,2):0?>%</td>
+    <td class=" "><?=$totalReport->takeRate()*100?>%</td>
     <td class=" "><?=$effectTotal->payTotal()?></td>
-    <td class=" "><?=$baseTotal->cost?round($effectTotal->payTotal()/$baseTotal->cost,2):0?></td>
+    <td class=" "><?=$totalReport->roi()?></td>
     <td class=" ">
         <span class="b"><?=$campaign->online_status=="online"?"推广中":"暂停中"?></span>
         <a class="hover_show update_camp single" href="javascript:;"><?=$campaign->online_status!="online"?"推广":"暂停"?></a>

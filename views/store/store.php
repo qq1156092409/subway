@@ -3,13 +3,19 @@ use yii\helpers\Url;
 use yii\web\View;
 use app\extensions\custom\yii\JsManager;
 use app\models\Store;
+use app\models\multiple\DataReport;
+use \app\models\CustBase;
+use \app\models\CustEffect;
 
 /**
  * @var $this View
  * @var $store Store
+ * @var $totalBase CustBase
+ * @var $totalEffect CustEffect
  */
 JsManager::instance()->register("js/yii.store.js");
 $this->params["store"]=$store;
+$report=new DataReport($totalBase,$totalEffect);
 ?>
 <section class="container-fluid">
     <!--主区横条start-->
@@ -88,11 +94,11 @@ $this->params["store"]=$store;
                         <td>购物车总数</td>
                     </tr>
                     <tr class="data">
-                        <td class="b">￥<?=$totalBase->costYuan?></td>
+                        <td class="b">￥<?=$totalBase->costYuan()?></td>
                         <td><?=$totalBase->impressions?></td>
                         <td><?=$totalBase->click?></td>
-                        <td><?=$totalBase->ctr?>%</td>
-                        <td><?=$totalBase->cpcYuan?></td>
+                        <td><?=100*$totalBase->ctr?>%</td>
+                        <td><?=$totalBase->cpcYuan()?></td>
                         <td><?=$totalEffect->carttotal?></td>
                     </tr>
                     <tr>
@@ -109,18 +115,18 @@ $this->params["store"]=$store;
                     <tr class="data">
                         <td class="b">
                                 <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title="">
-                                    ￥<span class="pay"><?=$totalEffect->payTotalYuan?></span>
+                                    ￥<span class="pay"><?=$totalEffect->payTotalYuan()?></span>
                                 </span>
                         </td>
                         <td>
-                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->favTotal?></span>
+                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->favTotal()?></span>
                         </td>
                         <td>
-                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->payCountTotal?></span>
+                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->payCountTotal()?></span>
                         </td>
-                        <td><?=round($totalBase->click?$totalEffect->payCountTotal*100/$totalBase->click:0,2)?>%</td>
-                        <td><?=round($totalBase->costYuan?$totalEffect->payTotalYuan/$totalBase->costYuan:0,2)?></td>
-                        <td><?=round($totalEffect->payCountTotal?$totalEffect->payTotalYuan/$totalEffect->payCountTotal:0,2)?></td>
+                        <td><?=100*$report->takeRate()?>%</td>
+                        <td><?=$report->roi()?></td>
+                        <td><?=round($totalEffect->payCountTotal()?$totalEffect->payTotalYuan()/$totalEffect->payCountTotal():0,2)?></td>
                     </tr>
                     </tbody>
                 </table>

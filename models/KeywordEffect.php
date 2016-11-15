@@ -11,10 +11,10 @@ use Yii;
  * @property string $date
  * @property integer $source
  * @property integer $indirectpay
- * @property integer $favshopcount
+ * @property integer $favShopCount
  * @property string $adgroupid
  * @property integer $searchtype
- * @property integer $favitemcount
+ * @property integer $favItemCount
  * @property integer $indirectpaycount
  * @property integer $indirectcarttotal
  * @property string $nick
@@ -43,7 +43,7 @@ class KeywordEffect extends \yii\db\ActiveRecord
     {
         return [
             [['keywordid', 'date', 'source'], 'required'],
-            [['keywordid', 'source', 'indirectpay', 'favshopcount', 'adgroupid', 'searchtype', 'favitemcount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'campaignid', 'directpaycount'], 'integer'],
+            [['keywordid', 'source', 'indirectpay', 'favShopCount', 'adgroupid', 'searchtype', 'favItemCount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'campaignid', 'directpaycount'], 'integer'],
             [['date', 'api_time'], 'safe'],
             [['nick', 'keywordstr'], 'string', 'max' => 64],
         ];
@@ -59,10 +59,10 @@ class KeywordEffect extends \yii\db\ActiveRecord
             'date' => 'Date',
             'source' => 'Source',
             'indirectpay' => 'Indirectpay',
-            'favshopcount' => 'Favshopcount',
+            'favShopCount' => 'Favshopcount',
             'adgroupid' => 'Adgroupid',
             'searchtype' => 'Searchtype',
-            'favitemcount' => 'Favitemcount',
+            'favItemCount' => 'Favitemcount',
             'indirectpaycount' => 'Indirectpaycount',
             'indirectcarttotal' => 'Indirectcarttotal',
             'nick' => 'Nick',
