@@ -72,6 +72,9 @@ class Campaign extends \yii\db\ActiveRecord
     public function getAdgroups(){
         return $this->hasMany(Adgroup::className(),["campaign_id"=>"campaign_id"]);
     }
+    public function getCampaignBudget(){
+        return $this->hasOne(CampaignBudget::className(),["campaign_id"=>"campaign_id"]);
+    }
 
     //--refresh data
     public function refreshAdgroups(){
@@ -228,5 +231,17 @@ class Campaign extends \yii\db\ActiveRecord
         $report->api_time=date("Y-m-d H:i:s");
 //        $report->calculate();
         return $report->save();
+    }
+
+    public function refreshBudget(){
+        $req = new \SimbaCampaignBudgetGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+        $response = TopClient::getInstance()->execute($req,$this->store->session);
+        CampaignBudget::deleteAll(["campaign_id"=>$this->campaign_id]);
+        $budget=new CampaignBudget();
+        $budget->attributes=(array)$response->campaign_budget;
+        $budget->api_time=date("Y-m-d H:i:s");
+        return $budget->save();
     }
 }

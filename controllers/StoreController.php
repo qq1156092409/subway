@@ -22,7 +22,7 @@ class StoreController extends Controller
         $totalBase = CustBase::merge($bases);
         $totalEffect = CustEffect::merge($effects);
 
-        return $this->renderPartial("store",[
+        return $this->render("store",[
             "store"=>$store,
             "bases"=>$bases,
             "effects"=>$effects,

@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\models\multiple\EffectReportTrait;
+use app\models\multiple\ReportInterface;
 use Yii;
 
 /**
@@ -21,8 +23,9 @@ use Yii;
  * @property integer $directpaycount
  * @property string $api_time
  */
-class CustEffect extends \yii\db\ActiveRecord
+class CustEffect extends \yii\db\ActiveRecord implements ReportInterface
 {
+    use EffectReportTrait;
     /**
      * @inheritdoc
      */
@@ -78,21 +81,4 @@ class CustEffect extends \yii\db\ActiveRecord
         return $this->indirectpaycount+$this->directpaycount;
     }
     //--static
-    public static function merge($effects){
-        $total=new self();
-        if($effects){
-            foreach($effects as $effect){
-                $total->indirectpay+=$effect->indirectpay;
-                $total->favshopcount+=$effect->favshopcount;
-                $total->favitemcount+=$effect->favitemcount;
-                $total->indirectpaycount+=$effect->indirectpaycount;
-                $total->indirectcarttotal+=$effect->indirectcarttotal;
-                $total->carttotal+=$effect->carttotal;
-                $total->directcarttotal+=$effect->directcarttotal;
-                $total->directpay+=$effect->directpay;
-                $total->directpaycount+=$effect->directpaycount;
-            }
-        }
-        return $total;
-    }
 }

@@ -33,9 +33,7 @@ use yii\helpers\Url;
     </td>
     <td class=" ">
       <span class="budget">
-
-          30元
-
+          <?php echo $campaign->campaignBudget->budget?>元
       </span>
         <i class="iconfont edit_budget" data-budget="30" data-smooth="0"></i>
     </td>
@@ -68,7 +66,7 @@ use yii\helpers\Url;
 
     </td>
     <td class="b tc ">
-        <a href="http://w01.ztcjl.com/mnt/mnt_campaign/<?=$campaign->campaign_id?>">进入计划</a><br>
+        <a href="<?=Url::to(["/campaign","id"=>$campaign->campaign_id])?>">进入计划</a><br>
 
         <a href="javaScript:;" class="change_camp_mnt" type="1"> 开启托管 </a>
 

@@ -13,14 +13,19 @@ use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
+        /** @var Campaign $campaign */
+        /** @var Adgroup $adgroup */
+
+        $campaigns=Campaign::find()->all();
+        foreach($campaigns as $campaign){
+            $campaign->refreshBudget();
+        }
 
 //        VasOrder::refreshData();
 
-        /** @var Campaign $campaign */
 //        $campaign = Campaign::findOne(2709348);
 //        echo $campaign->refreshBaseReports();
 
-        /** @var Adgroup $adgroup */
 //        $adgroup = Adgroup::findOne(432098541);
 //        echo $adgroup->refreshAdgroupCatmatch();
 //        echo "<pre>"; print_r($response);

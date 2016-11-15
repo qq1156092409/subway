@@ -6,8 +6,10 @@ namespace app\commands;
 use app\helpers\ConsoleHelper;
 use app\models\Adgroup;
 use app\models\AuthSession;
+use app\models\Campaign;
 use app\models\execute\AdgroupExecute;
 use app\models\Store;
+use Pheanstalk\Exception;
 use Pheanstalk\Pheanstalk;
 use yii\console\Controller;
 use yii\helpers\ArrayHelper;
@@ -15,8 +17,20 @@ use yii\helpers\ArrayHelper;
 class TestController extends Controller {
     public function actionIndex(){
         /** @var Adgroup $adgroup */
-        $adgroup=Adgroup::findOne(719091059);
-        echo $adgroup->refreshKeywords();
+        /** @var Campaign $campaign */
+
+        $fail=0;
+        $campaigns=Campaign::find()->joinWith(["campaignBudget"])->where("campaign_budget.campaign_id is null")->all();
+        foreach($campaigns as $campaign){
+            try{
+                $campaign->refreshBudget();
+            }catch (\Exception $e){
+                $fail++;
+            }
+        }
+        echo $fail.PHP_EOL;
+//        $adgroup=Adgroup::findOne(719091059);
+//        echo $adgroup->refreshKeywords();
 
     }
     public function actionQueue(){

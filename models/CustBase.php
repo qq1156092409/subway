@@ -2,6 +2,8 @@
 
 namespace app\models;
 
+use app\models\multiple\ReportInterface;
+use app\models\multiple\BaseReportTrait;
 use Yii;
 
 /**
@@ -19,8 +21,9 @@ use Yii;
  * @property string $ctr
  * @property string $api_time
  */
-class CustBase extends \yii\db\ActiveRecord
+class CustBase extends \yii\db\ActiveRecord implements ReportInterface
 {
+    use BaseReportTrait;
     /**
      * @inheritdoc
      */
@@ -64,12 +67,6 @@ class CustBase extends \yii\db\ActiveRecord
     }
 
     //--method
-    public function finishAttributes(){
-        $this->cpm=($this->impressions?$this->cost*1000/$this->impressions:0);
-        $this->cpc=($this->click?$this->cost/$this->click:0);
-        $this->ctr=round($this->impressions?100*$this->click/$this->impressions:0,2);
-        return $this;
-    }
     public function getCostYuan(){
         return round($this->cost/100,2);
     }
@@ -78,16 +75,4 @@ class CustBase extends \yii\db\ActiveRecord
         return round($this->cpc/100,2);
     }
     //--static
-    public static function merge($bases){
-        $totalBase=new CustBase();
-        if($bases){
-            foreach($bases as $base){
-                $totalBase->impressions+=$base->impressions;
-                $totalBase->click+=$base->click;
-                $totalBase->aclick+=$base->aclick;
-                $totalBase->cost+=$base->cost;
-            }
-        }
-        return $totalBase->finishAttributes();
-    }
 }
