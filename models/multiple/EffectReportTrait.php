@@ -53,6 +53,9 @@ trait EffectReportTrait
     public function payTotal(){
         return $this->directpay+$this->indirectpay;
     }
+    public function payTotalYuan(){
+        return $this->payTotal()/100;
+    }
     public function payCountTotal(){
         return $this->directpaycount+$this->indirectpaycount;
     }

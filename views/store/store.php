@@ -17,7 +17,7 @@ JsManager::instance()->register("js/yii.store.js");
 $this->params["store"]=$store;
 $report=new DataReport($totalBase,$totalEffect);
 ?>
-<section class="container-fluid">
+<section class="container-fluid" id="main-page" data-page="store-index" data-refresh-url="<?=Url::to(["/store/index-refresh","id"=>$store->id])?>">
     <!--主区横条start-->
     <!--主区横条end-->
     <div class="main_rpt_warp pr290" id="account_warp">

@@ -7,18 +7,14 @@ use app\models\CustEffect;
 use app\models\Store;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class StoreController extends Controller
 {
     public function actionIndex($id=null,$nick=null){
         $store = $this->getStore($id,$nick);
-        $start=date("Y-m-d",strtotime("-7 day"));
-        $bases=CustBase::find()->where([
-            "nick"=>$store->nick,
-        ])->andWhere("date>='{$start}'")->all();
-        $effects=CustEffect::find()->where([
-            "nick"=>$store->nick,
-        ])->andWhere("date>='{$start}'")->all();
+        $bases=$store->getBases(7);
+        $effects=$store->getEffects(7);
         $totalBase = CustBase::merge($bases);
         $totalEffect = CustEffect::merge($effects);
 
@@ -30,7 +26,18 @@ class StoreController extends Controller
             "totalEffect"=>$totalEffect,
         ]);
     }
-    protected function getStore($id,$nick){
+    public function actionIndexRefresh($id){
+        $store = $this->getStore($id);
+//        $store->refreshRealTimeReport();
+//        $store->refreshBalance();
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return [
+            "balance"=>$store->balance,
+//            "rtrpt"=>$store->realtimeReport,
+        ];
+    }
+
+    protected function getStore($id,$nick=null){
         /** @var Store $store */
         $id and $store = Store::findOne($id);
         if(!isset($store) && $nick){

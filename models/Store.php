@@ -70,6 +70,16 @@ class Store extends \yii\db\ActiveRecord
         return $this->hasMany(Adgroup::className(),["nick"=>"nick"])->inverseOf("store");
     }
 
+    //--get
+    public function getBases($day){
+        $start=date("Y-m-d",strtotime("- $day days"));
+        return CustBase::find()->where(["nick"=>$this->nick])->andWhere("date >='$start'")->all();
+    }
+    public function getEffects($day){
+        $start=date("Y-m-d",strtotime("- $day days"));
+        return CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date >='$start'")->all();
+    }
+
     //--refresh data
     public function refreshBalance(){
         $req=new \SimbaAccountBalanceGetRequest();

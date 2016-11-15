@@ -61,7 +61,7 @@ $totalReport=new DataReport($baseTotal,$effectTotal);
     <td class=" "><?=$effectTotal->carttotal?></td>
     <td class=" "><?=$effectTotal->payCountTotal()?></td>
     <td class=" "><?=$totalReport->takeRate()*100?>%</td>
-    <td class=" "><?=$effectTotal->payTotal()?></td>
+    <td class=" "><?=$effectTotal->payTotalYuan()?></td>
     <td class=" "><?=$totalReport->roi()?></td>
     <td class=" ">
         <span class="b"><?=$campaign->online_status=="online"?"推广中":"暂停中"?></span>
