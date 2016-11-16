@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\models\multiple\EffectReportTrait;
-use app\models\multiple\ReportInterface;
 use Yii;
 
 /**
@@ -25,9 +23,8 @@ use Yii;
  * @property integer $directpaycount
  * @property string $api_time
  */
-class CampaignEffect extends \yii\db\ActiveRecord implements ReportInterface
+class CampaignEffect extends \yii\db\ActiveRecord
 {
-    use EffectReportTrait;
     /**
      * @inheritdoc
      */

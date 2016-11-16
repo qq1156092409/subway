@@ -87,10 +87,7 @@ class CustRealTimeReport extends \yii\db\ActiveRecord
         ];
     }
 
-    /**
-     * 计算其他属性
-     */
-    public function calculate(){
-
+    public function getStore(){
+        return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
 }

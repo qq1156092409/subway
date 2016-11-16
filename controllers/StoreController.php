@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\CustBase;
 use app\models\CustEffect;
+use app\models\multiple\DataReport;
 use app\models\Store;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -13,22 +14,20 @@ class StoreController extends Controller
 {
     public function actionIndex($id=null,$nick=null){
         $store = $this->getStore($id,$nick);
-        $bases=$store->getBases(7);
-        $effects=$store->getEffects(7);
-        $totalBase = CustBase::merge($bases);
-        $totalEffect = CustEffect::merge($effects);
+        $rtrpt=$store->getRtDataReport();
+        $reports=$store->getDataReports(7);
+        $totalReport=DataReport::merge($reports);
 
         return $this->render("store",[
             "store"=>$store,
-            "bases"=>$bases,
-            "effects"=>$effects,
-            "totalBase"=>$totalBase,
-            "totalEffect"=>$totalEffect,
+            "totalReport"=>$totalReport,
+            "reports"=>$reports,
+            "rtrpt"=>$rtrpt,
         ]);
     }
     public function actionIndexRefresh($id){
         $store = $this->getStore($id);
-//        $store->refreshRealTimeReport();
+        $store->refreshRealTimeReport();
         if(!($store->balance && (time()-strtotime($store->balance->api_time))<3600)){
             $store->refreshBalance();
             unset($store->balance);
@@ -36,7 +35,7 @@ class StoreController extends Controller
         \Yii::$app->response->format=Response::FORMAT_JSON;
         return [
             "balance"=>$store->balance,
-//            "rtrpt"=>$store->realtimeReport,
+            "rtrpt"=>$store->getRtDataReport(),
         ];
     }
 

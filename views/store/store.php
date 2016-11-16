@@ -4,18 +4,16 @@ use yii\web\View;
 use app\extensions\custom\yii\JsManager;
 use app\models\Store;
 use app\models\multiple\DataReport;
-use \app\models\CustBase;
-use \app\models\CustEffect;
 
 /**
  * @var $this View
  * @var $store Store
- * @var $totalBase CustBase
- * @var $totalEffect CustEffect
+ * @var $reports DataReport[]
+ * @var $totalReport DataReport
+ * @var $rtrpt DataReport
  */
 JsManager::instance()->register("js/yii.store.js");
 $this->params["store"]=$store;
-$report=new DataReport($totalBase,$totalEffect);
 ?>
 <section class="container-fluid" id="main-page" data-page="store-index" data-refresh-url="<?=Url::to(["/store/index-refresh","id"=>$store->id])?>">
     <!--主区横条start-->
@@ -50,31 +48,21 @@ $report=new DataReport($totalBase,$totalEffect);
                         <tbody>
                         <tr>
                             <td>实时数据：</td>
-                            <td>花费：1823.83元</td>
-                            <td>展现量：78493</td>
-                            <td>点击量：3687</td>
-                            <td>点击率：4.70%</td>
-                            <td>PPC：0.49元</td>
-                            <td>购物车总数：215</td>
-                            <td>成交额：<span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""
-                                          data-original-title="直接成交金额: 1364.98&lt;br&gt;&lt;/span&gt;间接成交金额: 571.64">1936.62</span>元
-                            </td>
-                            <td>收藏量：<span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""
-                                          data-original-title="店铺收藏数: 23&lt;br&gt;&lt;/span&gt;宝贝收藏数: 243">266</span>次
-                            </td>
-                            <td>成交量：<span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""
-                                          data-original-title="直接成交笔数: 24&lt;br&gt;&lt;/span&gt;间接成交笔数: 11">35</span>笔
-                            </td>
+                            <td>花费：<?=$rtrpt->costYuan()?>元</td>
+                            <td>展现量：<?=$rtrpt->impression?></td>
+                            <td>点击量：<?=$rtrpt->click?></td>
+                            <td>点击率：<?=$rtrpt->ctr*100?>%</td>
+                            <td>PPC：<?=$rtrpt->cpcYuan()?>元</td>
+                            <td>购物车总数：<?=$rtrpt->carttotal?></td>
+                            <td>成交额：<?=$rtrpt->payYuan()?>元</td>
+                            <td>收藏量：<?=$rtrpt->favtotal?>次</td>
+                            <td>成交量：<?=$rtrpt->paycount?>笔</td>
                             <td class="w30 tr">
-                                <div class="rel update_cache" data-toggle="tooltip" data-placement="top"
-                                     data-trigger="hover" title=""
-                                     data-original-title="系统每5分钟自动刷新一次，点击图标会立即刷新。&lt;br&gt;&lt;/div&gt;实时数据成交低不要急，有些点击不会马上转化的哦">
-                                    <i class="iconfont f24 dib lh30 b vh"></i>
-                                    <!--            <i class="iconfont f24 lh30 abs r0 b clock-long-hand">&#xe64e;</i>
-                                                <i class="iconfont f24 lh30 abs r0 b clock-short-hand">&#xe64b;</i> -->
-                                    <i class="clock-long-hand"> </i>
-                                    <i class="clock-short-hand"> </i>
-                                </div>
+                            <div class="rel update_cache" data-toggle="tooltip" data-placement="top" data-trigger="hover" title="">
+                                <i class="iconfont f24 dib lh30 b vh"></i>
+                                <i class="clock-long-hand"> </i>
+                                <i class="clock-short-hand"> </i>
+                            </div>
                             </td>
                         </tr>
                         </tbody>
@@ -94,12 +82,12 @@ $report=new DataReport($totalBase,$totalEffect);
                         <td>购物车总数</td>
                     </tr>
                     <tr class="data">
-                        <td class="b">￥<?=$totalBase->costYuan()?></td>
-                        <td><?=$totalBase->impressions?></td>
-                        <td><?=$totalBase->click?></td>
-                        <td><?=100*$totalBase->ctr?>%</td>
-                        <td><?=$totalBase->cpcYuan()?></td>
-                        <td><?=$totalEffect->carttotal?></td>
+                        <td class="b">￥<?=$totalReport->costYuan()?></td>
+                        <td><?=$totalReport->impression?></td>
+                        <td><?=$totalReport->click?></td>
+                        <td><?=100*$totalReport->ctr?>%</td>
+                        <td><?=$totalReport->cpcYuan()?></td>
+                        <td><?=$totalReport->carttotal?></td>
                     </tr>
                     <tr>
                         <td>成交额</td>
@@ -115,18 +103,18 @@ $report=new DataReport($totalBase,$totalEffect);
                     <tr class="data">
                         <td class="b">
                                 <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title="">
-                                    ￥<span class="pay"><?=$totalEffect->payTotalYuan()?></span>
+                                    ￥<span class="pay"><?=$totalReport->payYuan()?></span>
                                 </span>
                         </td>
                         <td>
-                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->favTotal()?></span>
+                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalReport->favtotal?></span>
                         </td>
                         <td>
-                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalEffect->payCountTotal()?></span>
+                            <span data-toggle="tooltip" data-placement="top" data-trigger="hover" title=""><?=$totalReport->paycount?></span>
                         </td>
-                        <td><?=100*$report->takeRate()?>%</td>
-                        <td><?=$report->roi()?></td>
-                        <td><?=round($totalEffect->payCountTotal()?$totalEffect->payTotalYuan()/$totalEffect->payCountTotal():0,2)?></td>
+                        <td><?=100*$totalReport->coverage?>%</td>
+                        <td><?=$totalReport->roi?></td>
+                        <td><?=$totalReport->paypaycountYuan()?></td>
                     </tr>
                     </tbody>
                 </table>

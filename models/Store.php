@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\extensions\custom\taobao\TopClient;
+use app\models\multiple\DataReport;
 use app\models\multiple\GlobalModel;
 use Yii;
 
@@ -69,15 +70,47 @@ class Store extends \yii\db\ActiveRecord
     public function getAdgroups(){
         return $this->hasMany(Adgroup::className(),["nick"=>"nick"])->inverseOf("store");
     }
+    public function getRealTimeReport(){
+        return $this->hasOne(CustRealTimeReport::className(),["nick"=>"nick"])->inverseOf("store");
+    }
 
     //--get
-    public function getBases($day){
+    public function getDataReports($day){
         $start=date("Y-m-d",strtotime("- $day days"));
-        return CustBase::find()->where(["nick"=>$this->nick])->andWhere("date >='$start'")->all();
+        /** @var CustBase[] $bases */
+        $bases=CustBase::find()->where(["nick"=>$this->nick])->andWhere("date >='$start'")->all();
+        /** @var CustEffect $effects */
+        $effects=CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date >='$start'")->all();
+        $reports=[];
+        if($bases){
+            foreach($bases as $base){
+                $reports[$base->date][$base->source]["base"]=$base;
+            }
+        }
+        if($effects){
+            foreach($effects as $effect){
+                $reports[$effect->date][$effect->source]["effect"]=$effect;
+            }
+        }
+        foreach($reports as $date=>$reports2){
+            foreach($reports2 as $source=>$reports3){
+                $reports[$date][$source]["report"]=(new DataReport())->loadData([$reports3["base"],$reports3["effect"]]);
+            }
+        }
+//        echo "<pre>";print_r($reports);exit;
+        $ret=[];
+        foreach($reports as $date=>$reports2){
+            $temps=[];
+            foreach($reports2 as $reports3){
+                $temps[]=$reports3["report"];
+            }
+            $ret[$date] = DataReport::merge($temps);
+        }
+        return $ret;
     }
-    public function getEffects($day){
-        $start=date("Y-m-d",strtotime("- $day days"));
-        return CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date >='$start'")->all();
+    public function getRtDataReport(){
+        $report=new DataReport();
+        return $report->loadData($this->realTimeReport);
     }
 
     //--refresh data
@@ -285,22 +318,13 @@ class Store extends \yii\db\ActiveRecord
         $req->setTheDate($date);
         $response=TopClient::getInstance()->execute($req,$this->session);
 //        echo "<pre>";print_r($response);exit;
-        CustRealTimeReport::deleteAll(["nick"=>$this->nick,"thedate"=>$date]);
+        CustRealTimeReport::deleteAll(["nick"=>$this->nick]);
         $report=new CustRealTimeReport();
-        $datas=$response->results->rt_rpt_result_entity_d_t_o;
-        if($datas){
-            foreach($datas as $data){
-                $data=(array)$data;
-                foreach($data as $k=>$v){
-                    if(in_array($k,["nick","thedate"]))continue;
-                    $report->$k+=$v;
-                }
-            }
-        }
+        $data=(array)$response->results->rt_rpt_result_entity_d_t_o[0];
+        $report->load($data,"");
         $report->thedate=$date;
         $report->nick=$this->nick;
         $report->api_time=date("Y-m-d H:i:s");
-        $report->calculate();
         if(!$flag=$report->save()){
             print_r($report->errors);exit;
         }

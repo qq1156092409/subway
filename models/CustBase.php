@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use app\models\multiple\ReportInterface;
-use app\models\multiple\BaseReportTrait;
 use Yii;
 
 /**
@@ -21,9 +19,8 @@ use Yii;
  * @property string $ctr
  * @property string $api_time
  */
-class CustBase extends \yii\db\ActiveRecord implements ReportInterface
+class CustBase extends \yii\db\ActiveRecord
 {
-    use BaseReportTrait;
     /**
      * @inheritdoc
      */

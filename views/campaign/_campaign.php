@@ -6,14 +6,11 @@ use app\models\CampaignEffect;
 use app\models\multiple\DataReport;
 /**
  * @var $campaign Campaign
- * @var $baseTotal CampaignBase
- * @var $effectTotal CampaignEffect
+ * @var $reports DataReport[]
+ * @var $totalReport DataReport
  */
-$bases = $campaign->getBases(7);
-$effects = $campaign->getEffects(7);
-$baseTotal=CampaignBase::merge($bases);
-$effectTotal=CampaignEffect::merge($effects);
-$totalReport=new DataReport($baseTotal,$effectTotal);
+$reports = $campaign->getDataReports(7);
+$totalReport=DataReport::merge($reports);
 ?>
 <tr id="campaign-<?=$campaign->campaign_id?>" data-id="<?=$campaign->campaign_id?>" class="<?=$campaign->online_status=="offline"?"gray_light":""?>">
     <td class="check_column  sorting_1"><input type="checkbox" value="<?=$campaign->campaign_id?>"></td>
@@ -52,17 +49,17 @@ $totalReport=new DataReport($baseTotal,$effectTotal);
         80%
         <i class="iconfont edit_schedule"></i>
     </td>
-    <td class=" "><?=$baseTotal->impressions?></td>
-    <td class=" "><?=$baseTotal->click?></td>
-    <td class=" "><?=100*$baseTotal->ctr?>%</td>
-    <td class=" "><?=$baseTotal->costYuan()?></td>
-    <td class=" "><?=$baseTotal->cpcYuan()?></td>
-    <td class=" "><?=$effectTotal->favTotal()?></td>
-    <td class=" "><?=$effectTotal->carttotal?></td>
-    <td class=" "><?=$effectTotal->payCountTotal()?></td>
-    <td class=" "><?=$totalReport->takeRate()*100?>%</td>
-    <td class=" "><?=$effectTotal->payTotalYuan()?></td>
-    <td class=" "><?=$totalReport->roi()?></td>
+    <td class=" "><?=$totalReport->impression?></td>
+    <td class=" "><?=$totalReport->click?></td>
+    <td class=" "><?=100*$totalReport->ctr?>%</td>
+    <td class=" "><?=$totalReport->costYuan()?></td>
+    <td class=" "><?=$totalReport->cpcYuan()?></td>
+    <td class=" "><?=$totalReport->favtotal?></td>
+    <td class=" "><?=$totalReport->carttotal?></td>
+    <td class=" "><?=$totalReport->paycount?></td>
+    <td class=" "><?=$totalReport->coverage*100?>%</td>
+    <td class=" "><?=$totalReport->payYuan()?></td>
+    <td class=" "><?=$totalReport->roi?></td>
     <td class=" ">
         <span class="b"><?=$campaign->online_status=="online"?"推广中":"暂停中"?></span>
         <a class="hover_show update_camp single" href="javascript:;"><?=$campaign->online_status!="online"?"推广":"暂停"?></a>

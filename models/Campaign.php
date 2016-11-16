@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\extensions\custom\taobao\TopClient;
+use app\models\multiple\DataReport;
 use app\models\multiple\GlobalModel;
 use Yii;
 
@@ -76,13 +77,38 @@ class Campaign extends \yii\db\ActiveRecord
         return $this->hasOne(CampaignBudget::className(),["campaign_id"=>"campaign_id"]);
     }
     //--get
-    public function getBases($day){
+    public function getDataReports($day){
         $start=date("Y-m-d",strtotime("- $day days"));
-        return CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date >='$start'")->all();
-    }
-    public function getEffects($day){
-        $start=date("Y-m-d",strtotime("- $day days"));
-        return CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date >='$start'")->all();
+        /** @var CampaignBase[] $bases */
+        $bases=CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date >='$start'")->all();
+        /** @var CampaignEffect[] $effects */
+        $effects=CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date >='$start'")->all();
+        $reports=[];
+        if($bases){
+            foreach($bases as $base){
+                $reports[$base->date][$base->source]["base"]=$base;
+            }
+        }
+        if($effects){
+            foreach($effects as $effect){
+                $reports[$effect->date][$effect->source]["effect"]=$effect;
+            }
+        }
+        foreach($reports as $date=>$reports2){
+            foreach($reports2 as $source=>$reports3){
+                $reports[$date][$source]["report"]=(new DataReport())->loadData([$reports3["base"],$reports3["effect"]]);
+            }
+        }
+//        echo "<pre>";print_r($reports);exit;
+        $ret=[];
+        foreach($reports as $date=>$reports2){
+            $temps=[];
+            foreach($reports2 as $reports3){
+                $temps[]=$reports3["report"];
+            }
+            $ret[$date] = DataReport::merge($temps);
+        }
+        return $ret;
     }
     public function settleReasonZh(){
         $map=[
