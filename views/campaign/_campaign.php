@@ -1,8 +1,6 @@
 <?php
 use \app\models\Campaign;
 use yii\helpers\Url;
-use app\models\CampaignBase;
-use app\models\CampaignEffect;
 use app\models\multiple\DataReport;
 /**
  * @var $campaign Campaign
@@ -46,7 +44,7 @@ $totalReport=DataReport::merge($reports);
         计算机 <i class="iconfont edit_platform"></i>
     </td>
     <td class=" ">
-        80%
+        <?=$campaign->campaignSchedule?$campaign->campaignSchedule->scheduleNow():100?>%
         <i class="iconfont edit_schedule"></i>
     </td>
     <td class=" "><?=$totalReport->impression?></td>

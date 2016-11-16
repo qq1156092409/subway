@@ -52,4 +52,40 @@ class CampaignSchedule extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
+
+    public function scheduleNow(){
+        $schedules=$this->schedules();
+        $now=date("m-d");
+        $week=date("w");
+        if($schedules[$week]){
+            foreach($schedules[$week] as $schedule){
+                if($schedule["start"]<=$now && $schedule["end"]>=$now){
+                    return $schedule["num"];
+                }
+            }
+        }
+        return 100;
+    }
+
+    public function schedules(){
+        $ret=[];
+        $scheduleStr=$this->schedule;
+        $weekSchedules = explode(";", $scheduleStr);
+        if($weekSchedules){
+            foreach($weekSchedules as $week=>$scheduleStr2){
+                $daySchedules = explode(",", $scheduleStr2);
+                foreach($daySchedules as $schedule){
+                    //00:00-01:00:60
+                    $temp=[
+                        "start"=>substr($schedule,0,5),
+                        "end"=>substr($schedule,6,5),
+                        "num"=>substr($schedule,12),
+                    ];
+                    $ret[$week][]=$temp;
+                }
+
+            }
+        }
+        return $ret;
+    }
 }

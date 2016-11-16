@@ -29,8 +29,8 @@ class TestController extends Controller {
 
 //        VasOrder::refreshData();
 
-//        $campaign = Campaign::findOne(2709348);
-//        echo $campaign->refreshSchedule();
+        $campaign = Campaign::findOne(2709348);
+        echo $campaign->campaignSchedule->scheduleNow();
 
 //        $adgroup = Adgroup::findOne(432098541);
 //        echo $adgroup->refreshAdgroupCatmatch();

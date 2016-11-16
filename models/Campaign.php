@@ -76,6 +76,9 @@ class Campaign extends \yii\db\ActiveRecord
     public function getCampaignBudget(){
         return $this->hasOne(CampaignBudget::className(),["campaign_id"=>"campaign_id"]);
     }
+    public function getCampaignSchedule(){
+        return $this->hasOne(CampaignSchedule::className(),["campaign_id"=>"campaign_id"]);
+    }
     //--get
     public function getDataReports($day){
         $start=date("Y-m-d",strtotime("- $day days"));

@@ -54,6 +54,7 @@ class StoreExecute{
         /** @var Campaign $campaign */
         foreach($store->campaigns as $campaign){
             $campaign->refreshBudget();
+            $campaign->refreshSchedule();
             $campaign->refreshAdgroups();
             $campaign->refreshBaseReports();
             $campaign->refreshEffectReports();
