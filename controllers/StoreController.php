@@ -29,7 +29,10 @@ class StoreController extends Controller
     public function actionIndexRefresh($id){
         $store = $this->getStore($id);
 //        $store->refreshRealTimeReport();
-//        $store->refreshBalance();
+        if(!($store->balance && (time()-strtotime($store->balance->api_time))<3600)){
+            $store->refreshBalance();
+            unset($store->balance);
+        }
         \Yii::$app->response->format=Response::FORMAT_JSON;
         return [
             "balance"=>$store->balance,
