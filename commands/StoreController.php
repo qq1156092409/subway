@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: admin
- * Date: 2016/9/29
- * Time: 19:24
- */
 
 namespace app\commands;
 
@@ -33,7 +27,7 @@ class StoreController extends Controller{
                 $this->doOptimize($store) and $success++;
             }
         }
-        echo json_encode([
+        echo Json::encode([
             "total"=>$total,
             "error"=>($total-$success),
             "success"=>$success,
@@ -85,7 +79,7 @@ class StoreController extends Controller{
                 unset($stores[$k]);
             }
         }
-        ConsoleHelper::t(json_encode([
+        ConsoleHelper::t(Json::encode([
             "total"=>$total,
             "error"=>($total-$success),
             "success"=>$success,
@@ -128,7 +122,7 @@ class StoreController extends Controller{
                 unset($stores[$k]);
             }
         }
-        ConsoleHelper::t(json_encode([
+        ConsoleHelper::t(Json::encode([
             "total"=>$total,
             "error"=>($total-$success),
             "success"=>$success,

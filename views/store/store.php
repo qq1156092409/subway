@@ -4,6 +4,7 @@ use yii\web\View;
 use app\extensions\custom\yii\JsManager;
 use app\models\Store;
 use app\models\multiple\DataReport;
+use \yii\helpers\Json;
 
 /**
  * @var $this View
@@ -14,6 +15,20 @@ use app\models\multiple\DataReport;
  */
 JsManager::instance()->register("js/yii.store.js");
 $this->params["store"]=$store;
+
+
+//process data form chart
+$xAxis=$costs=$pays=[];
+for($i=7;$i>=1;$i--){
+    $date=date("Y-m-d",strtotime("- $i day"));
+    $xAxis[]=date("m-d",strtotime($date));
+    $dateReport=isset($reports[$date])?$reports[$date]:null;
+    $costs[]=$dateReport?$dateReport->costYuan():0;
+    $pays[]=$dateReport?$dateReport->payYuan():0;
+}
+$xAxis[]="实时数据";
+$costs[]=$rtrpt->costYuan();
+$pays[]=$rtrpt->payYuan();
 ?>
 <section class="container-fluid" id="main-page" data-page="store-index" data-refresh-url="<?=Url::to(["/store/index-refresh","id"=>$store->id])?>">
     <!--主区横条start-->
@@ -114,33 +129,44 @@ $this->params["store"]=$store;
                         </td>
                         <td><?=100*$totalReport->coverage?>%</td>
                         <td><?=$totalReport->roi?></td>
-                        <td><?=$totalReport->paypaycountYuan()?></td>
+                        <td><?=$totalReport->pay_paycountYuan()?></td>
                     </tr>
                     </tbody>
                 </table>
 
-                <div id="account_char" class="pct100" data-highcharts-chart="0">
+                <div>
+                    <div id="account_char" class="pct100" data-highcharts-chart="0"></div>
                     <script>
-                        var option={
-                            title: {
-                                text: 'ECharts 入门示例'
-                            },
-                            tooltip: {},
+                        var option=  {
+                            tooltip: { trigger: 'axis'},
                             legend: {
-                                data:['销量']
+                                data:['花费','成交']
                             },
+                            calculable : true,
                             xAxis: {
-                                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+                                type: 'category',
+                                boundaryGap: false,
+                                data: <?=Json::encode($xAxis)?>
                             },
-                            yAxis: {},
-                            series: [{
-                                name: '销量',
-                                type: 'bar',
-                                data: [5, 20, 36, 10, 10, 20]
-                            }]
+                            yAxis: { type: 'value'},
+                            series: [
+                                {
+                                    name:'花费',
+                                    type:'line',
+                                    stack: '总量',
+                                    data:<?=Json::encode($costs)?>
+                                },
+                                {
+                                    name:'成交',
+                                    type:'line',
+                                    stack: '总量',
+                                    data:<?=Json::encode($pays)?>
+                                }
+                            ]
                         };
                     </script>
                 </div>
+
             </div>
         </article>
         <aside>

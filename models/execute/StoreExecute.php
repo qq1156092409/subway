@@ -55,18 +55,9 @@ class StoreExecute{
         foreach($store->campaigns as $campaign){
             $campaign->refreshBudget();
             $campaign->refreshSchedule();
-            $campaign->refreshAdgroups();
             $campaign->refreshBaseReports();
             $campaign->refreshEffectReports();
-        }
-        /** @var Adgroup $adgroup */
-        foreach($store->adgroups as $adgroup){
-            $adgroup->refreshKeywords();
-            $adgroup->refreshKeywordBases();
-            $adgroup->refreshKeywordEffects();
-            $adgroup->refreshCreativeBases();
-            $adgroup->refreshCreativeEffects();
-//            $adgroup->refreshKeywordRankings();//实时排名 很耗时
+            $campaign->refreshAdgroups();
         }
     }
     protected function deleteKeywords(){
@@ -105,6 +96,18 @@ class StoreExecute{
 //        $this->checkSubscribe();
 
         $this->refreshCommon();
+
+        $store=$this->_store;
+        /** @var Adgroup $adgroup */
+        foreach($store->adgroups as $adgroup){
+            $adgroup->refreshCreatives();
+            $adgroup->refreshCreativeBases();
+            $adgroup->refreshCreativeEffects();
+            $adgroup->refreshKeywords();
+            $adgroup->refreshKeywordBases();
+            $adgroup->refreshKeywordEffects();
+//            $adgroup->refreshKeywordRankings();//实时排名 很耗时
+        }
     }
 
     public function refresh(){

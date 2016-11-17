@@ -35,7 +35,7 @@ class DataReport extends Model
     public $cpm;
     public $roi;
     public $coverage;
-    public $paypaycount;//pay / paycount 	成交量单价
+    public $pay_paycount;//pay / paycount 	成交量单价
 
     public function init(){
         $this->reset();
@@ -60,7 +60,7 @@ class DataReport extends Model
      * @param $effect
      */
     protected function loadFromBaseEffect($base,$effect){
-        $attributes=ArrayHelper::merge($base->attributes,$effect->attributes);
+        $attributes=ArrayHelper::merge($base?$base->attributes:[],$effect?$effect->attributes:[]);
         $this->loadFromAttributes($attributes);
         //fix other
         $this->impression=$base->impressions;
@@ -103,7 +103,7 @@ class DataReport extends Model
         $this->ctr=round($this->impression?$this->click/$this->impression:0,4);
         $this->coverage=round($this->click?$this->paycount/$this->click:0,4);
         $this->roi=round($this->cost?$this->pay/$this->cost:0,2);
-        $this->paypaycount=round($this->paycount?$this->pay/$this->paycount:0,0);
+        $this->pay_paycount=round($this->paycount?$this->pay/$this->paycount:0,0);
     }
 
     /**
@@ -146,7 +146,7 @@ class DataReport extends Model
     public function cpcYuan(){
         return $this->cpc/100;
     }
-    public function paypaycountYuan(){
-        return $this->paypaycount/100;
+    public function pay_paycountYuan(){
+        return $this->pay_paycount/100;
     }
 }

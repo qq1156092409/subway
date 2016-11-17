@@ -19,8 +19,10 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
 
-        $store = Store::findOne(20);
-        $reports=$store->getDataReports(7);
+        $store = Store::findOne(15);
+        echo $store->refreshCustEffects();
+//        $reports=$store->getDataReports(7);
+//        echo "<pre>";print_r($reports);exit;
 
 //        $campaigns=Campaign::find()->all();
 //        foreach($campaigns as $campaign){
@@ -29,8 +31,8 @@ class TestController extends Controller {
 
 //        VasOrder::refreshData();
 
-        $campaign = Campaign::findOne(2709348);
-        echo $campaign->campaignSchedule->scheduleNow();
+//        $campaign = Campaign::findOne(2709348);
+//        echo $campaign->refreshAdgroups();
 
 //        $adgroup = Adgroup::findOne(432098541);
 //        echo $adgroup->refreshAdgroupCatmatch();

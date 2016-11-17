@@ -26,14 +26,6 @@ class GlobalModel
                 foreach($columns as $column){
                     if($column=="api_time"){
                         $temp[]=$now;
-                    }elseif(in_array($column,["favShopCount","favItemCount"])){
-                        $a=null;
-                        if(isset($data[$column])){
-                            $a=$data[$column];
-                        }else{
-                            $a=$data[strtolower($column)];
-                        }
-                        $temp[]=$a;
                     }else{
                         $temp[]=isset($data[$column])?$data[$column]:null;
                     }

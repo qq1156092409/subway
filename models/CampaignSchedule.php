@@ -57,7 +57,7 @@ class CampaignSchedule extends \yii\db\ActiveRecord
         $schedules=$this->schedules();
         $now=date("m-d");
         $week=date("w");
-        if($schedules[$week]){
+        if(isset($schedules[$week])){
             foreach($schedules[$week] as $schedule){
                 if($schedule["start"]<=$now && $schedule["end"]>=$now){
                     return $schedule["num"];
@@ -70,6 +70,9 @@ class CampaignSchedule extends \yii\db\ActiveRecord
     public function schedules(){
         $ret=[];
         $scheduleStr=$this->schedule;
+        if($scheduleStr=="all"){
+            return $ret;
+        }
         $weekSchedules = explode(";", $scheduleStr);
         if($weekSchedules){
             foreach($weekSchedules as $week=>$scheduleStr2){

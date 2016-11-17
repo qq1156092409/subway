@@ -9,12 +9,12 @@ use Yii;
  *
  * @property string $nick
  * @property string $date
+ * @property string $source
  * @property integer $indirectpay
- * @property integer $favShopCount
- * @property integer $favItemCount
+ * @property integer $favshopcount
+ * @property integer $favitemcount
  * @property integer $indirectpaycount
  * @property integer $indirectcarttotal
- * @property string $source
  * @property integer $carttotal
  * @property integer $directcarttotal
  * @property integer $directpay
@@ -37,9 +37,9 @@ class CustEffect extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nick', 'date'], 'required'],
+            [['nick', 'date', 'source'], 'required'],
             [['date', 'api_time'], 'safe'],
-            [['indirectpay', 'favShopCount', 'favItemCount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
+            [['indirectpay', 'favshopcount', 'favitemcount', 'indirectpaycount', 'indirectcarttotal', 'carttotal', 'directcarttotal', 'directpay', 'directpaycount'], 'integer'],
             [['nick'], 'string', 'max' => 64],
             [['source'], 'string', 'max' => 16],
         ];
@@ -53,12 +53,12 @@ class CustEffect extends \yii\db\ActiveRecord
         return [
             'nick' => 'Nick',
             'date' => 'Date',
+            'source' => 'Source',
             'indirectpay' => 'Indirectpay',
-            'favShopCount' => 'Favshopcount',
-            'favItemCount' => 'Favitemcount',
+            'favshopcount' => 'Favshopcount',
+            'favitemcount' => 'Favitemcount',
             'indirectpaycount' => 'Indirectpaycount',
             'indirectcarttotal' => 'Indirectcarttotal',
-            'source' => 'Source',
             'carttotal' => 'Carttotal',
             'directcarttotal' => 'Directcarttotal',
             'directpay' => 'Directpay',
@@ -66,10 +66,4 @@ class CustEffect extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
-
-    //--method
-    public function payTotalYuan(){
-        return round($this->payTotal()/100, 2);
-    }
-    //--static
 }

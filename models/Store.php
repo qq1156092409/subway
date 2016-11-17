@@ -94,10 +94,11 @@ class Store extends \yii\db\ActiveRecord
         }
         foreach($reports as $date=>$reports2){
             foreach($reports2 as $source=>$reports3){
-                $reports[$date][$source]["report"]=(new DataReport())->loadData([$reports3["base"],$reports3["effect"]]);
+                $a=isset($reports3["base"])?$reports3["base"]:null;
+                $b=isset($reports3["effect"])?$reports3["effect"]:null;
+                $reports[$date][$source]["report"]=(new DataReport())->loadData([$a,$b]);
             }
         }
-//        echo "<pre>";print_r($reports);exit;
         $ret=[];
         foreach($reports as $date=>$reports2){
             $temps=[];
@@ -242,7 +243,7 @@ class Store extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-7 day"));
+        $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CustBase $exist */
         $exist=CustBase::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -278,7 +279,7 @@ class Store extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-7 day"));
+        $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CustEffect $exist */
         $exist=CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
         if($exist){
@@ -304,6 +305,7 @@ class Store extends \yii\db\ActiveRecord
             if($count<$pageSize){
                 break;
             }
+            $pageNo++;
         }
         return $count;
     }
