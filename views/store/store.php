@@ -14,8 +14,6 @@ use \yii\helpers\Json;
  * @var $rtrpt DataReport
  */
 JsManager::instance()->register("js/yii.store.js");
-$this->params["store"]=$store;
-
 
 //process data form chart
 $xAxis=$costs=$pays=[];

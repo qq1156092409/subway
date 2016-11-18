@@ -51,6 +51,7 @@ class StoreController extends Controller
         if(!$store){
             throw new NotFoundHttpException("store not found");
         }
+        \Yii::$app->view->params["store"]=$store;
         return $store;
     }
 
