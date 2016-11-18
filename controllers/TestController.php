@@ -4,6 +4,7 @@ namespace app\controllers;
 use app\extensions\custom\taobao\TopClient;
 use app\models\Adgroup;
 use app\models\Campaign;
+use app\models\CampaignAreaOption;
 use app\models\Channel;
 use app\models\CustRealTimeReport;
 use app\models\Keyword;
@@ -19,8 +20,14 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
 
-        $store = Store::findOne(15);
-        echo $store->refreshCustEffects();
+//        echo CampaignAreaOption::refreshData();
+
+//        $store = Store::findOne(15);
+        $campaign = Campaign::findOne(2709348);
+//        $adgroup = Adgroup::findOne(432098541);
+
+        echo $campaign->refreshArea();
+//        echo $store->refreshCustEffects();
 //        $reports=$store->getDataReports(7);
 //        echo "<pre>";print_r($reports);exit;
 
@@ -31,10 +38,8 @@ class TestController extends Controller {
 
 //        VasOrder::refreshData();
 
-//        $campaign = Campaign::findOne(2709348);
 //        echo $campaign->refreshAdgroups();
 
-//        $adgroup = Adgroup::findOne(432098541);
 //        echo $adgroup->refreshAdgroupCatmatch();
 //        echo "<pre>"; print_r($response);
 //        Channel::refreshData();

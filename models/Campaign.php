@@ -79,6 +79,9 @@ class Campaign extends \yii\db\ActiveRecord
     public function getCampaignSchedule(){
         return $this->hasOne(CampaignSchedule::className(),["campaign_id"=>"campaign_id"]);
     }
+    public function getCampaignArea(){
+        return $this->hasOne(CampaignArea::className(),["campaign_id"=>"campaign_id"]);
+    }
     //--get
     public function getDataReports($day){
         $start=date("Y-m-d",strtotime("- $day days"));
@@ -302,5 +305,15 @@ class Campaign extends \yii\db\ActiveRecord
         $schedule->attributes=(array)$response->campaign_schedule;
         $schedule->api_time=date("Y-m-d H:i:s");
         return $schedule->save();
+    }
+    public function refreshArea(){
+        $req = new \SimbaCampaignAreaGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+//        echo "<pre>";print_r($response);exit;
+        CampaignArea::deleteAll(["campaign_id"=>$this->campaign_id]);
+        return GlobalModel::batchInsert(CampaignArea::className(),$response->campaign_area);
     }
 }

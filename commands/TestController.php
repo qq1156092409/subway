@@ -20,10 +20,10 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
 
         $fail=0;
-        $campaigns=Campaign::find()->joinWith(["campaignBudget"])->where("campaign_budget.campaign_id is null")->all();
+        $campaigns=Campaign::find()->joinWith(["campaignArea"])->where("campaign_area.campaign_id is null")->all();
         foreach($campaigns as $campaign){
             try{
-                $campaign->refreshBudget();
+                $campaign->refreshArea();
             }catch (\Exception $e){
                 $fail++;
             }
