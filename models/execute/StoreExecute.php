@@ -101,13 +101,8 @@ class StoreExecute{
         $store=$this->_store;
         /** @var Adgroup $adgroup */
         foreach($store->adgroups as $adgroup){
-            $adgroup->refreshCreatives();
-            $adgroup->refreshCreativeBases();
-            $adgroup->refreshCreativeEffects();
-            $adgroup->refreshKeywords();
-            $adgroup->refreshKeywordBases();
-            $adgroup->refreshKeywordEffects();
-//            $adgroup->refreshKeywordRankings();//实时排名 很耗时
+            $execute = new AdgroupExecute($adgroup);
+            $execute->refresh(false);
         }
     }
 

@@ -14,9 +14,9 @@ $totalReport=DataReport::merge($reports);
     <td class="check_column  sorting_1"><input type="checkbox" value="<?=$campaign->campaign_id?>"></td>
     <td class=" ">
       <span class="title">
-          <a class="item_base" title="<?=$campaign->title?>" target="_blank" href="<?=Url::to(["campaign","id"=>$campaign->campaign_id])?>"><?=$campaign->title?></a>
+          <a class="item_base" title="<?=$campaign->title?>" href="<?=Url::to(["/campaign","id"=>$campaign->campaign_id])?>"><?=$campaign->title?></a>
       </span>
-        <span class="label label-default mnt_desc">手动</span>
+        <span class="campaign-trusteeship-status label <?=$campaign->isTrusteeship()?"label-primary":"label-default"?> mnt_desc"><?=$campaign->isTrusteeship()?"自动":"手动"?></span>
         <span class="ml10">(<?=$campaign->getAdgroups()->count()?>个宝贝)</span>
          <i class="iconfont edit_title"></i>
          <i class="iconfont show_chart"></i>
@@ -67,6 +67,8 @@ $totalReport=DataReport::merge($reports);
     </td>
     <td class="b tc ">
         <a href="<?=Url::to(["/campaign","id"=>$campaign->campaign_id])?>">进入计划</a><br>
-        <a href="javaScript:;" class="change_camp_mnt" type="1"> 开启托管 </a>
+        <a href="javaScript:;" class="change_camp_mnt campaign-toggle-trusteeship" data-url="<?=Url::to(["/campaign/toggle-trusteeship","id"=>$campaign->campaign_id])?>">
+            <?=$campaign->isTrusteeship()?"取消托管":"开启托管"?>
+        </a>
     </td>
 </tr>

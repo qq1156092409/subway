@@ -100,6 +100,12 @@ class Adgroup extends \yii\db\ActiveRecord
     public function getKeywordPools(){
         return $this->hasMany(KeywordPool::className(),["adgroup_id"=>"adgroup_id"])->inverseOf("adgroup");
     }
+    public function getItem(){
+        return $this->hasOne(Item::className(),["num_id"=>"num_iid"]);
+    }
+    public function getCreatives(){
+        return $this->hasMany(Creative::className(),["adgroup_id"=>"adgroup_id"]);
+    }
 
 
     //--refresh data

@@ -1,25 +1,21 @@
 <?php
+use yii\helpers\Url;
+use app\models\Adgroup;
 /**
- * Created by PhpStorm.
- * User: admin
- * Date: 2016/11/17
- * Time: 22:24
+ * @var $adgroup Adgroup
  */
 ?>
-<tr class="adg_tr  odd" data-id="35560990" adgroup_id="715202952" campaign_id="35560990" is_quick_opered="0" cat_id="162205">
-    <td class="check_column vm "><input type="checkbox" class="kid_check" value="715202952"></td>
+<tr id="adgroup-<?=$adgroup->adgroup_id?>" class="adg_tr adgroup-model" data-id="<?=$adgroup->adgroup_id?>">
+    <td class="check_column vm "><input type="checkbox" class="kid_check adgroup-check" value="<?=$adgroup->adgroup_id?>"></td>
     <td class="td-img ">
         <a class="item_base" target="_blank" href="http://item.taobao.com/item.htm?id=539103908109">
-
             <img width="70" height="70" src="./campaign_files/TB2rygzab2B11BjSsplXXcMDVXa_!!409358473.jpg_70x70.jpg">
-
         </a>
     </td>
     <td class="item_dark ">
-
         <span class="title w280">
-            <a id="show_title_35560990" class="item_base to_optimize" target="_blank" adgroup_id="715202952" href="javascript:;">洁儿林韩国百搭秋冬街拍水洗复古宽松阔腿裤撕边牛仔裤卷边长裤女</a>
-            &nbsp;￥<span class="item_price">69.00</span>
+            <a id="adgroup-<?=$adgroup->adgroup_id?>" class="item_base to_optimize" target="_blank" href="<?=Url::to(["/adgroup","id"=>$adgroup->adgroup_id])?>"><?=$adgroup->item?$adgroup->item->title:"-"?></a>
+            &nbsp;￥<span class="item_price"><?=$adgroup->item?$adgroup->item->price:"-"?></span>
             <span class="badge r count-cr hide mt5">0</span>
             <span class="badge r count-kw hide mt5 mr5">0</span>
             <span class="state_opt r mr10">

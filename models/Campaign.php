@@ -82,6 +82,9 @@ class Campaign extends \yii\db\ActiveRecord
     public function getCampaignArea(){
         return $this->hasOne(CampaignArea::className(),["campaign_id"=>"campaign_id"]);
     }
+    public function getRealTimeReport(){
+        return $this->hasOne(CampaignRealTimeReport::className(),["campaignid"=>"campaign_id"])->onCondition(["thedate"=>date("Y-m-d")]);
+    }
     //--get
     public function getDataReports($day){
         $start=date("Y-m-d",strtotime("- $day days"));
@@ -118,12 +121,23 @@ class Campaign extends \yii\db\ActiveRecord
         }
         return $ret;
     }
+    public function getRtDataReport(){
+        $report=new DataReport();
+        return $report->loadData($this->realTimeReport);
+    }
     public function settleReasonZh(){
         $map=[
             1=>"余额不足",
             2=>"超过日限额",
         ];
         return strtr($this->settle_reason,$map);
+    }
+
+    public function isTrusteeship(){
+        if($this->campaignSetting && $this->campaignSetting->status==CampaignSetting::START){
+            return true;
+        }
+        return false;
     }
 
     //--refresh data

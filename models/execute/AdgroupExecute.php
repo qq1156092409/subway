@@ -26,6 +26,23 @@ class AdgroupExecute{
         }
     }
 
+    public function refresh($validate=true){
+        if($validate){
+            $this->checkCampaign();
+            $this->checkStore();
+        }
+
+        $adgroup=$this->_adgroup;
+
+        $adgroup->refreshCreatives();
+        $adgroup->refreshCreativeBases();
+        $adgroup->refreshCreativeEffects();
+        $adgroup->refreshKeywords();
+        $adgroup->refreshKeywordBases();
+        $adgroup->refreshKeywordEffects();
+//            $adgroup->refreshKeywordRankings();//实时排名 很耗时
+    }
+
     public function createKeywordPools(){
         $count=0;
         $adgroup=$this->_adgroup;

@@ -13,7 +13,10 @@ use \yii\helpers\Json;
  * @var $totalReport DataReport
  * @var $rtrpt DataReport
  */
-JsManager::instance()->register("js/yii.store.js");
+JsManager::instance()->registers([
+    "js/yii.store.js",
+    "js/yii.campaign.js"
+]);
 
 //process data form chart
 $xAxis=$costs=$pays=[];
@@ -27,6 +30,9 @@ for($i=7;$i>=1;$i--){
 $xAxis[]="实时数据";
 $costs[]=$rtrpt->costYuan();
 $pays[]=$rtrpt->payYuan();
+
+//render layout
+$this->params["active"]=1;
 ?>
 <section class="container-fluid" id="main-page" data-page="store-index" data-refresh-url="<?=Url::to(["/store/index-refresh","id"=>$store->id])?>">
     <!--主区横条start-->

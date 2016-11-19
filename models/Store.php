@@ -71,7 +71,7 @@ class Store extends \yii\db\ActiveRecord
         return $this->hasMany(Adgroup::className(),["nick"=>"nick"])->inverseOf("store");
     }
     public function getRealTimeReport(){
-        return $this->hasOne(CustRealTimeReport::className(),["nick"=>"nick"])->inverseOf("store");
+        return $this->hasOne(CustRealTimeReport::className(),["nick"=>"nick"])->onCondition(["thedate"=>date("Y-m-d")])->inverseOf("store");
     }
 
     //--get
@@ -127,22 +127,20 @@ class Store extends \yii\db\ActiveRecord
     }
     public function refreshItems(){
         $count=0;
-        $pageSize="200";
+        $pageNo=1;
+        $pageSize=200;
         $req=new \SimbaAdgroupOnlineitemsvonGetRequest;
         $req->setNick($this->nick);
-        $req->setPageSize($pageSize);
-        $req->setPageNo("1");
-        $response=TopClient::getInstance()->execute($req, $this->session);
-//        echo "<pre>";print_r($response);exit;
+        $req->setPageSize("".$pageSize);
         Item::deleteAll(["nick"=>$this->nick]);
-        $count+=$this->insertItems($response->page_item->item_list->subway_item);
-        $totalPage=ceil($response->page_item->total_item/$pageSize);
-        if($totalPage>1){
-            for($i=2;$i<=$totalPage;$i++){
-                $req->setPageNo("".$i);
-                $response=TopClient::getInstance()->execute($req, $this->session);
-                $count+=$this->insertItems($response->page_item->item_list->subway_item);
+        while(1){
+            $req->setPageNo("1");
+            $response=TopClient::getInstance()->execute($req, $this->session);
+            $count+=$this->insertItems($response->page_item->item_list->subway_item);
+            if(count($response->page_item->item_list->subway_item)<$pageSize){
+                break;
             }
+            $pageNo++;
         }
         return $count;
     }

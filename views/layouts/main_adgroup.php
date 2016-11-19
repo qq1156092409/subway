@@ -8,7 +8,9 @@ use yii\web\View;
 $this->beginPage();
 
 $store=$this->params["store"];
-$active=isset($this->params["active"])?$this->params["active"]:null;
+$adgroup=$this->params["adgroup"];
+$active=Yii::$app->controller->getRoute();
+$item=$adgroup->item;
 ?>
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -108,125 +110,94 @@ $active=isset($this->params["active"])?$this->params["active"]:null;
                 </ul>
 
             </div>
-            <div id="site_nav">
-                <a href="http://w01.ztcjl.com/web/web_home" class="logo">
-                    <img src="<?=Url::to("origin/images/logo.png")?>" alt="">
-                </a>
-
+            <div id="adg_nav">
+                <aside>
+            <span class="adg_img_warp">
+	            <img src="<?=Url::to("origin/images/TB2rygzab2B11BjSsplXXcMDVXa_!!409358473.jpg_320x320.jpg")?>" class="abs">
+                <img src="<?=Url::to("origin/images/TB2rygzab2B11BjSsplXXcMDVXa_!!409358473.jpg_60x60.jpg")?>" class="w60 h60">
+            </span>
+                    <div>
+                        <div class="title adg_title ell pct100"><a href="http://item.taobao.com/item.htm?id=<?=$item?$item->num_id:0?>" target="_blank" title="<?=$item?$item->title:""?>" id="item_title"><?=$item?$item->title:""?></a></div>
+                        <div class="sub">
+                            <span>￥<?=$item?$item->price:"-"?>元</span>
+                    <span class="poptip">
+                        <a class="ml30 dib" href="javascript:;" style="margin-bottom: 7px;">宝贝信息</a>
+                        <div id="adg_info" class="popcontent animate">
+                            <table class="item_dark lh30">
+                                <tbody><tr>
+                                    <td class="w60">推广状态：</td>
+                                    <td>推广中</td>
+                                </tr>
+                                <tr>
+                                    <td>托管状态：</td>
+                                    <td>不托管</td>
+                                </tr>
+                                <tr>
+                                    <td>所属计划：</td>
+                                    <td>侧款-大麦</td>
+                                </tr>
+                                <tr>
+                                    <td>所属类目：</td>
+                                    <td id="cat_info" cat_id="162205">女装/女士精品&gt;牛仔裤</td>
+                                </tr>
+                                <tr>
+                                    <td>默认出价：</td>
+                                    <td>0.30元</td>
+                                </tr>
+                                </tbody></table>
+                        </div>
+                    </span>
+                            <a id="adg_rpt_detail" class="ml30" href="javascript:;">报表明细</a>
+                        </div>
+                    </div>
+                </aside>
                 <nav>
                     <ul>
                         <li class="<?=$active==1?"active":""?>">
-                            <a href="<?=Url::to(["/store","id"=>$store->id])?>"><i class="iconfont"></i>首页</a>
+                            <a href="http://w01.ztcjl.com/web/smart_optimize/715202952">
+                                <img src="<?=Url::to("origin/images/znyh.png")?>" alt="">
+                                <span>智能优化</span>
+                            </a>
                         </li>
-                        <li class="poptip ">
-                            <a href="javascript:void(0);"> <i class="iconfont"></i>自动优化</a>
-                            <ul class="popcontent animate">
-                                <li>
-                                    <a href="http://w01.ztcjl.com/mnt/choose_mnt_campaign/0">添加托管计划</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="poptip ">
-                            <a href="javascript:void(0);"> <i class="iconfont"></i>手动优化</a>
-                            <ul class="popcontent animate">
-                                <li><a href="http://w01.ztcjl.com/web/hand_optimize/">宝贝列表</a></li>
-                                <li><a id="duplicate_check_id" href="javascript:;">全店删词</a></li>
-                                <li><a href="http://w01.ztcjl.com/web/shop_core/">全店核心词</a></li>
-                            </ul>
-                        </li>
-                        <li class="poptip ">
-                            <a href="javascript:void(0);"> <i class="iconfont"></i>工具</a>
-                            <ul class="popcontent animate">
-                                <li><a href="http://w01.ztcjl.com/web/op_history/">操作记录</a></li>
-                                <li><a href="http://w01.ztcjl.com/web/auto_rob_rank/">自动抢排名</a></li>
-                            </ul>
+                        <li class="<?=$active==2?"active":""?>">
+                            <a href="http://w01.ztcjl.com/web/bulk_optimize/715202952">
+                                <img src="<?=Url::to("origin/images/tgxq.png")?>" alt="">
+                                <span>批量优化</span>
+                            </a>
                         </li>
 
-                        <li class="poptip ">
-                            <a href="javascript:void(0);"> <i class="iconfont"></i>服务中心</a>
-                            <ul class="popcontent animate w200">
-                                <li class="server_menu" value="12"><a href="http://w01.ztcjl.com/web/paithink_services/12"
-                                                                      target="_blank">软件服务教程</a></li>
-                                <li class="server_menu" value="28"><a href="http://w01.ztcjl.com/web/paithink_services/28"
-                                                                      target="_blank">视觉营销服务</a></li>
-                            </ul>
+                        <li class="<?=$active=="adgroup/keyword-select"?"active":""?>">
+                            <a href="<?=Url::to(["/adgroup/keyword-select","id"=>$adgroup->adgroup_id])?>">
+                                <img src="<?=Url::to("origin/images/xc.png")?>" alt="">
+                                <span>选词</span>
+                            </a>
+                        </li>
+                        <li class="<?=$active=="adgroup/item-title"?"active":""?>">
+                            <a href="<?=Url::to(["/adgroup/item-title","id"=>$adgroup->adgroup_id])?>">
+                                <img src="<?=Url::to("origin/images/btyh.png")?>" alt="">
+                                <span>标题优化</span>
+                            </a>
+                        </li>
+                        <li class="<?=$active=="adgroup/creatives"?"active":""?>">
+                            <a href="<?=Url::to(["/adgroup/creatives","id"=>$adgroup->adgroup_id])?>">
+                                <img src="<?=Url::to("origin/images/cyyh.png")?>" alt="">
+                                <span>创意优化</span>
+                            </a>
+                        </li>
+                        <li class="<?=$active==6?"active":""?>">
+                            <a class="open_manage_elemword" id="manage_elemword_539103908109" adg_id="539103908109">
+                                <img src="<?=Url::to("origin/images/gjcsz.png")?>" alt="">
+                                <span>关键词设置</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" id="id_sync_adg_data" adg_id="715202952" camp_id="35560990">
+                                <img src="<?=Url::to("origin/images/tbsj.png")?>" alt="">
+                                <span>下载宝贝数据</span>
+                            </a>
                         </li>
                     </ul>
                 </nav>
-                <aside>
-            <span class="poptip">
-                <a href="javascript:;" title="联系旺旺">
-                    <img src="<?= Url::to("origin/images/wangwang.png") ?>" class="lxwm">
-                </a>
-                <div class="popcontent animate" id="concet_ww" consult_ww="">
-                    <ul>
-
-                        <li id="li_pskj_WW">
-                            <div class="title">精灵主旺旺</div>
-                            <div class="phone">派生科技</div>
-                            <div>
-                                <a href="aliim:sendmsg?uid=cntaobao&amp;siteid=cntaobao&amp;touid=cntaobao%E6%B4%BE%E7%94%9F%E7%A7%91%E6%8A%80"><img
-                                        class="marl_6" src="<?= Url::to("origin/images/online.ww.gif") ?>"></a>
-                            </div>
-                            <time>（在线时间：8:30-23:00）</time>
-                        </li>
-                        <li>
-                            <div class="title">预约专家免费诊断</div>
-                            <div>
-                                <a id="order_shop_check" class="a_WW"
-                                   href="aliim:sendmsg?uid=cntaobao&amp;siteid=cntaobao&amp;touid=cntaobao%E6%B4%BE%E7%94%9F%E7%A7%91%E6%8A%80"><img
-                                        class="marl_6" src="<?= Url::to("origin/images/online.ww.gif") ?>"></a>
-                            </div>
-                            <time>
-                                (周一至周五 8:30-18:00)
-                            </time>
-                        </li>
-                        <li>
-                            <div class="title">顾问专线</div>
-                            <div class="phone">400-0610-203</div>
-                            <time>（在线时间：9:00-23:00）</time>
-                        </li>
-                        <li>
-                            <div class="title">投诉电话</div>
-                            <div class="phone">027-59401772</div>
-                            <time>
-                                (周一至周五 14:00-22:00)
-                            </time>
-                        </li>
-                    </ul>
-                </div>
-            </span>
-            <span class="poptip">
-                <a href="javascript:;" title="微信二维码">
-                    <img src="<?= Url::to("origin/images/weixin.png") ?>">
-                </a>
-                <div class="popcontent animate" id="concat_wx">
-                    <img src="<?= Url::to("origin/images/wx.png") ?>" alt="">
-
-                    <div class="tc mb10">加微信公众号<br>关注电商干货</div>
-                </div>
-            </span>
-            <span class="hide">
-                <a href="http://w01.ztcjl.com/web/web_home/" title="帮助">
-                    <img src="<?= Url::to("origin/images/bangzhu.png") ?>">
-                </a>
-            </span>
-            <span class="jpoptip">
-                <a href="javascript:;" title="意见反馈">
-                    <img src="<?= Url::to("origin/images/yijian.png") ?>">
-                </a>
-                <div class="popcontent animate" id="suggest">
-                    <p class="title">意见反馈</p>
-                    <textarea class="form-control" placeholder="您的意见是我们前进最大的动力"></textarea>
-
-                    <div class="tip form-inline">感谢您的建议与鞭策
-
-                    </div>
-                    <button class="btn btn-primary btn-sm">提交反馈</button>
-                </div>
-            </span>
-                </aside>
-
             </div>
         </header>
         <?= $content ?>
@@ -235,7 +206,7 @@ $active=isset($this->params["active"])?$this->params["active"]:null;
 
                 <a href="aliim:sendmsg?uid=cntaobao&amp;siteid=cntaobao&amp;touid=cntaobao%E6%B4%BE%E7%94%9F%E8%A7%86%E8%A7%89"><img
                         id="test_img" class="pct100 pl30 pr30"
-                        src="<?= \yii\helpers\Url::to("origin/images/TB2ib2hnXXXXXblXpXXXXXXXXXX-836440495.jpg") ?>"></a>
+                        src="<?= Url::to("origin/images/TB2ib2hnXXXXXblXpXXXXXXXXXX-836440495.jpg") ?>"></a>
 
             </div>
         </div>
