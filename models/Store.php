@@ -134,7 +134,7 @@ class Store extends \yii\db\ActiveRecord
         $req->setPageSize("".$pageSize);
         Item::deleteAll(["nick"=>$this->nick]);
         while(1){
-            $req->setPageNo("1");
+            $req->setPageNo("".$pageNo);
             $response=TopClient::getInstance()->execute($req, $this->session);
             $count+=$this->insertItems($response->page_item->item_list->subway_item);
             if(count($response->page_item->item_list->subway_item)<$pageSize){

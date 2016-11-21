@@ -67,11 +67,10 @@ use app\models\Adgroup;
             <ul class="dropdown-menu">
                 <li class="mnt_type_true "><a href="http://w01.ztcjl.com/web/smart_optimize/715202952" target="_blank">智能优化</a></li>
                 <li class="mnt_type_true "><a href="http://w01.ztcjl.com/web/bulk_optimize/715202952" target="_blank">批量优化</a></li>
-                <li class="mnt_type_false hide "><a href="http://w01.ztcjl.com/mnt/adgroup_data/715202952" target="_blank">托管详情</a></li>
-                <li><a href="http://w01.ztcjl.com/web/select_keyword/quick?adgroup_id=715202952" target="_blank">快速选词</a></li>
-                <li><a href="http://w01.ztcjl.com/web/select_keyword/precise?adgroup_id=715202952" target="_blank">精准淘词</a></li>
-                <li><a href="http://w01.ztcjl.com/web/title_optimize/?adgroup_id=715202952" target="_blank">标题优化</a></li>
-                <li><a href="http://w01.ztcjl.com/web/image_optimize/715202952?t=list" target="_blank">创意优化</a></li>
+                <li><a href="<?=Url::to(["/adgroup/keyword-select","id"=>$adgroup->adgroup_id])?>" target="_blank">快速选词</a></li>
+                <li><a href="<?=Url::to(["/adgroup/keyword-select","id"=>$adgroup->adgroup_id])?>" target="_blank">精准淘词</a></li>
+                <li><a href="<?=Url::to(["/adgroup/item-title","id"=>$adgroup->adgroup_id])?>" target="_blank">标题优化</a></li>
+                <li><a href="<?=Url::to(["/adgroup/creatives","id"=>$adgroup->adgroup_id])?>" target="_blank">创意优化</a></li>
             </ul>
         </div>
 

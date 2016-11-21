@@ -25,5 +25,10 @@ yii.campaign=(function($){
             $count.text(parseInt($count.text())-1);
         }
     });
+    $body.on("click","#select_keyword_nav a",function(e){
+        var $btn=$(this);
+        $btn.parent().addClass("active").siblings(".active").removeClass("active");
+        $("#"+$btn.data("id")).addClass("active").siblings(".active").removeClass("active");
+    });
     return {};
 })(jQuery);
