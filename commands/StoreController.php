@@ -87,6 +87,24 @@ class StoreController extends Controller{
     }
 
     /**
+     * yii store/download-test
+     */
+    public function actionDownloadTest(){
+        $success=$total=0;
+        $nicks=["zhanglucyy","789linjie","dusto旗舰店"];
+        $stores=Store::find()->where(["nick"=>$nicks])->all();
+        $total=count($stores);
+        foreach($stores as $k=>&$store){
+            $this->doDownload($store) and $success++;
+        }
+        ConsoleHelper::t(Json::encode([
+            "total"=>$total,
+            "error"=>($total-$success),
+            "success"=>$success,
+        ]));
+    }
+
+    /**
      * 下载店铺数据，初次添加
      * yii store/download-one 7
      * @param $id

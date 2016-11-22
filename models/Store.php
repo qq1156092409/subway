@@ -181,28 +181,7 @@ class Store extends \yii\db\ActiveRecord
         $response=TopClient::getInstance()->execute($req, $this->session);
 //        echo "<pre>";print_r($response);exit;
         Campaign::deleteAll(["nick"=>$this->nick]);
-        $now=date("Y-m-d H:i:s");
-        $model=new Campaign();
-        $columns=$model->attributes();
-        $rows=[];
-        if($response->campaigns->campaign){
-            foreach($response->campaigns->campaign as $campaignObj){
-                $campaignObj=(array)$campaignObj;
-                $temp=[];
-                foreach($columns as $column){
-                    if($column=="api_time") {
-                        $temp[] = $now;
-                    }elseif($column=="nick"){
-                        $temp[] = $this->nick;
-                    }else{
-                        $temp[]=(isset($campaignObj[$column])?$campaignObj[$column]:null);
-                    }
-                }
-                $rows[]=$temp;
-            }
-        }
-//        echo "<pre>";print_r($rows);exit;
-        return Yii::$app->db->createCommand()->batchInsert(Campaign::tableName(),$columns,$rows)->execute();
+        return GlobalModel::batchInsert(Campaign::className(),$response->campaigns->campaign);
     }
     public function refreshSubscribe(){
         $req=new \VasSubscribeGetRequest;

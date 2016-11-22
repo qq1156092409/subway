@@ -22,11 +22,13 @@ class TestController extends Controller {
 
 //        echo CampaignAreaOption::refreshData();
 
-//        $store = Store::findOne(15);
-        $campaign = Campaign::findOne(2709348);
+        $store = Store::findOne(15);
+        echo $store->refreshCampaigns();
+
+//        $campaign = Campaign::findOne(2709348);
 //        $adgroup = Adgroup::findOne(432098541);
 
-        echo $campaign->refreshArea();
+//        echo $campaign->refreshArea();
 //        echo $store->refreshCustEffects();
 //        $reports=$store->getDataReports(7);
 //        echo "<pre>";print_r($reports);exit;

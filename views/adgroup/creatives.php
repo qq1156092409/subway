@@ -1,9 +1,6 @@
 <?php
+use yii\helpers\Url;
 /**
- * Created by PhpStorm.
- * User: admin
- * Date: 2016/11/19
- * Time: 16:39
  */
 ?>
 <section class="container-fluid w1280 p0">
@@ -39,7 +36,7 @@
             <marquee behavior="slide" direction="left" onmouseover="this.stop()" onmouseout="this.start()">精灵拥有72名专业装修设计团队，提供免费店铺装修诊断</marquee>
             请联系旺旺：
             <a href="aliim:sendmsg?uid=cntaobao&amp;siteid=cntaobao&amp;touid=cntaobao%E6%B4%BE%E7%94%9F%E8%A7%86%E8%A7%89">
-                派生视觉 <img class="marl_6" src="./adgroup_create_optimize_files/online.ww.gif">
+                派生视觉 <img class="marl_6" src="<?=Url::to("origin/images/online.ww.gif")?>">
             </a>
         </div>
         <div class="r">
@@ -172,7 +169,7 @@
 
                 <tbody role="alert" aria-live="polite" aria-relevant="all"><tr class="odd">
                     <td class="tc td-img img ">
-                        <img src="./adgroup_create_optimize_files/TB2kYf4XCkc61BjSZFCXXc_7VXa_!!0-saturn_solar.jpg_80x80.jpg" data-url="http://img.taobaocdn.com/bao/uploaded/i3/179280293904029914/TB2kYf4XCkc61BjSZFCXXc_7VXa_!!0-saturn_solar.jpg" data-id="823326086">
+                        <img src="<?=Url::to("origin/images/TB2kYf4XCkc61BjSZFCXXc_7VXa_!!0-saturn_solar.jpg_80x80.jpg")?>"  data-id="823326086">
                     </td>
                     <td class="item ">
                         <div class="hide img"><img data-url="http://img.taobaocdn.com/bao/uploaded/i3/179280293904029914/TB2kYf4XCkc61BjSZFCXXc_7VXa_!!0-saturn_solar.jpg"></div>
@@ -208,7 +205,7 @@
                         <span class="hide">5.84</span>
                         <span class="click_rate b">5.84%</span><br>
                         <a class="marl_6 va2 hide" href="aliim:sendmsg?uid=cntaobao&amp;siteid=cntaobao&amp;touid=cntaobao%E6%B4%BE%E7%94%9F%E8%A7%86%E8%A7%89" data-toggle="tooltip" data-placement="top" data-trigger="hover" data-original-title="该创意点击率较低，请咨询设计师优化">
-                            <img src="./adgroup_create_optimize_files/cy_ww.gif">
+                            <img src="<?=Url::to("origin/images/cy_ww.gif")?>">
                         </a>
                     </td>
                     <td class=" ">
@@ -243,7 +240,7 @@
                     </td>
                 </tr><tr class="even">
                     <td class="tc td-img img ">
-                        <img src="./adgroup_create_optimize_files/TB2AKzxXDoX61Bjy1zkXXc75pXa_!!0-saturn_solar.jpg_80x80.jpg" data-url="http://img.taobaocdn.com/bao/uploaded/i3/179280293904065274/TB2AKzxXDoX61Bjy1zkXXc75pXa_!!0-saturn_solar.jpg" data-id="823332012">
+                        <img src="<?=Url::to("origin/images/TB2AKzxXDoX61Bjy1zkXXc75pXa_!!0-saturn_solar.jpg_80x80.jpg")?>" data-id="823332012">
                     </td>
                     <td class="item ">
                         <div class="hide img"><img data-url="http://img.taobaocdn.com/bao/uploaded/i3/179280293904065274/TB2AKzxXDoX61Bjy1zkXXc75pXa_!!0-saturn_solar.jpg"></div>
@@ -279,7 +276,7 @@
                         <span class="hide">3.95</span>
                         <span class="click_rate b">3.95%</span><br>
                         <a class="marl_6 va2 hide" href="aliim:sendmsg?uid=cntaobao&amp;siteid=cntaobao&amp;touid=cntaobao%E6%B4%BE%E7%94%9F%E8%A7%86%E8%A7%89" data-toggle="tooltip" data-placement="top" data-trigger="hover" data-original-title="该创意点击率较低，请咨询设计师优化">
-                            <img src="./adgroup_create_optimize_files/cy_ww.gif">
+                            <img src="<?=Url::to("origin/images/cy_ww.gif")?>">
                         </a>
                     </td>
                     <td class=" ">
