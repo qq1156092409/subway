@@ -3,6 +3,7 @@
 namespace app\models;
 
 use app\extensions\custom\taobao\TopClient;
+use app\models\multiple\DataReport;
 use app\models\multiple\GlobalModel;
 use Yii;
 use yii\helpers\ArrayHelper;
@@ -107,6 +108,44 @@ class Adgroup extends \yii\db\ActiveRecord
         return $this->hasMany(Creative::className(),["adgroup_id"=>"adgroup_id"]);
     }
 
+    //--get
+
+    public function getDataReport($day){
+        $start=date("Y-m-d",strtotime("- $day days"));
+        /** @var AdgroupBase[] $bases */
+        $bases=AdgroupBase::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date >='$start'")->all();
+        /** @var AdgroupEffect[] $effects */
+        $effects=AdgroupEffect::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date >='$start'")->all();
+        $reports=[];
+        if($bases){
+            foreach($bases as $base){
+                $reports[$base->date][$base->source]["base"]=$base;
+            }
+        }
+        if($effects){
+            foreach($effects as $effect){
+                $reports[$effect->date][$effect->source]["effect"]=$effect;
+            }
+        }
+        foreach($reports as $date=>$reports2){
+            foreach($reports2 as $source=>$reports3){
+                $a=isset($reports3["base"])?$reports3["base"]:null;
+                $b=isset($reports3["effect"])?$reports3["effect"]:null;
+                $reports[$date][$source]["report"]=(new DataReport())->loadData([$a,$b]);
+            }
+        }
+//        echo "<pre>";print_r($reports);exit;
+        $ret=[];
+        foreach($reports as $date=>$reports2){
+            $temps=[];
+            foreach($reports2 as $reports3){
+                $temps[]=$reports3["report"];
+            }
+            $ret[$date] = DataReport::merge($temps);
+        }
+        return $ret;
+    }
+
 
     //--refresh data
     public function refreshKeywords(){
@@ -202,14 +241,16 @@ class Adgroup extends \yii\db\ActiveRecord
         $pageNo=1;
         $pageSize=500;
         $count=0;
-        $start=date("Y-m-d",strtotime("-30 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
         $exist=KeywordEffect::find()->where(["adgroupid"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
-            if($exist->date>=$end){
+            if($exist->date==$end){
                 return $count;
             }
-            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+            $start=date("Y-m-d",strtotime("-6 day",strtotime($exist->date)));
+            KeywordEffect::deleteAll("adgroupId=".$this->adgroup_id." and date>='".$start."'");
+        }else{
+            $start=date("Y-m-d",strtotime("-30 day"));
         }
         $req = new \SimbaRptAdgroupkeywordeffectGetRequest;
         $req->setNick($this->nick);
@@ -292,10 +333,10 @@ class Adgroup extends \yii\db\ActiveRecord
             if($exist->date==$yestoday){
                 return $count;
             }
-            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
-            if($start>$yestoday){
-                return $count;
-            }
+            $start=date("Y-m-d",strtotime("-6 day",strtotime($exist->date)));
+            AdgroupEffect::deleteAll("adgroupId=".$this->adgroup_id." and date>='".$start."'");
+        }else{
+            $start=date("Y-m-d",strtotime("-30 day"));
         }
         $pageNo=1;
         $pageSize=100;
@@ -380,15 +421,17 @@ class Adgroup extends \yii\db\ActiveRecord
         $count=0;
         $pageNo=1;
         $pageSize=500;
-        $start=date("Y-m-d",strtotime("-30 day"));
         $end=date("Y-m-d",strtotime("-1 day"));
         /** @var CreativeEffect $exist */
         $exist=CreativeEffect::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
-            $start = date("Y-m-d", strtotime("+1 day", strtotime($exist->date)));
-            if($start>$end){
+            if($exist->date==$end){
                 return $count;
             }
+            $start=date("Y-m-d",strtotime("-6 day",strtotime($exist->date)));
+            CreativeEffect::deleteAll("adgroupId=".$this->adgroup_id." and date>='".$start."'");
+        }else{
+            $start=date("Y-m-d",strtotime("-30 day"));
         }
         $req = new \SimbaRptAdgroupcreativeeffectGetRequest;
         $req->setSubwayToken($this->store->authSign->subway_token);

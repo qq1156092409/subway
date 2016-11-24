@@ -1,9 +1,11 @@
 <?php
 use yii\helpers\Url;
 use app\models\Adgroup;
+use app\models\multiple\DataReport;
 /**
  * @var $adgroup Adgroup
  */
+$report=DataReport::merge($adgroup->getDataReport(7));
 ?>
 <tr id="adgroup-<?=$adgroup->adgroup_id?>" class="adg_tr adgroup-model" data-id="<?=$adgroup->adgroup_id?>">
     <td class="check_column vm "><input type="checkbox" class="kid_check adgroup-check" value="<?=$adgroup->adgroup_id?>"></td>
@@ -25,17 +27,17 @@ use app\models\Adgroup;
             </span>
         </span>
     </td>
-    <td class=" "><span class="hide">27293</span>27293</td>
-    <td class=" "><span class="hide">1506</span>1506</td>
-    <td class=" "><span class="hide">5.52</span>5.52%</td>
-    <td class=" "><span class="hide">1066.29</span>￥1066.29</td>
-    <td class=" "><span class="hide">0.71</span>￥0.71</td>
-    <td class=" "><span class="hide">168</span>168</td>
-    <td class=" "><span class="hide">125</span>125</td>
-    <td class=" "><span class="hide">34</span>34</td>
-    <td class=" "><span class="hide">2.26</span>2.26%</td>
-    <td class=" sorting_1"><span class="hide">1964.80</span>￥1964.80</td>
-    <td class=" "><span class="hide">1.84</span>1.84</td>
+    <td class=" "><?=$report->impression?></td>
+    <td class=" "><?=$report->click?></td>
+    <td class=" "><?=100*$report->ctr?>%</td>
+    <td class=" ">￥<?=$report->costYuan()?></td>
+    <td class=" ">￥<?=$report->cpcYuan()?></td>
+    <td class=" "><?=$report->favtotal?></td>
+    <td class=" "><?=$report->carttotal?></td>
+    <td class=" "><?=$report->paycount?></td>
+    <td class=" "><?=100*$report->coverage?>%</td>
+    <td class=" sorting_1">￥<?=$report->payYuan()?></td>
+    <td class=" "><?=$report->roi?></td>
     <td class="vt w120 ">
 
         <span class="hide sort_online">1</span>
@@ -65,8 +67,8 @@ use app\models\Adgroup;
                 <span class="dropdown-value"><strong>进入宝贝</strong></span> <span class="caret"></span>
             </a>
             <ul class="dropdown-menu">
-                <li class="mnt_type_true "><a href="http://w01.ztcjl.com/web/smart_optimize/715202952" target="_blank">智能优化</a></li>
-                <li class="mnt_type_true "><a href="http://w01.ztcjl.com/web/bulk_optimize/715202952" target="_blank">批量优化</a></li>
+                <li class="mnt_type_true "><a href="<?=Url::to(["/adgroup/smart","id"=>$adgroup->adgroup_id])?>" target="_blank">智能优化</a></li>
+                <li class="mnt_type_true "><a href="<?=Url::to(["/adgroup/bulk","id"=>$adgroup->adgroup_id])?>" target="_blank">批量优化</a></li>
                 <li><a href="<?=Url::to(["/adgroup/keyword-select","id"=>$adgroup->adgroup_id])?>" target="_blank">快速选词</a></li>
                 <li><a href="<?=Url::to(["/adgroup/keyword-select","id"=>$adgroup->adgroup_id])?>" target="_blank">精准淘词</a></li>
                 <li><a href="<?=Url::to(["/adgroup/item-title","id"=>$adgroup->adgroup_id])?>" target="_blank">标题优化</a></li>

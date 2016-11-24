@@ -81,6 +81,31 @@ class AdgroupController extends Controller
         return $flag;
     }
 
+    public function actionRefreshOne($id){
+        $adgroup = $this->getAdgroup($id);
+        $this->doRefresh($adgroup);
+    }
+
+    /**
+     * @param $adgroup Adgroup
+     * @return bool
+     */
+    public function doRefresh($adgroup){
+        $start=time();
+        $flag=false;
+        ConsoleHelper::t("adgroup-refresh-".$adgroup->adgroup_id);
+        try{
+            $execute = new AdgroupExecute($adgroup);
+            $execute->refresh(false);
+            ConsoleHelper::t("success");
+            $flag=true;
+        }catch (\Exception $e){
+            ConsoleHelper::t("fail:".$e->getMessage());
+        }
+        ConsoleHelper::t("time:".(time()-$start));
+        return $flag;
+    }
+
     protected function getAdgroup($id){
         $adgroup = Adgroup::findOne($id);
         if(!$adgroup){

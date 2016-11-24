@@ -27,14 +27,14 @@ class StoreController extends Controller
     }
     public function actionIndexRefresh($id){
         $store = $this->getStore($id);
-//        if(!($store->realTimeReport && (time()-strtotime($store->realTimeReport->api_time))<3600)){
-//            $store->refreshRealTimeReport();
-//            unset($store->realTimeReport);
-//        }
-//        if(!($store->balance && (time()-strtotime($store->balance->api_time))<3600)){
-//            $store->refreshBalance();
-//            unset($store->balance);
-//        }
+        if(!($store->realTimeReport && (time()-strtotime($store->realTimeReport->api_time))<3600)){
+            $store->refreshRealTimeReport();
+            unset($store->realTimeReport);
+        }
+        if(!($store->balance && (time()-strtotime($store->balance->api_time))<3600)){
+            $store->refreshBalance();
+            unset($store->balance);
+        }
         \Yii::$app->response->format=Response::FORMAT_JSON;
         return [
             "balance"=>$store->balance,

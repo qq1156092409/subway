@@ -102,7 +102,7 @@ class DataReport extends Model
         $this->cpc=round($this->click?$this->cost/$this->click:0,0);
         $this->ctr=round($this->impression?$this->click/$this->impression:0,4);
         $this->coverage=round($this->click?$this->paycount/$this->click:0,4);
-        $this->roi=round($this->cost?$this->pay/$this->cost:0,2);
+        $this->roi=round($this->cost?($this->pay/$this->cost):0,2);
         $this->pay_paycount=round($this->paycount?$this->pay/$this->paycount:0,0);
     }
 

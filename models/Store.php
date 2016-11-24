@@ -256,14 +256,16 @@ class Store extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CustEffect $exist */
-        $exist=CustEffect::find()->where(["nick"=>$this->nick])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=CustEffect::find()->where(["nick"=>$this->nick])->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
             }
-            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+            $start=date("Y-m-d",strtotime("-6 day",strtotime($exist->date)));
+            CustEffect::deleteAll("nick='{$this->nick}' and date >= '".$start."'");//删除最后下载的前7天数据
+        }else{
+            $start=date("Y-m-d",strtotime("-30 day"));
         }
         $pageNo=1;
         $pageSize=100;

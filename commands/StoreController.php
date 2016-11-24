@@ -91,7 +91,7 @@ class StoreController extends Controller{
      */
     public function actionDownloadTest(){
         $success=$total=0;
-        $nicks=["zhanglucyy","789linjie","dusto旗舰店"];
+        $nicks=["zhanglucyy","789linjie","dusto旗舰店","米丶mu"];
         $stores=Store::find()->where(["nick"=>$nicks])->all();
         $total=count($stores);
         foreach($stores as $k=>&$store){

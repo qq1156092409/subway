@@ -153,14 +153,14 @@ $item=$adgroup->item;
                 </aside>
                 <nav>
                     <ul>
-                        <li class="<?=$active==1?"active":""?>">
-                            <a href="http://w01.ztcjl.com/web/smart_optimize/715202952">
+                        <li class="<?=$active=="adgroup/smart"?"active":""?>">
+                            <a href="<?=Url::to(["/adgroup/smart","id"=>$adgroup->adgroup_id])?>">
                                 <img src="<?=Url::to("origin/images/znyh.png")?>" alt="">
                                 <span>智能优化</span>
                             </a>
                         </li>
-                        <li class="<?=$active==2?"active":""?>">
-                            <a href="http://w01.ztcjl.com/web/bulk_optimize/715202952">
+                        <li class="<?=$active=="adgroup/bulk"?"active":""?>">
+                            <a href="<?=Url::to(["/adgroup/bulk","id"=>$adgroup->adgroup_id])?>">
                                 <img src="<?=Url::to("origin/images/tgxq.png")?>" alt="">
                                 <span>批量优化</span>
                             </a>

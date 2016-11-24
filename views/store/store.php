@@ -146,7 +146,6 @@ $this->params["active"]=1;
                             legend: {
                                 data:['花费','成交']
                             },
-                            calculable : true,
                             xAxis: {
                                 type: 'category',
                                 boundaryGap: false,

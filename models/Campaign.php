@@ -233,14 +233,16 @@ class Campaign extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CampaignEffect $exist */
-        $exist=CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=CampaignEffect::find()->where(["campaignid"=>$this->campaign_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
             }
-            $start=date("Y-m-d",strtotime("1 day",strtotime($exist->date)));
+            $start=date("Y-m-d",strtotime("-6 day",strtotime($exist->date)));
+            CampaignEffect::deleteAll("campaignid=".$this->campaign_id." and date>='".$start."'");
+        }else{
+            $start=date("Y-m-d",strtotime("-30 day"));
         }
         $pageNo=1;
         $pageSize=100;

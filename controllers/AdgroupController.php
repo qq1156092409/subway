@@ -34,6 +34,18 @@ class AdgroupController extends Controller
             "adgroup"=>$adgroup,
         ]);
     }
+    public function actionSmart($id){
+        $adgroup = $this->getAdgroup($id);
+        return $this->render("smart",[
+            "adgroup"=>$adgroup,
+        ]);
+    }
+    public function actionBulk($id){
+        $adgroup = $this->getAdgroup($id);
+        return $this->render("bulk",[
+            "adgroup"=>$adgroup,
+        ]);
+    }
 
     /**
      * @param $id

@@ -34,6 +34,8 @@ class AdgroupExecute{
 
         $adgroup=$this->_adgroup;
 
+        $adgroup->refreshAdgroupBases();
+        $adgroup->refreshAdgroupEffects();
         $adgroup->refreshCreatives();
         $adgroup->refreshCreativeBases();
         $adgroup->refreshCreativeEffects();
