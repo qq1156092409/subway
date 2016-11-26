@@ -6,7 +6,14 @@ use app\extensions\custom\taobao\TopClient;
 use app\helpers\ConsoleHelper;
 use app\models\Adgroup;
 use app\models\CampaignSetting;
+use app\models\Creative;
+use app\models\CreativeBase;
+use app\models\CreativeEffect;
+use app\models\Keyword;
+use app\models\KeywordBase;
+use app\models\KeywordEffect;
 use app\models\KeywordPool;
+use app\models\KeywordScore;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
@@ -146,6 +153,20 @@ class AdgroupExecute{
         $response=TopClient::getInstance()->execute($req,$adgroup->store->session);
         $count=Adgroup::insertKeywords($response->keywords->keyword);
         ConsoleHelper::t("add keywords:".$count);
+    }
+
+    /**
+     * 清除数据，避免数据量过大
+     */
+    public function clean(){
+        $adgroup=$this->_adgroup;
+        Keyword::deleteAll(["adgroup_id"=>$adgroup->adgroup_id]);
+        KeywordBase::deleteAll(["adgroupid"=>$adgroup->adgroup_id]);
+        KeywordEffect::deleteAll(["adgroupid"=>$adgroup->adgroup_id]);
+        Creative::deleteAll(["adgroup_id"=>$adgroup->adgroup_id]);
+        CreativeBase::deleteAll(["adgroupid"=>$adgroup->adgroup_id]);
+        CreativeEffect::deleteAll(["adgroupid"=>$adgroup->adgroup_id]);
+        //todo
     }
 
 }

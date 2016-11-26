@@ -19,5 +19,12 @@ yii.campaign=(function($){
             }
         });
     });
+    $body.on("change",".campaign-check-all",function(e){
+        if($(this).is(":checked")){
+            $(".campaign-check").prop("checked",true);
+        }else{
+            $(".campaign-check").prop("checked",false);
+        }
+    });
     return {};
 })(jQuery);

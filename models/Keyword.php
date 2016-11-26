@@ -87,4 +87,21 @@ class Keyword extends \yii\db\ActiveRecord
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
 
+    //--get
+    public function maxPriceYuan(){
+        return $this->max_price/100;
+    }
+    public function mobileMaxPrice(){
+        if($this->mobile_is_default_price){
+            /** @var Adgroup $adgroup */
+            $adgroup=$this->adgroup;
+            return $this->max_price*$adgroup->mobile_discount/100;
+        }else{
+            return $this->max_mobile_price;
+        }
+    }
+    public function mobileMaxPriceYuan(){
+        return round($this->mobileMaxPrice()/100,2);
+    }
+
 }

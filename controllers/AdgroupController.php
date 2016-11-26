@@ -3,8 +3,11 @@
 namespace app\controllers;
 
 use app\models\Adgroup;
+use app\models\KeywordBase;
+use app\models\KeywordEffect;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
+use yii\web\Response;
 
 class AdgroupController extends Controller
 {
@@ -45,6 +48,20 @@ class AdgroupController extends Controller
         return $this->render("bulk",[
             "adgroup"=>$adgroup,
         ]);
+    }
+
+    public function actionKeywordReports($id,$source="summary",$start=null,$end=null){
+        $start or $start=date("Y-m-d",strtotime("-7 day"));
+        $end or $end=date("Y-m-d",strtotime("-1 day"));
+        $adgroup = $this->getAdgroup($id);
+        $bases=KeywordBase::find()->where([
+            "adgroupid"=>$id,
+        ])->andWhere(["between","date",$start,$end])->all();
+        $effects=KeywordEffect::find()->where([
+            "adgroupid"=>$id,
+        ])->andWhere(["between","date",$start,$end])->all();
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return [$bases,$effects];
     }
 
     /**

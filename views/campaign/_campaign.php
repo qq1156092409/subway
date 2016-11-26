@@ -11,7 +11,7 @@ $reports = $campaign->getDataReports(7);
 $totalReport=DataReport::merge($reports);
 ?>
 <tr id="campaign-<?=$campaign->campaign_id?>" data-id="<?=$campaign->campaign_id?>" class="<?=$campaign->online_status=="offline"?"gray_light":""?>">
-    <td class="check_column  sorting_1"><input type="checkbox" value="<?=$campaign->campaign_id?>"></td>
+    <td class="check_column  sorting_1"><input class="campaign-check" type="checkbox" value="<?=$campaign->campaign_id?>"></td>
     <td class=" ">
       <span class="title">
           <a class="item_base" title="<?=$campaign->title?>" href="<?=Url::to(["/campaign","id"=>$campaign->campaign_id])?>"><?=$campaign->title?></a>

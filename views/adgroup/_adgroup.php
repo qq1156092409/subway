@@ -11,7 +11,7 @@ $report=DataReport::merge($adgroup->getDataReport(7));
     <td class="check_column vm "><input type="checkbox" class="kid_check adgroup-check" value="<?=$adgroup->adgroup_id?>"></td>
     <td class="td-img ">
         <a class="item_base" target="_blank" href="http://item.taobao.com/item.htm?id=539103908109">
-            <img width="70" height="70" src="./campaign_files/TB2rygzab2B11BjSsplXXcMDVXa_!!409358473.jpg_70x70.jpg">
+            <img width="70" height="70" src="<?=Url::to("origin/images/TB2rygzab2B11BjSsplXXcMDVXa_!!409358473.jpg_70x70.jpg")?>">
         </a>
     </td>
     <td class="item_dark ">
@@ -39,16 +39,15 @@ $report=DataReport::merge($adgroup->getDataReport(7));
     <td class=" sorting_1">￥<?=$report->payYuan()?></td>
     <td class=" "><?=$report->roi?></td>
     <td class="vt w120 ">
-
-        <span class="hide sort_online">1</span>
-        <span class="lbl_online">推广中&nbsp;&nbsp;</span>
-        <a href="javascript:;" class="hover_show switch_status">暂停</a>
-
+        <span class="lbl_online"><?=$adgroup->online_status=="online"?"推广中":"暂停中"?>&nbsp;&nbsp;</span>
+        <a href="javascript:;" class="hover_show switch_status"><?=$adgroup->online_status!="online"?"推广":"暂停"?></a>
         <a href="javascript:;" class="hover_show del_good">删除</a>
+        <?php if($adgroup->offline_type!="online"){ ?>
+        <br> <span class="lbl_online"><?=$adgroup->offlineTypeZh()?></span>
+        <?php } ?>
         <br>
-        移动折扣： <span class="adg_mobdiscount" campaign_id="35560990">190% </span>
+        移动折扣： <span class="adg_mobdiscount" campaign_id="35560990"><?=$adgroup->mobile_discount?>% </span>
         <i class="iconfont edit_adg_mobdiscount"></i>
-
     </td>
     <td class="vt item_base " style="width: 125px;">
 
@@ -76,7 +75,7 @@ $report=DataReport::merge($adgroup->getDataReport(7));
             </ul>
         </div>
 
-        <a href="javascript:;" class="onekey" adgroup_id="715202952" campaign_id="35560990">
+        <a href="javascript:;" class="onekey">
             <span class="dropdown-value"><strong>一键优化</strong></span>
         </a>
 

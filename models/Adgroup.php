@@ -109,7 +109,14 @@ class Adgroup extends \yii\db\ActiveRecord
     }
 
     //--get
-
+    public function offlineTypeZh(){
+        $map=[
+            "online"=>"上线",
+            "audit_offline"=>"审核下线",
+            "crm_offline"=>"CRM下线",
+        ];
+        return $map[$this->offline_type];
+    }
     public function getDataReport($day){
         $start=date("Y-m-d",strtotime("- $day days"));
         /** @var AdgroupBase[] $bases */
@@ -463,9 +470,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setNick($this->nick);
         $req->setAdgroupId("".$this->adgroup_id);
         $response=TopClient::getInstance()->execute($req,$this->store->session);
-//        echo "<pre>";print_r($response);exit;
         $creatives=$response->creatives->creative;
-        is_array($creatives) or $creatives=[$creatives];
         Creative::deleteAll(["adgroup_id"=>$this->adgroup_id]);
         return GlobalModel::batchInsert(Creative::className(),$creatives);
     }

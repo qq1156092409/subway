@@ -284,7 +284,7 @@ $this->params["active"]=1;
 
                       ">
                         <div>
-                            <input type="checkbox" class="all">
+                            <input type="checkbox" class="all campaign-check-all">
                         </div>
                     </th>
                     <th class="w230 sorting_disabled" role="columnheader" rowspan="1" colspan="1" aria-label="
