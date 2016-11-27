@@ -12,6 +12,18 @@ yii.store=(function($){
             console.log(response);
         });
     }
+
     var $body=$(document.body);
+
+    $body.on("click",".store-refresh",function(e){
+        var $btn=$(this);
+        $.getJSON($btn.data("url"),function(response){
+            if(response.result==1){
+                location.reload();
+            }else{
+                alert(response.message);
+            }
+        });
+    });
     return {};
 })(jQuery);

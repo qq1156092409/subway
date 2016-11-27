@@ -1,6 +1,7 @@
 <?php
 use \yii\helpers\Url;
 use yii\web\View;
+use app\extensions\custom\yii\JsManager;
 
 /**
  * @var $this View
@@ -9,6 +10,10 @@ $this->beginPage();
 
 $store=$this->params["store"];
 $active=isset($this->params["active"])?$this->params["active"]:null;
+
+JsManager::instance()->registers([
+    "js/yii.store.js"
+]);
 ?>
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -88,7 +93,7 @@ $active=isset($this->params["active"])?$this->params["active"]:null;
                             </div>
                         </div>
                     </li>
-                    <li><a href="javascript:;" id="id_sync_data"><i class="iconfont"></i>下载全店数据</a></li>
+                    <li><a href="javascript:;" id="id_sync_data" class="store-refresh" data-url="<?=Url::to(["/store/refresh","id"=>$store->id])?>"><i class="iconfont"></i>下载全店数据</a></li>
                     <li><a href="http://w01.ztcjl.com/web/vip_home/"><i class="iconfont"></i>会员中心</a></li>
                     <li><a href="javascript:;" id="top_msg"><i class="iconfont"></i>我的私信<span id="msg_count"
                                                                                                class="round_mark hide">0</span></a>

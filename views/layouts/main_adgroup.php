@@ -15,7 +15,8 @@ $active=Yii::$app->controller->getRoute();
 $item=$adgroup->item;
 
 JsManager::instance()->registers([
-    "js/yii.adgroup.js"
+    "js/yii.store.js",
+    "js/yii.adgroup.js",
 ]);
 ?>
     <!DOCTYPE html>
@@ -96,7 +97,7 @@ JsManager::instance()->registers([
                             </div>
                         </div>
                     </li>
-                    <li><a href="javascript:;" id="id_sync_data"><i class="iconfont"></i>下载全店数据</a></li>
+                    <li><a href="javascript:;" id="id_sync_data" class="store-refresh" data-url="<?=Url::to(["/store/refresh","id"=>$store->id])?>"><i class="iconfont"></i>下载全店数据</a></li>
                     <li><a href="http://w01.ztcjl.com/web/vip_home/"><i class="iconfont"></i>会员中心</a></li>
                     <li><a href="javascript:;" id="top_msg"><i class="iconfont"></i>我的私信<span id="msg_count"
                                                                                                class="round_mark hide">0</span></a>

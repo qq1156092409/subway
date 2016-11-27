@@ -69,9 +69,8 @@ class AdgroupController extends Controller
         $adgroup = $this->getAdgroup($id);
         $ret=["result"=>0];
         try{
-//            $execute=new AdgroupExecute($adgroup);
-//            $execute->refresh(false);
-            sleep(2);
+            $execute=new AdgroupExecute($adgroup);
+            $execute->refresh(false);
             $ret["result"]=1;
         }catch(\Exception $e){
             $ret["message"]=$e->getMessage();

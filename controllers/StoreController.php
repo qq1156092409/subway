@@ -4,6 +4,7 @@ namespace app\controllers;
 
 use app\models\CustBase;
 use app\models\CustEffect;
+use app\models\execute\StoreExecute;
 use app\models\multiple\DataReport;
 use app\models\Store;
 use yii\web\Controller;
@@ -40,6 +41,19 @@ class StoreController extends Controller
             "balance"=>$store->balance,
             "rtrpt"=>$store->getRtDataReport(),
         ];
+    }
+    public function actionRefresh($id){
+        $store = $this->getStore($id);
+        $ret=["result"=>0];
+        try{
+            $execute = new StoreExecute($store);
+            $execute->refresh();
+            $ret["result"]=1;
+        }catch(\Exception $e){
+            $ret["message"]=$e->getMessage();
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
     }
 
     protected function getStore($id,$nick=null){
