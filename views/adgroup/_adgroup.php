@@ -10,11 +10,12 @@ $report=DataReport::merge($adgroup->getDataReport(7));
 <tr id="adgroup-<?=$adgroup->adgroup_id?>" class="adg_tr adgroup-model" data-id="<?=$adgroup->adgroup_id?>">
     <td class="check_column vm "><input type="checkbox" class="kid_check adgroup-check" value="<?=$adgroup->adgroup_id?>"></td>
     <td class="td-img ">
-        <a class="item_base" target="_blank" href="http://item.taobao.com/item.htm?id=539103908109">
-            <img width="70" height="70" src="<?=Url::to("origin/images/TB2rygzab2B11BjSsplXXcMDVXa_!!409358473.jpg_70x70.jpg")?>">
+        <a class="item_base" target="_blank" href="http://item.taobao.com/item.htm?id=<?=$adgroup->num_iid?>">
+            <img width="70" height="70" src="<?=$adgroup->img_url?>">
         </a>
     </td>
     <td class="item_dark ">
+        <?php if($adgroup->item){?>
         <span class="title w280">
             <a id="adgroup-<?=$adgroup->adgroup_id?>" class="item_base to_optimize" target="_blank" href="<?=Url::to(["/adgroup","id"=>$adgroup->adgroup_id])?>"><?=$adgroup->item?$adgroup->item->title:"-"?></a>
             &nbsp;￥<span class="item_price"><?=$adgroup->item?$adgroup->item->price:"-"?></span>
@@ -26,18 +27,21 @@ $report=DataReport::merge($adgroup->getDataReport(7));
                 <i class="iconfont set_follow_status hover_show" data-toggle="tooltip" data-placement="top" title="" value="0" data-original-title="点击可设置为关注宝贝"></i>
             </span>
         </span>
+        <?php }else{ ?>
+            <span>未找到对于宝贝</span>
+        <?php } ?>
     </td>
-    <td class=" "><?=$report->impression?></td>
-    <td class=" "><?=$report->click?></td>
-    <td class=" "><?=100*$report->ctr?>%</td>
-    <td class=" ">￥<?=$report->costYuan()?></td>
-    <td class=" ">￥<?=$report->cpcYuan()?></td>
-    <td class=" "><?=$report->favtotal?></td>
-    <td class=" "><?=$report->carttotal?></td>
-    <td class=" "><?=$report->paycount?></td>
-    <td class=" "><?=100*$report->coverage?>%</td>
-    <td class=" sorting_1">￥<?=$report->payYuan()?></td>
-    <td class=" "><?=$report->roi?></td>
+    <td class=""><?=$report->impression?></td>
+    <td class=""><?=$report->click?></td>
+    <td class=""><?=100*$report->ctr?>%</td>
+    <td class="">￥<?=$report->costYuan()?></td>
+    <td class="">￥<?=$report->cpcYuan()?></td>
+    <td class=""><?=$report->favtotal?></td>
+    <td class=""><?=$report->carttotal?></td>
+    <td class=""><?=$report->paycount?></td>
+    <td class=""><?=100*$report->coverage?>%</td>
+    <td class="sorting_1">￥<?=$report->payYuan()?></td>
+    <td class=""><?=$report->roi?></td>
     <td class="vt w120 ">
         <span class="lbl_online"><?=$adgroup->online_status=="online"?"推广中":"暂停中"?>&nbsp;&nbsp;</span>
         <a href="javascript:;" class="hover_show switch_status"><?=$adgroup->online_status!="online"?"推广":"暂停"?></a>

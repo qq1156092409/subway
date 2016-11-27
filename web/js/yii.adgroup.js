@@ -30,5 +30,15 @@ yii.campaign=(function($){
         $btn.parent().addClass("active").siblings(".active").removeClass("active");
         $("#"+$btn.data("id")).addClass("active").siblings(".active").removeClass("active");
     });
+    $body.on("click",".adgroup-refresh",function(e){
+        var $btn=$(this);
+        $.getJSON($btn.data("url"),function(response){
+            if(response.result==1){
+                location.reload();
+            }else{
+                alert(response.message);
+            }
+        });
+    });
     return {};
 })(jQuery);

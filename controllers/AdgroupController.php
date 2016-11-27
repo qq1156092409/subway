@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Adgroup;
+use app\models\execute\AdgroupExecute;
 use app\models\KeywordBase;
 use app\models\KeywordEffect;
 use yii\web\Controller;
@@ -62,6 +63,21 @@ class AdgroupController extends Controller
         ])->andWhere(["between","date",$start,$end])->all();
         \Yii::$app->response->format=Response::FORMAT_JSON;
         return [$bases,$effects];
+    }
+
+    public function actionRefresh($id){
+        $adgroup = $this->getAdgroup($id);
+        $ret=["result"=>0];
+        try{
+//            $execute=new AdgroupExecute($adgroup);
+//            $execute->refresh(false);
+            sleep(2);
+            $ret["result"]=1;
+        }catch(\Exception $e){
+            $ret["message"]=$e->getMessage();
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
     }
 
     /**

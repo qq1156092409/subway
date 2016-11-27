@@ -6,9 +6,9 @@ use yii\web\View;
  * @var $keyword Keyword
  */
 ?>
-<tr id="keyword-<?=$keyword->keyword_id?>" data-id="<?=$keyword->keyword_id?>" class="even down mobileUp">
+<tr id="keyword-<?=$keyword->keyword_id?>" data-id="<?=$keyword->keyword_id?>" class="even">
     <td class="check_column ">
-        <input type="checkbox">
+        <input type="checkbox" class="keyword-check" value="<?=$keyword->keyword_id?>">
     </td>
     <td class="hide  sorting_1">
         <span class="hide main_sort">1</span>
@@ -23,20 +23,20 @@ use yii\web\View;
         </i>
         <i class="iconfont chart"></i>
     </td>
-    <td class="max_price sort_custom "><?=$keyword->maxPriceYuan()?></td>
+    <td class="max_price sort_custom "><?=$maxPriceYuan=$keyword->maxPriceYuan()?></td>
     <td class=" ">
-        <input type="text" maxlength="5" class="w40 new_price" value="0.44">
-        <i class="iconfont recovery"></i>
+        <input type="text" maxlength="5" class="w40 new_price keyword-price-pc-new" value="<?=$maxPriceYuan?>">
+        <i class="iconfont recovery keyword-price-pc-recovery"></i>
     </td>
     <td class="max_mobile_price sort_custom ">
         <?php if($keyword->mobile_is_default_price){?>
             <span class="tag tag-gary">折</span>
         <?php } ?>
-        <?=$keyword->mobileMaxPriceYuan()?>
+        <span class="max_mobile_price_value"><?=$mobileMaxPriceYuan=$keyword->mobileMaxPriceYuan()?></span>
     </td>
     <td class=" ">
-        <input type="text" maxlength="5" class="w40 new_mobile_price" value="0.95">
-        <i class="iconfont recovery_mobile"></i>
+        <input type="text" maxlength="5" class="w40 new_mobile_price keyword-price-mobile-new" value="<?=$mobileMaxPriceYuan?>">
+        <i class="iconfont recovery_mobile keyword-price-mobile-recovery"></i>
     </td>
     <td class="sort_custom ">
         <span class="hide">0</span>

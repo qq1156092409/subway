@@ -3,10 +3,14 @@ use yii\helpers\Url;
 use yii\web\View;
 use app\models\Adgroup;
 use app\models\Keyword;
+use app\extensions\custom\yii\JsManager;
 /**
  * @var $adgroup Adgroup
  * @var $this View
  */
+JsManager::instance()->registers([
+    "js/yii.keyword.js"
+]);
 ?>
 <section class="container-fluid">
 
@@ -324,7 +328,7 @@ use app\models\Keyword;
                 
             ">
                         <div class="all">
-                            <input type="checkbox">
+                            <input type="checkbox" class="keyword-check-all">
                         </div>
                     </th>
                     <th class="hidden w0 sorting_desc" role="columnheader" tabindex="0" aria-controls="keyword_table"
@@ -506,21 +510,21 @@ use app\models\Keyword;
                         <span class="b">定向</span>
                     </td>
 
-                    <td class="striped ">0</td>
-                    <td class="striped ">0</td>
-                    <td class="striped ">0.00%</td>
-                    <td class="striped ">0.00</td>
-                    <td class="striped ">0.00</td>
+                    <td class="striped ">-</td>
+                    <td class="striped ">-</td>
+                    <td class="striped ">-</td>
+                    <td class="striped ">-</td>
+                    <td class="striped ">-</td>
 
 
-                    <td class=" ">0</td>
+                    <td class=" ">-</td>
 
 
-                    <td class=" ">0.00</td>
+                    <td class=" ">-</td>
 
 
-                    <td class=" ">0.00%</td>
-                    <td class=" ">0.00</td>
+                    <td class=" ">-</td>
+                    <td class=" ">-</td>
 
 
                 </tr>

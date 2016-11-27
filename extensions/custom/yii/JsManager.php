@@ -2,6 +2,7 @@
 
 namespace app\extensions\custom\yii;
 
+use app\assets\AmazeUIAsset;
 use yii\base\Component;
 use yii\base\InvalidConfigException;
 use yii\web\View;
@@ -34,6 +35,7 @@ class JsManager extends Component{
      */
     public $dependence=[
         'js/yii.store.js'=>['plugins/echarts.common.min.js'],
+//        'js/yii.adgroup.js'=>['app\assets\AmazeUIAsset'],
     ];
     public $js=[];
     public $temp=[];

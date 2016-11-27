@@ -1,9 +1,11 @@
 <?php
 use \yii\helpers\Url;
 use yii\web\View;
+use app\extensions\custom\yii\JsManager;
 
 /**
  * @var $this View
+ * @var $adgroup \app\models\Adgroup
  */
 $this->beginPage();
 
@@ -11,6 +13,10 @@ $store=$this->params["store"];
 $adgroup=$this->params["adgroup"];
 $active=Yii::$app->controller->getRoute();
 $item=$adgroup->item;
+
+JsManager::instance()->registers([
+    "js/yii.adgroup.js"
+]);
 ?>
     <!DOCTYPE html>
     <html lang="zh-CN">
@@ -191,7 +197,7 @@ $item=$adgroup->item;
                             </a>
                         </li>
                         <li>
-                            <a href="javascript:void(0);" id="id_sync_adg_data" adg_id="715202952" camp_id="35560990">
+                            <a href="javascript:void(0);" id="id_sync_adg_data" class="adgroup-refresh" data-url="<?=Url::to(["/adgroup/refresh","id"=>$adgroup->adgroup_id])?>">
                                 <img src="<?=Url::to("origin/images/tbsj.png")?>" alt="">
                                 <span>下载宝贝数据</span>
                             </a>
