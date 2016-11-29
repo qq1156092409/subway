@@ -311,4 +311,47 @@ class Store extends \yii\db\ActiveRecord
         }
         return $flag;
     }
+
+    /**
+     * 店铺可选人群模板
+     * @return int
+     * @throws \Exception
+     * @throws \app\extensions\custom\taobao\TopException
+     */
+    public function refreshCrowdTemplates(){
+        $count=0;
+        $req = new \SimbaSearchtagtemplateGetRequest;
+        $req->setNick("".$this->nick);
+        $response=TopClient::getInstance()->execute($req,$this->session);
+//        echo "<pre>";print_r($response);exit;
+        StoreCrowd::deleteAll(["nick"=>$this->nick]);
+        $data=$response->template_list->result;
+        $now=date("Y-m-d H:i:s");
+        foreach($data as $one){
+            $type=CrowdType::findOne($one->id);
+            if(!$type){
+                $type=new CrowdType();
+                $type->attributes=(array)$one;
+                $type->api_time=$now;
+                $type->save();
+            }
+            $options=$one->dim_list->dim_dt_os->tag_list->tag_options;
+            foreach($options as $option){
+                $crowd=Crowd::findOne($option->dim_id);
+                if(!$crowd){
+                    $crowd=new Crowd();
+                    $crowd->attributes=(array)$option;
+                    $crowd->api_time=$now;
+                    $crowd->crowd_type_id=$type->id;
+                    $crowd->save();
+                }
+                $storeCrowd=new StoreCrowd();
+                $storeCrowd->nick=$this->nick;
+                $storeCrowd->dim_id=$crowd->dim_id;
+                $storeCrowd->api_time=$now;
+                $storeCrowd->save() and $count++;
+            }
+        }
+        return $count;
+    }
 }

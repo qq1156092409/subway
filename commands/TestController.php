@@ -5,7 +5,6 @@ namespace app\commands;
 
 use app\helpers\ConsoleHelper;
 use app\models\Adgroup;
-use app\models\AuthSession;
 use app\models\Campaign;
 use app\models\execute\AdgroupExecute;
 use app\models\Store;
@@ -82,25 +81,6 @@ class TestController extends Controller {
             }
         }
         sleep(60);
-    }
-    public function actionImportStore(){
-        while(1){
-            /** @var Store[] $stores */
-            $stores=Store::find()->where(["session"=>""])->limit(100)->all();
-            if(!$stores){
-                break;
-            }
-            foreach($stores as $store){
-                /** @var AuthSession $authSession */
-                $authSession=AuthSession::find()->where(["taobao_user_nick"=>$store->nick])->orderBy("id desc")->limit(1)->one();
-                if($authSession){
-                    $store->session=$authSession->access_token;
-                    $store->save();
-                    ConsoleHelper::t("session success ".$store->nick);
-                }
-            }
-        }
-
     }
 
 }

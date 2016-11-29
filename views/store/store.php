@@ -67,7 +67,7 @@ $this->params["active"]=1;
                         <tbody>
                         <tr>
                             <td>实时数据：</td>
-                            <td>花费：<?=$rtrpt->costYuan()?>元</td>
+                            <td>花费：<span class="rtrpt-cost-yuan"><?=$rtrpt->costYuan()?></span>元</td>
                             <td>展现量：<?=$rtrpt->impression?></td>
                             <td>点击量：<?=$rtrpt->click?></td>
                             <td>点击率：<?=$rtrpt->ctr*100?>%</td>
@@ -193,8 +193,8 @@ $this->params["active"]=1;
                                target="_blank">续订优惠</a>
                         </li>
                         <li>
-                            <span class="title">账户余额</span> 
-                            <span class="msg"><?=$store->balance->balanceYuan?>元</span>
+                            <span class="title">账户余额</span>
+                            <span class="msg"><span class="balance-yuan"><?=$store->balance->balanceYuan?></span>元</span>
                             <button class="btn btn-primary btn-sm" id="btn_recharge">立即充值</button>
                         </li>
                         <li>

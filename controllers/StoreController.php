@@ -37,8 +37,10 @@ class StoreController extends Controller
             unset($store->balance);
         }
         \Yii::$app->response->format=Response::FORMAT_JSON;
+        $balance=$store->balance->attributes;
+        $balance["balanceYuan"]=$store->balance->getBalanceYuan();
         return [
-            "balance"=>$store->balance,
+            "balance"=>$balance,
             "rtrpt"=>$store->getRtDataReport(),
         ];
     }

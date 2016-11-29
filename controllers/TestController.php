@@ -20,31 +20,11 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
 
-//        echo CampaignAreaOption::refreshData();
+        $store = Store::findOne(20);
+//        $campaign = Campaign::findOne(3792809);
+//        $adgroup = Adgroup::findOne(721902858);
+        echo $store->refreshCrowdTemplates();
 
-        $store = Store::findOne(15);
-        echo $store->refreshCampaigns();
-
-//        $campaign = Campaign::findOne(2709348);
-//        $adgroup = Adgroup::findOne(432098541);
-
-//        echo $campaign->refreshArea();
-//        echo $store->refreshCustEffects();
-//        $reports=$store->getDataReports(7);
-//        echo "<pre>";print_r($reports);exit;
-
-//        $campaigns=Campaign::find()->all();
-//        foreach($campaigns as $campaign){
-//            $campaign->refreshBudget();
-//        }
-
-//        VasOrder::refreshData();
-
-//        echo $campaign->refreshAdgroups();
-
-//        echo $adgroup->refreshAdgroupCatmatch();
-//        echo "<pre>"; print_r($response);
-//        Channel::refreshData();
     }
     public function actionQueueAdd(){
         $pheanstalk = new Pheanstalk('120.25.240.36');

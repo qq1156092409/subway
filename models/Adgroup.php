@@ -239,6 +239,7 @@ class Adgroup extends \yii\db\ActiveRecord
             }
             $pageNo++;
         }
+        return $count;
     }
 
     /**
@@ -296,7 +297,7 @@ class Adgroup extends \yii\db\ActiveRecord
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
         /** @var AdgroupBase $exist */
-        $exist=AdgroupBase::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=AdgroupBase::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date>=$yestoday){
                 return $count;
@@ -333,9 +334,8 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setSubwayToken($this->store->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
-        $start=date("Y-m-d",strtotime("-30 day"));
         /** @var AdgroupBase $exist */
-        $exist=AdgroupEffect::find()->where(["adgroupId"=>$this->adgroup_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=AdgroupEffect::find()->where(["adgroupId"=>$this->adgroup_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
@@ -474,10 +474,52 @@ class Adgroup extends \yii\db\ActiveRecord
         Creative::deleteAll(["adgroup_id"=>$this->adgroup_id]);
         return GlobalModel::batchInsert(Creative::className(),$creatives);
     }
+
+    /**
+     * todo 无数据
+     * @throws \Exception
+     * @throws \app\extensions\custom\taobao\TopException
+     */
     public function refreshAdgroupCatmatch(){
         $req = new \SimbaAdgroupCatmatchGetRequest;
         $req->setNick("".$this->nick);
         $req->setAdgroupId("".$this->adgroup_id);
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+        echo "<pre>";print_r($response);exit;
+    }
+
+    public function refreshSearchCrowds(){
+        $req = new \SimbaSerchcrowdGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $response=TopClient::getInstance()->execute($req,$this->store->session);
+//        echo "<pre>";print_r($response);exit;
+        SearchCrowd::deleteAll(["adgroup_id"=>$this->adgroup_id]);
+        $now=date("Y-m-d H:i:s");
+        $count=0;
+        foreach($response->adgrouptargetingtags->result as $one){
+            $searchCrowd=new SearchCrowd();
+            $searchCrowd->attributes=ArrayHelper::merge((array)$one,(array)$one->crowd);
+            $searchCrowd->api_time=$now;
+            $searchCrowd->adgroup_id=$this->adgroup_id;
+            $searchCrowd->save() and $count++;
+        }
+        return $count;
+    }
+
+    /**
+     * 实时接口
+     * @throws \Exception
+     * @throws \app\extensions\custom\taobao\TopException
+     */
+    public function refreshSearchCrowdReports(){
+        $req = new \SimbaRptTargetingtagGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setCampaignId("".$this->campaign_id);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $req->setStartTime(date("Y-m-d",strtotime("-30 day")));
+        $req->setEndTime(date("Y-m-d",strtotime("-1 day")));
+        $req->setTrafficType("1,2,4,5");
         $response=TopClient::getInstance()->execute($req,$this->store->session);
         echo "<pre>";print_r($response);exit;
     }

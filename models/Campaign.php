@@ -197,7 +197,7 @@ class Campaign extends \yii\db\ActiveRecord
         $yestoday=date("Y-m-d",strtotime("-1 day"));
         $start=date("Y-m-d",strtotime("-30 day"));
         /** @var CampaignBase $exist */
-        $exist=CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->andWhere("date > '".$start."'")->orderBy("date desc")->limit(1)->one();
+        $exist=CampaignBase::find()->where(["campaignid"=>$this->campaign_id])->orderBy("date desc")->limit(1)->one();
         if($exist){
             if($exist->date==$yestoday){
                 return $count;
@@ -332,4 +332,5 @@ class Campaign extends \yii\db\ActiveRecord
         CampaignArea::deleteAll(["campaign_id"=>$this->campaign_id]);
         return GlobalModel::batchInsert(CampaignArea::className(),$response->campaign_area);
     }
+
 }
