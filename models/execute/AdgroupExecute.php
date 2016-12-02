@@ -49,6 +49,7 @@ class AdgroupExecute{
         $adgroup->refreshKeywords();
         $adgroup->refreshKeywordBases();
         $adgroup->refreshKeywordEffects();
+        $adgroup->refreshKeywordScores();
 //            $adgroup->refreshKeywordRankings();//实时排名 很耗时
     }
 

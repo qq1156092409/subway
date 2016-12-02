@@ -20,10 +20,10 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
 
-        $store = Store::findOne(20);
+//        $store = Store::findOne(20);
 //        $campaign = Campaign::findOne(3792809);
-//        $adgroup = Adgroup::findOne(721902858);
-        echo $store->refreshCrowdTemplates();
+        $adgroup = Adgroup::findOne(700178905);
+        echo $adgroup->refreshKeywordScores();
 
     }
     public function actionQueueAdd(){

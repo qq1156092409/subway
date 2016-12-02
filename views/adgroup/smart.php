@@ -502,8 +502,8 @@ JsManager::instance()->registers([
                         <button class="btn btn-xs btn-default" id="recovery_mobile_all">全部重置</button>
                     </td>
                     <td class=" ">
-                        <span id="rank_time">--:--</span>排名 
-                        <button class="btn btn-xs btn-default" id="rank_all">立即更新</button>
+                        <span id="rank_time">--:--</span>排名
+                        <button class="btn btn-xs btn-default" id="adgroup-refresh-rankings" data-url="<?=Url::to(["/adgroup/refresh-rankings","id"=>$adgroup->adgroup_id])?>">立即更新</button>
                     </td>
                     <td class=" ">--</td>
                     <td class=" ">

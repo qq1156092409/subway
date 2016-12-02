@@ -196,14 +196,16 @@ class Adgroup extends \yii\db\ActiveRecord
         $req = new \SimbaKeywordsRealtimeRankingBatchGetRequest;
         $req->setNick($this->nick);
         $req->setAdGroupId("".$this->adgroup_id);
-        $keywordIDs=ArrayHelper::getColumn($this->keywords, "keyword_id");
-        $keywordIDs2=array_chunk($keywordIDs,20);
-        foreach($keywordIDs2 as $chunk){
-            $req->setBidwordIds(implode(",",$chunk));
-            $response=TopClient::getInstance()->execute($req, $this->store->session);
-//            echo "<pre>";print_r($response);exit;
-            Ranking::deleteAll(["bidwordid"=>$chunk]);
-            $count+=GlobalModel::batchInsert(Ranking::className(),$response->result->realtime_rank_list->result);
+        if($this->keywords){
+            $keywordIDs=ArrayHelper::getColumn($this->keywords, "keyword_id");
+            $keywordIDs2=array_chunk($keywordIDs,20);
+            foreach($keywordIDs2 as $chunk){
+                $req->setBidwordIds(implode(",",$chunk));
+                $response=TopClient::getInstance()->execute($req, $this->store->session);
+//                  echo "<pre>";print_r($response);exit;
+                Ranking::deleteAll(["bidwordid"=>$chunk]);
+                $count+=GlobalModel::batchInsert(Ranking::className(),$response->result->realtime_rank_list->result);
+            }
         }
         return $count;
     }
@@ -522,5 +524,30 @@ class Adgroup extends \yii\db\ActiveRecord
         $req->setTrafficType("1,2,4,5");
         $response=TopClient::getInstance()->execute($req,$this->store->session);
         echo "<pre>";print_r($response);exit;
+    }
+
+    /**
+     * @return int
+     * @throws \Exception
+     * @throws \app\extensions\custom\taobao\TopException
+     */
+    public function refreshKeywordScores(){
+        $count=0;
+        $req = new \SimbaKeywordsQscoreSplitGetRequest;
+        $req->setNick("".$this->nick);
+        $req->setAdgroupId("".$this->adgroup_id);
+        $keywords=$this->keywords;
+        if($keywords){
+            $keywordIds=ArrayHelper::getColumn($keywords,"keyword_id");
+            $keywordIds2=array_chunk($keywordIds,20);
+            foreach($keywordIds2 as $chunk){
+                $req->setBidwordIds(implode(",",$chunk));
+                $response=TopClient::getInstance()->execute($req,$this->store->session);
+//                echo "<pre>";print_r($response);exit;
+                KeywordScore::deleteAll(["keyword_id"=>$chunk]);
+                $count+=GlobalModel::batchInsert(KeywordScore::className(),$response->result->result->word_score_list->wordscorelist);
+            }
+        }
+        return $count;
     }
 }

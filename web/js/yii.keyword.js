@@ -43,6 +43,21 @@ yii.keyword=(function($){
         $keyword.removeClass("mobileUp").removeClass("mobileDown");
         $after.val($before.text());
     });
+    $body.on("click","#adgroup-refresh-rankings",function(e){
+        var $btn=$(this);
+        $.getJSON($btn.data("url"),function(response){
+            if(response.result==1){
+                var rankings=response.data.rankings;
+                $.each(rankings,function(k,v){
+                    var $keyword=$("#keyword-"+ v.bidwordid);
+                    $keyword.find(".pc_rank_desc").text(v.pc_rank);
+                    $keyword.find(".mobile_rank_desc").text(v.mobile_rank);
+                });
+            }else{
+                alert(response.message);
+            }
+        });
+    });
     $body.on("change",".keyword-check-all",function(e){
         var $check=$(this);
         if($check.is(":checked")){

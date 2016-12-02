@@ -5,6 +5,8 @@ use yii\web\View;
 /**
  * @var $keyword Keyword
  */
+$score=$keyword->score;
+$ranking=$keyword->ranking;
 ?>
 <tr id="keyword-<?=$keyword->keyword_id?>" data-id="<?=$keyword->keyword_id?>" class="even">
     <td class="check_column ">
@@ -41,27 +43,26 @@ use yii\web\View;
     <td class="sort_custom ">
         <span class="hide">0</span>
         <div class="rank">
-            <span class="pc_rank_desc db pct50 l">--</span>
+            <span class="pc_rank_desc db pct50 l"><?=$ranking?$ranking->pc_rank:"-"?></span>
             <span class="hide pc_rank"></span>
-            <span class="left_dotted db pct50 l mobile_rank_desc">--</span>
+            <span class="left_dotted db pct50 l mobile_rank_desc"><?=$ranking?$ranking->mobile_rank:"-"?></span>
             <span class="hide mobile_rank"></span>
         </div>
     </td>
     <td class="rob_rank ">
         <a href="javascript:;" class="rob">抢</a>
     </td>
-    <td class="qscore sort_custom " pc_qscore="7" pc_creative_score="3" pc_rele_score="4" pc_cvr_score="4" yd_qscore="9" yd_creative_score="4" yd_rele_score="4" yd_cvr_score="4" matchflag="4" plflag="0" data-original-title="" title="">
-        <span class="hide">0</span>
-        <span class="pc_qs db pct50 l">7</span><span class="mobile_qs left_dotted db pct50 l">9
-            </span>
+    <td class="qscore sort_custom " data-original-title="" title="">
+        <span class="pc_qs db pct50 l"><?=$score?$score->qscore:"-"?></span>
+        <span class="mobile_qs left_dotted db pct50 l"><?=$score?$score->wireless_qscore:"-"?></span>
     </td>
-    <td class="striped ">284</td>
-    <td class="striped ">6</td>
-    <td class="striped ">2.11%</td>
-    <td class="striped ">3.61</td>
-    <td class="striped ">0.60</td>
-    <td class=" ">1</td>
-    <td class=" ">58.00</td>
-    <td class=" ">16.67%</td>
-    <td class="red ">16.07</td>
+    <td class="striped ">-</td>
+    <td class="striped ">-</td>
+    <td class="striped ">-</td>
+    <td class="striped ">-</td>
+    <td class="striped ">-</td>
+    <td class=" ">-</td>
+    <td class=" ">-</td>
+    <td class=" ">-</td>
+    <td class="red ">-</td>
 </tr>

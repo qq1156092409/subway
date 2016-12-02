@@ -86,6 +86,12 @@ class Keyword extends \yii\db\ActiveRecord
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
+    public function getScore(){
+        return $this->hasOne(KeywordScore::className(),["keyword_id"=>"keyword_id"]);
+    }
+    public function getRanking(){
+        return $this->hasOne(Ranking::className(),["bidwordid"=>"keyword_id"]);
+    }
 
     //--get
     public function maxPriceYuan(){

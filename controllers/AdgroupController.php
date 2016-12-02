@@ -6,6 +6,8 @@ use app\models\Adgroup;
 use app\models\execute\AdgroupExecute;
 use app\models\KeywordBase;
 use app\models\KeywordEffect;
+use app\models\Ranking;
+use yii\helpers\ArrayHelper;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
@@ -72,6 +74,23 @@ class AdgroupController extends Controller
             $execute=new AdgroupExecute($adgroup);
             $execute->refresh(false);
             $ret["result"]=1;
+        }catch(\Exception $e){
+            $ret["message"]=$e->getMessage();
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
+    }
+
+    public function actionRefreshRankings($id){
+        $adgroup = $this->getAdgroup($id);
+        $ret=["result"=>0];
+        try{
+            $adgroup->refreshKeywordRankings();
+            $keywords=$adgroup->keywords;
+            $rankings=Ranking::findAll(["bidwordid"=>ArrayHelper::getColumn($keywords,"keyword_id")]);
+            $ret["data"]=[
+                "rankings"=>$rankings,
+            ];
         }catch(\Exception $e){
             $ret["message"]=$e->getMessage();
         }

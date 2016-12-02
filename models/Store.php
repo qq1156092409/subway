@@ -354,4 +354,15 @@ class Store extends \yii\db\ActiveRecord
         }
         return $count;
     }
+
+    /**
+     * todo taobao exception
+     * @throws \Exception
+     * @throws \app\extensions\custom\taobao\TopException
+     */
+    public function refreshChannels(){
+        $req = new \SimbaCampaignChanneloptionsGetRequest;
+        $response=TopClient::getInstance()->execute($req, $this->session);
+        echo "<pre>";print_r($response);
+    }
 }
