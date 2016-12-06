@@ -55,6 +55,11 @@ class CampaignBudget extends \yii\db\ActiveRecord
         ];
     }
 
+    //--relation
+    public function getStore(){
+        return $this->hasOne(Store::className(),["nick"=>"nick"]);
+    }
+
     //--method
     public function budgetYuan(){
         return (float)$this->budget;

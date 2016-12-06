@@ -91,6 +91,7 @@ class AdgroupController extends Controller
             $ret["data"]=[
                 "rankings"=>$rankings,
             ];
+            $ret["result"]=1;
         }catch(\Exception $e){
             $ret["message"]=$e->getMessage();
         }
