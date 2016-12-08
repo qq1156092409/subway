@@ -1,7 +1,6 @@
 <?php
 
 namespace app\models\form;
-use app\extensions\custom\taobao\TopClient;
 use app\models\Campaign;
 use app\models\CampaignSetting;
 use yii\web\BadRequestHttpException;

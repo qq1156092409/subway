@@ -16,6 +16,8 @@ use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
+        echo "<pre>";print_r(\Yii::$aliases);exit;
+
         /** @var Store $store */
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
