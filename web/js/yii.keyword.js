@@ -66,6 +66,17 @@ yii.keyword=(function($){
             $(".keyword-check").prop("checked",false);
         }
     });
+    $body.on("change",".keyword-check",function(e){
+        var $check=$(this);
+        if($check.is(":checked")){
+            $(".keyword-check").prop("checked",true);
+            if($(".keyword-check:not(:checked)").size()==0){
+                $(".keyword-check-all").prop("checked",true);
+            }
+        }else{
+            $(".keyword-check-all").prop("checked",false);
+        }
+    });
 
     return {};
 })(jQuery);

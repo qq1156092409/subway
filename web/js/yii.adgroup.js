@@ -21,8 +21,12 @@ yii.campaign=(function($){
         var $count=$(".adgroup-check-count");
         if($checkbox.is(":checked")){
             $count.text(parseInt($count.text())+1);
+            if($(".adgroup-check:not(:checked)").size()==0){
+                $(".adgroup-check-all").prop("checked",true);
+            }
         }else{
             $count.text(parseInt($count.text())-1);
+            $(".adgroup-check-all").prop("checked",false);
         }
     });
     $body.on("click","#select_keyword_nav a",function(e){

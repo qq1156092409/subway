@@ -4,16 +4,20 @@ namespace app\controllers;
 
 use app\models\Adgroup;
 use app\models\execute\AdgroupExecute;
+use app\models\form\AdgroupForm;
 use app\models\KeywordBase;
 use app\models\KeywordEffect;
 use app\models\Ranking;
 use yii\helpers\ArrayHelper;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class AdgroupController extends Controller
 {
+    public $enableCsrfValidation=false;
+
     public $layout="main_adgroup";
     public function actionIndex($id){
         $adgroup = $this->getAdgroup($id);
@@ -93,6 +97,66 @@ class AdgroupController extends Controller
             ];
             $ret["result"]=1;
         }catch(\Exception $e){
+            $ret["message"]=$e->getMessage();
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
+    }
+
+    public function actionToggleStatus($id){
+        $ret=["result"=>0];
+        $model=new AdgroupForm();
+        $model->scenario=AdgroupForm::TOGGLE_STATUS;
+        $model->adgroup_id=$id;
+        try{
+            $flag=$model->toggleStatus();
+            if(!$flag){
+                foreach($model->errors as $error){
+                    throw new BadRequestHttpException($error[0]);
+                }
+            }
+            $ret["result"]=1;
+            $ret["data"]=$model->getAr();
+        }catch (\Exception $e){
+            $ret["message"]=$e->getMessage();
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
+    }
+
+    public function actionBatchStatus(){
+        $ret=["result"=>0];
+        $model=new AdgroupForm();
+        $model->scenario=AdgroupForm::BATCH_STATUS;
+        $model->load(\Yii::$app->request->post(),"");
+        $data=$model->batchStatus();
+        if($data!==false){
+            $ret["result"]=1;
+            $ret["data"]=$data;
+        }else{
+            foreach($model->errors as $error){
+                $ret["message"]=$error[0];break;
+            }
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
+    }
+
+    public function actionDestroy($id){
+        $ret=["result"=>0];
+        $model=new AdgroupForm();
+        $model->scenario=AdgroupForm::DESTROY;
+        $model->adgroup_id=$id;
+        try{
+            $flag=$model->destroy();
+            if(!$flag){
+                foreach($model->errors as $error){
+                    throw new BadRequestHttpException($error[0]);
+                }
+            }
+            $ret["result"]=1;
+            $ret["data"]=$id;
+        }catch (\Exception $e){
             $ret["message"]=$e->getMessage();
         }
         \Yii::$app->response->format=Response::FORMAT_JSON;

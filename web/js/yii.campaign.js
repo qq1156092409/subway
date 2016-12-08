@@ -26,6 +26,15 @@ yii.campaign=(function($){
             $(".campaign-check").prop("checked",false);
         }
     });
+    $body.on("change",".campaign-check",function(e){
+        if($(this).is(":checked")){
+            if($(".campaign-check:not(:checked)").size()==0){
+                $(".campaign-check-all").prop("checked",true);
+            }
+        }else{
+            $(".campaign-check-all").prop("checked",false);
+        }
+    });
     $body.on("click",".campaign-batch-status",function(e){
         var $btn=$(this);
         var data={ ids: []};

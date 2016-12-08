@@ -52,7 +52,7 @@ class CampaignSchedule extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
-    
+
     //--relation
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
