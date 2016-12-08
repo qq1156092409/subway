@@ -39,7 +39,7 @@ yii.campaign=(function($){
             if(response.result==1){
                 $.each(response.data.campaigns,function(k,v){
                     var $campaign=$("#campaign-"+ v.campaign_id);
-                    render($campaign,v);
+                    renderStatus($campaign,v);
                 });
                 $checks.prop("checked",false);
                 $(".campaign-check-all").prop("checked",false);
@@ -54,13 +54,13 @@ yii.campaign=(function($){
             if(response.result==1){
                 var data=response.data;
                 var $campaign=$("#campaign-"+data.campaign_id);
-                render($campaign,data);
+                renderStatus($campaign,data);
             }else{
                 alert(response.message);
             }
         });
     });
-    function render($campaign,data){
+    function renderStatus($campaign,data){
         var $btn=$campaign.find(".campaign-toggle-status");
         if(data.online_status=="offline"){
             $campaign.addClass("gray_light");
