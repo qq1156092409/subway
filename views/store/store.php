@@ -264,8 +264,8 @@ $this->params["active"]=1;
                 </div>
             </div>
             <div class="operate">
-                <button class="btn btn-default btn-sm update_camp" mode="1">参与推广</button>
-                <button class="btn btn-default btn-sm update_camp" mode="0">暂停推广</button>
+                <button class="btn btn-default btn-sm update_camp campaign-batch-status" data-url="<?=Url::to(["/campaign/batch-status"])?>" data-status="online" mode="1">参与推广</button>
+                <button class="btn btn-default btn-sm update_camp campaign-batch-status" data-url="<?=Url::to(["/campaign/batch-status"])?>" data-status="offline" mode="0">暂停推广</button>
                 <button class="btn btn-default btn-sm js_create_camp">新建计划</button>
                 <!--                 <div class="show_more_warp">
                                     <span class="tip" data-target="campaign_table" data-toggle="show_more">更多数据</span>

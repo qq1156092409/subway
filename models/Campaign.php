@@ -85,6 +85,24 @@ class Campaign extends \yii\db\ActiveRecord
     public function getRealTimeReport(){
         return $this->hasOne(CampaignRealTimeReport::className(),["campaignid"=>"campaign_id"])->onCondition(["thedate"=>date("Y-m-d")]);
     }
+
+    //--method
+    public function apiUpdate($attributes){
+        $campaign=$this;
+        $req = new \SimbaCampaignUpdateRequest;
+        $req->setNick("".$campaign->nick);
+        $req->setCampaignId("".$campaign->campaign_id);
+        $req->setTitle("".$campaign->title);
+        $req->setOnlineStatus("".$campaign->online_status);
+
+        isset($attributes["online_status"]) and $req->setOnlineStatus("".$attributes["online_status"]);
+        isset($attributes["title"]) and $req->setTitle("".$attributes["title"]);
+
+        $response=TopClient::getInstance()->execute($req,$campaign->store->session);
+        $campaign->load((array)$response->campaign,"");
+        $campaign->api_time=date("Y-m-d H:i:s");
+        return $campaign->save();
+    }
     //--get
     public function getDataReports($day){
         $start=date("Y-m-d",strtotime("- $day days"));

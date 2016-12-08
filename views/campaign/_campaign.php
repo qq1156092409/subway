@@ -60,7 +60,9 @@ $totalReport=DataReport::merge($reports);
     <td class=" "><?=$totalReport->roi?></td>
     <td class=" ">
         <span class="b"><?=$campaign->online_status=="online"?"推广中":"暂停中"?></span>
-        <a class="hover_show update_camp single" href="javascript:;"><?=$campaign->online_status!="online"?"推广":"暂停"?></a>
+        <a class="hover_show update_camp single campaign-toggle-status"
+           data-url="<?=Url::to(["/campaign/toggle-status","id"=>$campaign->campaign_id])?>"
+           href="javascript:;"><?=$campaign->online_status!="online"?"推广":"暂停"?></a>
         <?php if($campaign->settle_status=="offline"){?>
         <br><?=$campaign->settleReasonZh()?>
         <?php }?>

@@ -4,12 +4,14 @@ namespace app\controllers;
 use app\models\Campaign;
 use app\models\form\CampaignForm;
 use app\models\multiple\DataReport;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
 class CampaignController extends Controller
 {
+    public $enableCsrfValidation=false;
 
     public function actionIndex($id){
         $campaign = $this->getCampaign($id);
@@ -47,35 +49,22 @@ class CampaignController extends Controller
         return $ret;
     }
 
-    public function actionOffline($id){
+    public function actionToggleStatus($id){
         $ret=["result"=>0];
         $model=new CampaignForm();
-        $model->scenario=CampaignForm::OFFLINE;
+        $model->scenario=CampaignForm::TOGGLE_STATUS;
         $model->campaign_id=$id;
-        if($model->offline()){
+        try{
+            $flag=$model->toggleStatus();
+            if(!$flag){
+                foreach($model->errors as $error){
+                    throw new BadRequestHttpException($error[0]);
+                }
+            }
             $ret["result"]=1;
             $ret["data"]=$model->getAr();
-        }else{
-            foreach($model->errors as $error){
-                $ret["message"]=$error[0];break;
-            }
-        }
-        \Yii::$app->response->format=Response::FORMAT_JSON;
-        return $ret;
-    }
-
-    public function actionOnline($id){
-        $ret=["result"=>0];
-        $model=new CampaignForm();
-        $model->scenario=CampaignForm::ONLINE;
-        $model->campaign_id=$id;
-        if($model->online()){
-            $ret["result"]=1;
-            $ret["data"]=$model->getAr();
-        }else{
-            foreach($model->errors as $error){
-                $ret["message"]=$error[0];break;
-            }
+        }catch (\Exception $e){
+            $ret["message"]=$e->getMessage();
         }
         \Yii::$app->response->format=Response::FORMAT_JSON;
         return $ret;
@@ -86,24 +75,28 @@ class CampaignController extends Controller
         $model=new CampaignForm();
         $model->scenario=CampaignForm::RENAME;
         $model->load(\Yii::$app->request->post(),"");
-        if($model->rename()){
+        try{
+            $flag=$model->rename();
+            if(!$flag){
+                foreach($model->errors as $error){
+                    throw new BadRequestHttpException($error[0]);
+                }
+            }
             $ret["result"]=1;
             $ret["data"]=$model->getAr();
-        }else{
-            foreach($model->errors as $error){
-                $ret["message"]=$error[0];break;
-            }
+        }catch (\Exception $e){
+            $ret["message"]=$e->getMessage();
         }
         \Yii::$app->response->format=Response::FORMAT_JSON;
         return $ret;
     }
 
-    public function actionBatchOffline(){
+    public function actionBatchStatus(){
         $ret=["result"=>0];
         $model=new CampaignForm();
-        $model->scenario=CampaignForm::BATCH_OFFLINE;
+        $model->scenario=CampaignForm::BATCH_STATUS;
         $model->load(\Yii::$app->request->post(),"");
-        $data=$model->batchOffline();
+        $data=$model->batchStatus();
         if($data!==false){
             $ret["result"]=1;
             $ret["data"]=$data;
