@@ -1,18 +1,21 @@
 <?php
+
 namespace app\controllers;
 
-use app\models\form\CampaignBudgetForm;
-use yii\web\BadRequestHttpException;
+
+use app\models\form\CampaignScheduleForm;
 use yii\web\Response;
+use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 
-class CampaignBudgetController extends Controller
+class CampaignScheduleController extends Controller
 {
     public $enableCsrfValidation=false;
+
     public function actionEdit(){
         $ret=["result"=>0];
-        $model=new CampaignBudgetForm();
-        $model->scenario=CampaignBudgetForm::EDIT;
+        $model=new CampaignScheduleForm();
+        $model->scenario=CampaignScheduleForm::EDIT;
         $model->load(\Yii::$app->request->post(),"");
         try{
             if(!$model->edit()){
