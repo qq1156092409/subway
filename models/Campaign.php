@@ -238,7 +238,7 @@ class Campaign extends \yii\db\ActiveRecord
             $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=GlobalModel::batchInsert(CampaignBase::className(),$response->rpt_campaign_base_list);
-            if($count<$pageSize){
+            if(count($response->rpt_campaign_base_list)<$pageSize){
                 break;
             }
             $pageNo++;
@@ -278,7 +278,7 @@ class Campaign extends \yii\db\ActiveRecord
             $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=GlobalModel::batchInsert(CampaignEffect::className(),$response->rpt_campaign_effect_list);
-            if($count<$pageSize){
+            if(count($response->rpt_campaign_effect_list)<$pageSize){
                 break;
             }
             $pageNo++;

@@ -243,7 +243,7 @@ class Store extends \yii\db\ActiveRecord
             $response=$client->execute($req,$this->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=GlobalModel::batchInsert(CustBase::className(),$response->rpt_cust_base_list);
-            if($count<$pageSize){
+            if(count($response->rpt_cust_base_list)<$pageSize){
                 break;
             }
             $pageNo++;
@@ -281,7 +281,7 @@ class Store extends \yii\db\ActiveRecord
             $response=$client->execute($req,$this->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=GlobalModel::batchInsert(CustEffect::className(),$response->rpt_cust_effect_list);
-            if($count<$pageSize){
+            if(count($response->rpt_cust_effect_list)<$pageSize){
                 break;
             }
             $pageNo++;

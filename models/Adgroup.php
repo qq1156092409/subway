@@ -332,7 +332,7 @@ class Adgroup extends \yii\db\ActiveRecord
             $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=GlobalModel::batchInsert(AdgroupBase::className(),$response->rpt_adgroup_base_list);
-            if($count<$pageSize){
+            if(count($response->rpt_adgroup_base_list)<$pageSize){
                 break;
             }
             $pageNo++;
@@ -373,7 +373,7 @@ class Adgroup extends \yii\db\ActiveRecord
             $response=$client->execute($req,$this->store->session);
 //            echo "<pre>";print_r($response);exit;
             $count+=GlobalModel::batchInsert(AdgroupEffect::className(),$response->rpt_adgroup_effect_list);
-            if($count<$pageSize){
+            if(count($response->rpt_adgroup_effect_list)<$pageSize){
                 break;
             }
             $pageNo++;
