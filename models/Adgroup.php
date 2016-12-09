@@ -227,7 +227,7 @@ class Adgroup extends \yii\db\ActiveRecord
         }else{
             $start=date("Y-m-d",strtotime("-30 day"));
         }
-        $req = new \SimbaRptAdgroupkeywordBaseGetRequest;
+        $req = new \SimbaRptAdgroupKeywordBaseGetRequest;
         $req->setNick($this->nick);
         $req->setCampaignId("".$this->campaign_id);
         $req->setAdgroupId("".$this->adgroup_id);
@@ -271,7 +271,7 @@ class Adgroup extends \yii\db\ActiveRecord
         }else{
             $start=date("Y-m-d",strtotime("-30 day"));
         }
-        $req = new \SimbaRptAdgroupkeywordeffectGetRequest;
+        $req = new \SimbaRptAdgroupKeywordEffectGetRequest;
         $req->setNick($this->nick);
         $req->setCampaignId("".$this->campaign_id);
         $req->setAdgroupId("".$this->adgroup_id);

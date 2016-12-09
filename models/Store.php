@@ -216,7 +216,7 @@ class Store extends \yii\db\ActiveRecord
      */
     public function refreshCustBases(){
         $count=0;
-        $req = new \SimbaRptCustbaseGetRequest;
+        $req = new \SimbaRptCustBaseGetRequest;
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
@@ -252,7 +252,7 @@ class Store extends \yii\db\ActiveRecord
     }
     public function refreshCustEffects(){
         $count=0;
-        $req = new \SimbaRptCusteffectGetRequest;
+        $req = new \SimbaRptCustEffectGetRequest;
         $req->setSubwayToken($this->authSign->subway_token);
         $req->setNick($this->nick);
         $yestoday=date("Y-m-d",strtotime("-1 day"));
