@@ -43,14 +43,15 @@ class AdgroupExecute{
 
         $adgroup->refreshAdgroupBases();
         $adgroup->refreshAdgroupEffects();
-        $adgroup->refreshCreatives();
-        $adgroup->refreshCreativeBases();
-        $adgroup->refreshCreativeEffects();
         $adgroup->refreshKeywords();
         $adgroup->refreshKeywordBases();
         $adgroup->refreshKeywordEffects();
-        $adgroup->refreshKeywordScores();
-//            $adgroup->refreshKeywordRankings();//实时排名 很耗时
+        $adgroup->refreshCreatives();
+        $adgroup->refreshCreativeBases();
+        $adgroup->refreshCreativeEffects();
+        $adgroup->refreshSearchCrowds();
+//        $adgroup->refreshKeywordScores();
+//        $adgroup->refreshKeywordRankings();//实时排名 很耗时
     }
 
     public function createKeywordPools(){

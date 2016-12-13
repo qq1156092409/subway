@@ -7,6 +7,7 @@ use app\helpers\ConsoleHelper;
 use app\models\Adgroup;
 use app\models\Campaign;
 use app\models\execute\AdgroupExecute;
+use app\models\form\SearchCrowdForm;
 use app\models\Store;
 use Pheanstalk\Exception;
 use Pheanstalk\Pheanstalk;
@@ -18,19 +19,14 @@ class TestController extends Controller {
         /** @var Adgroup $adgroup */
         /** @var Campaign $campaign */
 
-        $fail=0;
-        $campaigns=Campaign::find()->joinWith(["campaignArea"])->where("campaign_area.campaign_id is null")->all();
-        foreach($campaigns as $campaign){
-            try{
-                $campaign->refreshArea();
-            }catch (\Exception $e){
-                $fail++;
-            }
-        }
-        echo $fail.PHP_EOL;
 //        $adgroup=Adgroup::findOne(719091059);
 //        echo $adgroup->refreshKeywords();
-
+        $model=new SearchCrowdForm();
+        $model->scenario=SearchCrowdForm::BATCH_STATE;
+        $model->ids=[311463361417,311647052491];
+        $model->online_status=0;
+        echo $model->batchState();
+        print_r($model->errors);
     }
     public function actionQueue(){
         $pheanstalk = new Pheanstalk('120.25.240.36');

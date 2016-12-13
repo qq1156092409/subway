@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "search_crowd".
@@ -64,5 +65,23 @@ class SearchCrowd extends \yii\db\ActiveRecord
             'type' => 'Type',
             'api_time' => 'Api Time',
         ];
+    }
+
+    //--relation
+    public function getAdgroup(){
+        return $this->hasOne(Adgroup::className(),["adgroup_id"=>"adgroup_id"]);
+    }
+
+    //--static
+    public static function batchInsert($datas,$extra){
+        $count=0;
+        $now=date("Y-m-d H:i:s");
+        foreach($datas as $one){
+            $searchCrowd=new SearchCrowd();
+            $searchCrowd->attributes=ArrayHelper::merge((array)$one,(array)$one->crowd,$extra);
+            $searchCrowd->api_time=$now;
+            $searchCrowd->save() and $count++;
+        }
+        return $count;
     }
 }

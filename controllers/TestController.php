@@ -7,6 +7,7 @@ use app\models\Campaign;
 use app\models\CampaignAreaOption;
 use app\models\Channel;
 use app\models\CustRealTimeReport;
+use app\models\form\SearchCrowdForm;
 use app\models\Keyword;
 use app\models\multiple\DataReport;
 use app\models\Store;
@@ -16,7 +17,6 @@ use yii\web\Controller;
 
 class TestController extends Controller {
     public function actionIndex(){
-        echo "<pre>";print_r(\Yii::$aliases);exit;
 
         /** @var Store $store */
         /** @var Campaign $campaign */
@@ -24,8 +24,14 @@ class TestController extends Controller {
 
 //        $store = Store::findOne(20);
 //        $campaign = Campaign::findOne(3792809);
-        $adgroup = Adgroup::findOne(700178905);
-        echo $adgroup->refreshKeywordScores();
+//        $adgroup = Adgroup::findOne(700178905);
+
+        $model=new SearchCrowdForm();
+        $model->scenario=SearchCrowdForm::BATCH_STATE;
+        $model->ids=[284765396470,284765396472];
+        $model->online_status=1;
+        echo $model->batchState();
+        print_r($model->errors);
 
     }
     public function actionQueueAdd(){

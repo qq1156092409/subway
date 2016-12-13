@@ -51,4 +51,9 @@ class Crowd extends \yii\db\ActiveRecord
             'api_time' => 'Api Time',
         ];
     }
+
+    //--relation
+    public function getCrowdType(){
+        return $this->hasOne(CrowdType::className(),["id"=>"crowd_type_id"]);
+    }
 }
