@@ -5,6 +5,7 @@ namespace app\models\form;
 
 use app\extensions\custom\taobao\TopClient;
 use app\models\Crowd;
+use app\models\CrowdTag;
 use app\models\SearchCrowd;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
@@ -87,6 +88,8 @@ class SearchCrowdForm extends SearchCrowd
         $tags=[];
         foreach($this->datas as $data){
             $crowd=$crowds[$data["dim_id"]];
+            /** @var CrowdTag $crowdTag */
+            $crowdTag=CrowdTag::findOne(["nick"=>$this->adgroup->nick,"dim_id"=>$crowd->dim_id]);
             $temp=[
                 "crowdDTO"=>[
                     "templateId"=>"".$crowd->crowd_type_id,
@@ -94,7 +97,7 @@ class SearchCrowdForm extends SearchCrowd
                     "tagList"=>[
                         [
                             "dimId"=>"".$crowd->dim_id,
-                            "tagId"=>"".$crowd->tag_id,
+                            "tagId"=>"".$crowdTag->tag_id,
                             "tagName"=>"".$crowd->tag_name,
                             "optionGroupId"=>"".$crowd->option_group_id,
                         ],

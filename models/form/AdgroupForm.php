@@ -5,7 +5,9 @@ namespace app\models\form;
 
 use app\extensions\custom\taobao\TopClient;
 use app\models\Adgroup;
+use app\models\StoreCrowd;
 use yii\helpers\ArrayHelper;
+use yii\helpers\Json;
 use yii\web\BadRequestHttpException;
 
 class AdgroupForm extends Adgroup
@@ -14,6 +16,7 @@ class AdgroupForm extends Adgroup
     const BATCH_STATUS="batchStatus";
     const DESTROY="destroy";
     const BATCH_DESTROY="batchDestroy";
+    const TEST_SEARCH_CROWD="testSearchCrowd";
 
     public $ids;
 
@@ -22,6 +25,8 @@ class AdgroupForm extends Adgroup
             self::TOGGLE_STATUS=>["adgroup_id"],
             self::DESTROY=>["adgroup_id"],
             self::BATCH_STATUS=>["ids","online_status"],
+            self::BATCH_DESTROY=>["ids"],
+            self::TEST_SEARCH_CROWD=>["adgroup_id"],
         ];
     }
     public function rules(){
@@ -151,6 +156,23 @@ class AdgroupForm extends Adgroup
             }
         }
         return $ret;
+    }
+
+    public function testSearchCrowd(){
+        if(!$this->validate()){
+            return false;
+        }
+        $ar=$this->getAr();
+        $storeCrowds=StoreCrowd::findAll(["nick"=>$ar->nick]);
+        $model=new SearchCrowdForm();
+        $model->scenario=SearchCrowdForm::BATCH_ADD;
+        $model->adgroup_id=$ar->adgroup_id;
+        $datas=[];
+        foreach($storeCrowds as $storeCrowd){
+            $datas[]=["dim_id"=>$storeCrowd->dim_id,"discount"=>5];
+        }
+        $model->datas=$datas;
+        return $model->batchAdd();
     }
 
     protected $_ar=false;

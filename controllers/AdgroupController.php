@@ -163,6 +163,21 @@ class AdgroupController extends Controller
         return $ret;
     }
 
+    public function actionTestSearchCrowd($id){
+        $ret=["result"=>0];
+        $model=new AdgroupForm();
+        $model->scenario=AdgroupForm::TEST_SEARCH_CROWD;
+        $model->adgroup_id=$id;
+        try{
+            $ret["result"]=1;
+            $ret["data"]=$model->testSearchCrowd();
+        }catch (\Exception $e){
+            $ret["message"]=$e->getMessage();
+        }
+        \Yii::$app->response->format=Response::FORMAT_JSON;
+        return $ret;
+    }
+
     /**
      * @param $id
      * @return Adgroup
