@@ -1,6 +1,7 @@
 <?php
 
 namespace app\controllers;
+use app\extensions\custom\qq\QcloudApi;
 use app\extensions\custom\taobao\TopClient;
 use app\models\Adgroup;
 use app\models\Campaign;
@@ -24,14 +25,16 @@ class TestController extends Controller {
 
 //        $store = Store::findOne(20);
 //        $campaign = Campaign::findOne(3792809);
-//        $adgroup = Adgroup::findOne(700178905);
+//        $adgroup = Adgroup::findOne(700328811);
+        $wenzhi=QcloudApi::loadWenzhi();
 
-        $model=new SearchCrowdForm();
-        $model->scenario=SearchCrowdForm::BATCH_STATE;
-        $model->ids=[284765396470,284765396472];
-        $model->online_status=1;
-        echo $model->batchState();
-        print_r($model->errors);
+        $package = array(
+            "text"=>"汽车座椅收纳袋挂袋多功能车内杂物袋椅背置物袋车用车载储物袋皮",
+            "code"=>2097152,
+            "type"=>1,
+        );
+        $a = $wenzhi->LexicalAnalysis($package);
+        echo "<pre>";print_r($a);
 
     }
     public function actionQueueAdd(){

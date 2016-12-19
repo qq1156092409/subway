@@ -4,7 +4,16 @@ namespace app\extensions;
 class Autoloader
 {
     public static function autoload(){
+        foreach(self::getFiles() as $file){
+            require_once $file;
+        }
+
         spl_autoload_register('app\extensions\Autoloader::load');
+    }
+    public static function getFiles(){
+        return array(
+            __DIR__."/qq/qcloudapi/src/QcloudApi/QcloudApi.php",
+        );
     }
     public static function getMap(){
         return array(

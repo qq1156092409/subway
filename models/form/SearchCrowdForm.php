@@ -28,10 +28,14 @@ class SearchCrowdForm extends SearchCrowd
         ];
     }
     public function rules(){
+        $before=[
+            ["datas","processDatas"]
+        ];
         $rules=[
+            [["adgroup_id","datas"],"required","on"=>self::BATCH_ADD],
             ["ids","checkSearchCrowds"],
         ];
-        return array_merge(parent::rules(),$rules);
+        return array_merge($before,parent::rules(),$rules);
     }
     public function checkSearchCrowds($attribute){
         if(!$this->hasErrors()){
@@ -56,6 +60,12 @@ class SearchCrowdForm extends SearchCrowd
         }
     }
 
+    public function processDatas($attribute){
+        if(is_string($this->datas) && $this->datas){
+            $this->datas=Json::decode($this->datas);
+        }
+    }
+
     public function batchState(){
         if(!$this->validate()) return false;
         $searchCrowds=$this->getArs();
@@ -76,33 +86,33 @@ class SearchCrowdForm extends SearchCrowd
         $crowds=Crowd::find()->where(["dim_id"=>ArrayHelper::getColumn($this->datas,"dim_id")])->indexBy("dim_id")->all();
         $tags=[];
         foreach($this->datas as $data){
-            $crowd=$crowds[$data];
+            $crowd=$crowds[$data["dim_id"]];
             $temp=[
                 "crowdDTO"=>[
-                    "templateId"=>$crowd->crowd_type_id,
-                    "name"=>$crowd->tag_name,
+                    "templateId"=>"".$crowd->crowd_type_id,
+                    "name"=>"".$crowd->tag_name,
                     "tagList"=>[
                         [
-                            "dimId"=>$crowd->dim_id,
-                            "tagId"=>$crowd->tag_id,
-                            "tagName"=>$crowd->tag_name,
-                            "optionGroupId"=>$crowd->option_group_id,
+                            "dimId"=>"".$crowd->dim_id,
+                            "tagId"=>"".$crowd->tag_id,
+                            "tagName"=>"".$crowd->tag_name,
+                            "optionGroupId"=>"".$crowd->option_group_id,
                         ],
                     ],
-                    "isDefaultPrice"=>"0",
-                    "discount"=>$data["discount"]+100,
                 ],
+                "isDefaultPrice"=>0,
+                "discount"=>($data["discount"]+100),
             ];
             $tags[]=$temp;
         }
+//        print_r(Json::encode($tags));exit;
 
         $req = new \SimbaSearchcrowdBatchAddRequest;
         $req->setNick("".$this->adgroup->nick);
         $req->setAdgroupId("".$this->adgroup_id);
         $req->setAdgroupTargetingTags(Json::encode($tags));
-        $response=TopClient::getInstance()->execute($req);
-//        echo "<pre>";print_r($response);exit;
-        return SearchCrowd::batchInsert($response->adgrouptargetingtags,["adgroup_id"=>$this->adgroup_id]);
+        $response=TopClient::getInstance()->execute($req,$this->adgroup->store->session);
+        return SearchCrowd::batchInsert($response->adgrouptargetingtags->adgroup_targeting_tag_dto,["adgroup_id"=>$this->adgroup_id]);
     }
 
     public function batchDestroy(){

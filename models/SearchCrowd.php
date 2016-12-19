@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\base\Exception;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -77,10 +78,15 @@ class SearchCrowd extends \yii\db\ActiveRecord
         $count=0;
         $now=date("Y-m-d H:i:s");
         foreach($datas as $one){
+            $attributes=ArrayHelper::merge((array)$one,(array)$one->crowd,$extra);
             $searchCrowd=new SearchCrowd();
-            $searchCrowd->attributes=ArrayHelper::merge((array)$one,(array)$one->crowd,$extra);
+            $searchCrowd->attributes=$attributes;
+            $searchCrowd->id=$attributes["id"];
             $searchCrowd->api_time=$now;
-            $searchCrowd->save() and $count++;
+            if(!$searchCrowd->save()){
+                throw new Exception("save error:".json_encode($searchCrowd->errors));
+            }
+            $count++;
         }
         return $count;
     }
