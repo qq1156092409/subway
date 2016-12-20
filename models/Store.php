@@ -325,7 +325,6 @@ class Store extends \yii\db\ActiveRecord
         $response=TopClient::getInstance()->execute($req,$this->session);
 //        echo "<pre>";print_r($response);exit;
         StoreCrowd::deleteAll(["nick"=>$this->nick]);
-        CrowdTag::deleteAll(["nick"=>$this->nick]);
         $data=$response->template_list->result;
         $now=date("Y-m-d H:i:s");
         foreach($data as $one){
@@ -346,16 +345,11 @@ class Store extends \yii\db\ActiveRecord
                     $crowd->crowd_type_id=$type->id;
                     $crowd->save();
                 }
-                $crowdTag=new CrowdTag();
-                $crowdTag->nick=$this->nick;
-                $crowdTag->dim_id=$crowd->dim_id;
-                $crowdTag->tag_id=$option->tag_id;
-                $crowdTag->api_time=$now;
-                $crowdTag->save();
 
                 $storeCrowd=new StoreCrowd();
                 $storeCrowd->nick=$this->nick;
                 $storeCrowd->dim_id=$crowd->dim_id;
+                $storeCrowd->tag_id=$option->tag_id;
                 $storeCrowd->api_time=$now;
                 $storeCrowd->save();
                 $count++;

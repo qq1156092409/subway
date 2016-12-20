@@ -5,8 +5,8 @@ namespace app\models\form;
 
 use app\extensions\custom\taobao\TopClient;
 use app\models\Crowd;
-use app\models\CrowdTag;
 use app\models\SearchCrowd;
+use app\models\StoreCrowd;
 use yii\helpers\ArrayHelper;
 use yii\helpers\Json;
 
@@ -88,8 +88,9 @@ class SearchCrowdForm extends SearchCrowd
         $tags=[];
         foreach($this->datas as $data){
             $crowd=$crowds[$data["dim_id"]];
-            /** @var CrowdTag $crowdTag */
-            $crowdTag=CrowdTag::findOne(["nick"=>$this->adgroup->nick,"dim_id"=>$crowd->dim_id]);
+            /** @var StoreCrowd $storeCrowd */
+            $storeCrowd=StoreCrowd::findOne(["nick"=>$this->adgroup->nick,"dim_id"=>$crowd->dim_id]);
+            if(!$storeCrowd) continue;
             $temp=[
                 "crowdDTO"=>[
                     "templateId"=>"".$crowd->crowd_type_id,
@@ -97,7 +98,7 @@ class SearchCrowdForm extends SearchCrowd
                     "tagList"=>[
                         [
                             "dimId"=>"".$crowd->dim_id,
-                            "tagId"=>"".$crowdTag->tag_id,
+                            "tagId"=>"".$storeCrowd->tag_id,
                             "tagName"=>"".$crowd->tag_name,
                             "optionGroupId"=>"".$crowd->option_group_id,
                         ],
@@ -115,6 +116,7 @@ class SearchCrowdForm extends SearchCrowd
         $req->setAdgroupId("".$this->adgroup_id);
         $req->setAdgroupTargetingTags(Json::encode($tags));
         $response=TopClient::getInstance()->execute($req,$this->adgroup->store->session);
+//        echo "<pre>";print_r($response);exit;
         return SearchCrowd::batchInsert($response->adgrouptargetingtags->adgroup_targeting_tag_dto,["adgroup_id"=>$this->adgroup_id]);
     }
 

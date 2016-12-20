@@ -14,7 +14,7 @@ class TestController extends Controller {
         /** @var Campaign $campaign */
         /** @var Adgroup $adgroup */
 
-        $store = Store::findOne(2);
+        $store = Store::findOne(25);
 //        $campaign = Campaign::findOne(3792809);
 //        $adgroup = Adgroup::findOne(700328811);
 

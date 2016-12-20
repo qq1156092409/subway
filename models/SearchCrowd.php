@@ -77,16 +77,18 @@ class SearchCrowd extends \yii\db\ActiveRecord
     public static function batchInsert($datas,$extra){
         $count=0;
         $now=date("Y-m-d H:i:s");
-        foreach($datas as $one){
-            $attributes=ArrayHelper::merge((array)$one,(array)$one->crowd,$extra);
-            $searchCrowd=new SearchCrowd();
-            $searchCrowd->attributes=$attributes;
-            $searchCrowd->id=$attributes["id"];
-            $searchCrowd->api_time=$now;
-            if(!$searchCrowd->save()){
-                throw new Exception("save error:".json_encode($searchCrowd->errors));
+        if($datas){
+            foreach($datas as $one){
+                $attributes=ArrayHelper::merge((array)$one,(array)$one->crowd,$extra);
+                $searchCrowd=new SearchCrowd();
+                $searchCrowd->attributes=$attributes;
+                $searchCrowd->id=$attributes["id"];
+                $searchCrowd->api_time=$now;
+                if(!$searchCrowd->save()){
+                    throw new Exception("save error:".json_encode($searchCrowd->errors));
+                }
+                $count++;
             }
-            $count++;
         }
         return $count;
     }
