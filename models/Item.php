@@ -2,7 +2,9 @@
 
 namespace app\models;
 
+use app\extensions\custom\qq\QcloudApi;
 use Yii;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "item".
@@ -62,4 +64,45 @@ class Item extends \yii\db\ActiveRecord
     public function getStore(){
         return $this->hasOne(Store::className(),["nick"=>"nick"]);
     }
+    public function getItemDetail(){
+        return $this->hasOne(ItemDetail::className(),["num_iid"=>"num_id"]);
+    }
+    public function getItemImgs(){
+        return $this->hasMany(ItemImg::className(),["num_iid"=>"num_id"]);
+    }
+    public function getItemProps(){
+        return $this->hasMany(ItemProp::className(),["num_iid"=>"num_id"]);
+    }
+    public function getItemSetting(){
+        return $this->hasOne(ItemSetting::className(),["item_id"=>"num_id"]);
+    }
+
+    //--get
+    public function getActiveSetting(){
+        $setting=$this->itemSetting;
+        if(!$setting){
+            $setting=new ItemSetting();
+            $setting->item_id=$this->num_id;
+            $setting->create_time=date("Y-m-d H:i:s");
+            $setting->save();
+        }
+        return $setting;
+    }
+
+    public function getTitleAnalyse(){
+        $setting=$this->getActiveSetting();
+        return $setting->getActiveTitleAnalyse();
+    }
+    public function getCutTitle(){
+        $titleAnalyse=$this->getTitleAnalyse();
+        $data=Json::decode($titleAnalyse);
+        $ret=[];
+        if(isset($data["tokens"])){
+            foreach($data["tokens"] as $one){
+                $ret[]=$one["word"];
+            }
+        }
+        return $ret;
+    }
+
 }

@@ -6,6 +6,7 @@ use app\extensions\custom\taobao\TopClient;
 use app\models\multiple\DataReport;
 use app\models\multiple\GlobalModel;
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "store".
@@ -367,5 +368,80 @@ class Store extends \yii\db\ActiveRecord
         $req = new \SimbaCampaignChanneloptionsGetRequest;
         $response=TopClient::getInstance()->execute($req, $this->session);
         echo "<pre>";print_r($response);
+    }
+
+    public function refreshItemDetails(){
+        $now=date("Y-m-d H:i:s");
+        $req = new \ItemsSellerListGetRequest;
+        $req->setFields("num_iid,cid,item_img,item_props,props_name");
+        $items=$this->items;
+        $count=0;
+        if($items){
+            $ids=ArrayHelper::getColumn($items,"num_id");
+            $ids2=array_chunk($ids,20);
+            foreach($ids2 as $chunk){
+                $req->setNumIids("".implode(",",$chunk));
+                $response=TopClient::getInstance()->execute($req,$this->session);
+//                echo "<pre>";print_r($response);exit;
+                $items=$response->items->item;
+                if($items){
+                    foreach($items as $item){
+                        ItemDetail::deleteAll(["num_iid"=>$item->num_iid]);
+                        ItemImg::deleteAll(["num_iid"=>$item->num_iid]);
+                        ItemProp::deleteAll(["num_iid"=>$item->num_iid]);
+
+                        $detail=new ItemDetail();
+                        $detail->num_iid=$item->num_iid;
+                        $detail->cid=$item->cid;
+                        $detail->api_time=$now;
+                        $detail->save() and $count++;
+
+                        $itemImgs=$item->item_imgs->item_img;
+                        if($itemImgs){
+                            foreach($itemImgs as $itemImg){
+                                $img=new ItemImg();
+                                $img->num_iid=$item->num_iid;
+                                $img->id=$itemImg->id;
+                                $img->url=(string)$itemImg->url;
+                                $img->position=$itemImg->position;
+                                $img->api_time=$now;
+                                $img->save();
+                            }
+                        }
+
+                        $propStr=trim($item->props_name);
+                        if($propStr){
+                            $props=explode(";",$propStr);
+                            foreach($props as $one){
+                                list($nameID,$valueID,$name,$value)=explode(":",$one);
+                                $propName=PropName::findOne($nameID);
+                                if(!$propName){
+                                    $propName=new PropName();
+                                    $propName->id=$nameID;
+                                    $propName->name=$name;
+                                    $propName->api_time=$now;
+                                    $propName->save();
+                                }
+                                $propValue=PropValue::findOne($valueID);
+                                if(!$propValue){
+                                    $propValue=new PropValue();
+                                    $propValue->id=$valueID;
+                                    $propValue->name=$value;
+                                    $propValue->api_time=$now;
+                                    $propValue->save();
+                                }
+                                $prop=new ItemProp();
+                                $prop->num_iid=$item->num_iid;
+                                $prop->prop_name_id=$nameID;
+                                $prop->prop_value_id=$valueID;
+                                $prop->api_time=$now;
+                                $prop->save();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $count;
     }
 }

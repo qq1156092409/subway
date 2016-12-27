@@ -16,17 +16,14 @@ use yii\helpers\ArrayHelper;
 
 class TestController extends Controller {
     public function actionIndex(){
-        /** @var Adgroup $adgroup */
+        /** @var Store $store */
         /** @var Campaign $campaign */
+        /** @var Adgroup $adgroup */
 
 //        $adgroup=Adgroup::findOne(719091059);
 //        echo $adgroup->refreshKeywords();
-        $model=new SearchCrowdForm();
-        $model->scenario=SearchCrowdForm::BATCH_STATE;
-        $model->ids=[311463361417,311647052491];
-        $model->online_status=0;
-        echo $model->batchState();
-        print_r($model->errors);
+        $store = Store::findOne(15);
+        echo $store->refreshItemDetails();
     }
     public function actionQueue(){
         $pheanstalk = new Pheanstalk('120.25.240.36');

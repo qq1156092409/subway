@@ -1,5 +1,5 @@
 <?php
-
+namespace app\extensions\word ;
 /**
  * Created by PhpStorm.
  * User: admin
@@ -8,5 +8,13 @@
  */
 class CeilWord
 {
+    public static function divide($words){
+        $ret=["main"=>[],"decorate"=>[]];
+        if($words){
+            foreach($words as $word){
 
+            }
+        }
+        return $ret;
+    }
 }

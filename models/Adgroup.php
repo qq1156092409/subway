@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use app\extensions\custom\qq\QcloudApi;
 use app\extensions\custom\taobao\TopClient;
 use app\models\multiple\DataReport;
 use app\models\multiple\GlobalModel;
